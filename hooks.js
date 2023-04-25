@@ -30,7 +30,7 @@ export default function reactionHooks() {
             if (t) {
                 var combatant = game.combat.turns.find(a=>a.tokenId === t);
                 if (combatant) {
-                    updateCombatantReactionState(combatant, true);
+                    updateCombatantReactionState(combatant, false);
                     ui.chat.deleteMessage(mid, {})
                 }
             }
