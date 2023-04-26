@@ -1,5 +1,7 @@
 {
 	"I18N.LANGUAGE": "English",
-	"pf2e-reaction.squareSize.name": "Square size",
-	"pf2e-reaction.squareSize.hint": "square size to check distance for trigger reaction"
+	"pf2e-reaction.weaponRange.name": "Basic weapon distance",
+	"pf2e-reaction.weaponRange.hint": "Basic weapon distance to check attack of opportunity",
+	"pf2e-reaction.weaponReachRange.name": "Reach weapon distance",
+	"pf2e-reaction.weaponReachRange.hint": "Reach weapon distance to check attack of opportunity"
 }

@@ -56,39 +56,20 @@ export default function reactionHooks() {
     });
 
     Hooks.on('preUpdateToken',(_document, update, options, ..._args)=>{
-        var square = Settings.squareSize;
         if (game?.combats?.active && (update.x >0 || update.y > 0)) {
-            var prevX = _document.x;
-            var prevY = _document.y;
-
-            var all_coo_enemy = [
-                [prevX, prevY],
-                [prevX, prevY-square],
-                [prevX, prevY+square],
-                [prevX+square, prevY-square],
-                [prevX+square, prevY],
-                [prevX+square, prevY+square],
-                [prevX-square, prevY-square],
-                [prevX-square, prevY],
-                [prevX-square, prevY+square],
-            ]
-
-            var filteredType = 'npc'
-            if (_document.actor?.type  == "npc") {
-                filteredType = 'character'
-            }
-
+            var filteredType = ((_document.actor?.type  == "npc") ? 'character' : 'npc')
             game?.combats?.active?.combatants
                 .filter((c=>c.actorId != _document.actorId && c.actor.type == filteredType && c.token.flags?.["reaction-check"]?.state))
-                .forEach(cc =>{
-                    if (cc.actor.itemTypes.action.find((feat => "attack-of-opportunity" === feat.slug))) {
-                        if (all_coo_enemy.find(it => JSON.stringify(it) == JSON.stringify([cc.token.x, cc.token.y]))) {
-                            postInChat(cc);
-                        }
+                .filter((cc=>cc.actor.itemTypes.action.find((feat => "attack-of-opportunity" === feat.slug))))
+                .forEach(cc => {
+                    var isReach = cc.token.actor.system.actions?.filter((e=>"strike"===e.type && e.ready))
+                    .filter((e=>e.weaponTraits.find(b=>b.name==="reach")));
+                    var distance = canvas.grid.measureDistance(cc.token.center, _document.center)
+                    distance = Math.floor(distance / 5) * 5
+                    if (distance <= (isReach.length>0?Settings.weaponReachRange:Settings.weaponRange)) {
+                        postInChat(cc);
                     }
                 })
-
-
         }
     });
 
