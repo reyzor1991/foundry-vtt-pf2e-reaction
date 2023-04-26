@@ -10,6 +10,7 @@ async function postInChat(combatant) {
     const content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", { combatant: combatant });
     ChatMessage.create({
         content: content,
+        whisper: game.users.filter(u => u.isGM).map(u => u._id),
         flags: {
             "reaction-check": {
                 tokenId: combatant.token.id
