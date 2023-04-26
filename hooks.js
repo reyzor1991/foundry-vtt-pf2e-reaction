@@ -8,7 +8,7 @@ function updateCombatantReactionState(combatant, newState) {
 
 function getEnemyDistance(tcenter, dcenter) {
     var distance = canvas.grid.measureDistance(tcenter, dcenter);
-    return Math.floor(distance / 5) * 5
+    return Math.round(distance / 5) * 5
 }
 
 function getCenterObj(x, y) {
