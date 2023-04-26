@@ -2,7 +2,9 @@
 [![Foundry Shield 10]][Foundry URL]
 [![Version]][Version URL]
 
-Small module to notify that actor can use reaction
+Small module to notify that actor can use reaction:
+
+1. Check reaction for 5ft/10ft for reach weapon
 
 [Foundry Shield 10]: https://img.shields.io/badge/Foundry-10-informational?style=flat-square
 [Foundry URL]: https://foundryvtt.com
