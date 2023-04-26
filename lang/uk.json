@@ -1,5 +1,7 @@
 {
 	"I18N.LANGUAGE": "Українська",
-	"pf2e-reaction.squareSize.name": "Розмір квадрата",
-	"pf2e-reaction.squareSize.hint": "Розмір квадрата потрібен для перевірки реакції"
+	"pf2e-reaction.weaponRange.name": "Базова відстань зброї",
+	"pf2e-reaction.weaponRange.hint": "Основна відстань зброї для перевірки атаки можливості",
+	"pf2e-reaction.weaponReachRange.name": "Відстань досяжності зброї",
+	"pf2e-reaction.weaponReachRange.hint": "Досягніть відстані зброї, щоб перевірити атаку можливості"
 }
