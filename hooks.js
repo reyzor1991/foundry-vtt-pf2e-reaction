@@ -52,7 +52,9 @@ function checkCombatantTriggerAttackOfOpportunity(actorType, actorId, x, y, widt
         .forEach(cc => {
             var hasStrike = cc.token.actor.system.actions?.filter((e=>"strike"===e.type && e.ready));
             if (hasStrike.length>0) {
-                var isReach = hasStrike.filter((e=>e.weaponTraits.find(b=>b.name==="reach")));
+                var isReach = actorType  == "npc"
+                    ? hasStrike.filter((e=>e.weaponTraits.find(b=>b.name==="reach")))
+                    : hasStrike.filter((e=>e.traits.find(b=>b.name.startsWith("reach"))));
                 var canAttack = getCenters(x, y, width)
                     .map(a=>getEnemyDistance(cc.token.center, a))
                     .filter(a=> (a <= (isReach.length>0?Settings.weaponReachRange:Settings.weaponRange)))

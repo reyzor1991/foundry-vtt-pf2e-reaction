@@ -13,7 +13,7 @@ Small module to notify that actor can use reaction:
 [Verified Foundry 10]: https://img.shields.io/badge/Minimum%20Foundry-10.291-informational?style=flat-square
 [Foundry URL]: https://foundryvtt.com
 
-[Version]: https://img.shields.io/badge/Version-0.1.1-orange?style=flat-square
+[Version]: https://img.shields.io/badge/Version-0.1.2-orange?style=flat-square
 [Version URL]: https://github.com/reyzor1991/foundry-vtt-pf2e-reaction
 
 [GitHub Release Date]: https://img.shields.io/github/release-date/reyzor1991/foundry-vtt-pf2e-reaction

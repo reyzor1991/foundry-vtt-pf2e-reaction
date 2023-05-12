@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.1.2
+
+### Fix
+
+-   Fix issue with checking character token moving 
+
 ## Version 0.1.1
 
 ### Data Updates
