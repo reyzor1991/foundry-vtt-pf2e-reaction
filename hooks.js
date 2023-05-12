@@ -18,8 +18,6 @@ function getCenterObj(x, y) {
 
 function getCenters(x, y, width) {
     var startY = y;
-
-    var width = 2;
     var arr = [];
 
     for (let i = 0; i < width; i++) {
@@ -44,6 +42,25 @@ async function postInChat(combatant) {
             }
         }
     });
+}
+
+function checkCombatantTriggerAttackOfOpportunity(actorType, actorId, x, y, width) {
+    var filteredType = ((actorType  == "npc") ? 'character' : 'npc')
+    game?.combats?.active?.combatants
+        .filter((c=>c.actorId != actorId && c.actor.type == filteredType && c.token.flags?.["reaction-check"]?.state))
+        .filter((cc=>cc.actor.itemTypes.action.find((feat => "attack-of-opportunity" === feat.slug))))
+        .forEach(cc => {
+            var hasStrike = cc.token.actor.system.actions?.filter((e=>"strike"===e.type && e.ready));
+            if (hasStrike.length>0) {
+                var isReach = hasStrike.filter((e=>e.weaponTraits.find(b=>b.name==="reach")));
+                var canAttack = getCenters(x, y, width)
+                    .map(a=>getEnemyDistance(cc.token.center, a))
+                    .filter(a=> (a <= (isReach.length>0?Settings.weaponReachRange:Settings.weaponRange)))
+                if (canAttack.length>0) {
+                    postInChat(cc);
+                }
+            }
+        })
 }
 
 export default function reactionHooks() {
@@ -82,24 +99,20 @@ export default function reactionHooks() {
         updateCombatantReactionState(combatant, true)
     });
 
+    Hooks.on('preCreateChatMessage',(message, user, _options, userId)=>{
+        if (game?.combats?.active) {
+            if (
+                ('attack-roll' == message?.flags?.pf2e?.context?.type && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll"))
+                || (message?.item?.type == 'action' && "interaction" == message?.item?.system?.actionCategory?.value)
+            ) {
+                checkCombatantTriggerAttackOfOpportunity(message.actor?.type, message.actor._id, message.token.x, message.token.y, message.token.width);
+            }
+        }
+    });
+
     Hooks.on('preUpdateToken',(_document, update, options, ..._args)=>{
-        if (game?.combats?.active && (update.x >0 || update.y > 0)) {
-            var filteredType = ((_document.actor?.type  == "npc") ? 'character' : 'npc')
-            game?.combats?.active?.combatants
-                .filter((c=>c.actorId != _document.actorId && c.actor.type == filteredType && c.token.flags?.["reaction-check"]?.state))
-                .filter((cc=>cc.actor.itemTypes.action.find((feat => "attack-of-opportunity" === feat.slug))))
-                .forEach(cc => {
-                    var hasStrike = cc.token.actor.system.actions?.filter((e=>"strike"===e.type && e.ready));
-                    if (hasStrike.length>0) {
-                        var isReach = hasStrike.filter((e=>e.weaponTraits.find(b=>b.name==="reach")));
-                        var canAttack = getCenters(_document.x,_document.y,_document.width)
-                            .map(a=>getEnemyDistance(cc.token.center, a))
-                            .filter(a=> (a <= (isReach.length>0?Settings.weaponReachRange:Settings.weaponRange)))
-                        if (canAttack.length>0) {
-                            postInChat(cc);
-                        }
-                    }
-                })
+        if (game?.combats?.active && (update.x > 0 || update.y > 0)) {
+            checkCombatantTriggerAttackOfOpportunity(_document.actor?.type, _document.actorId, _document.x,_document.y,_document.width);
         }
     });
 
