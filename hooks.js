@@ -105,7 +105,7 @@ export default function reactionHooks() {
         if (game?.combats?.active) {
             if (
                 ('attack-roll' == message?.flags?.pf2e?.context?.type && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll"))
-                || (message?.item?.type == 'action' && "interaction" == message?.item?.system?.actionCategory?.value)
+                || (message?.item?.type == 'action' && message?.item?.system?.traits?.value.includes("manipulate"))
             ) {
                 checkCombatantTriggerAttackOfOpportunity(message.actor?.type, message.actor._id, message.token.x, message.token.y, message.token.width);
             }

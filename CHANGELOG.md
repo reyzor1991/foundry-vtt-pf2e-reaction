@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 0.1.3
+
+### Data Updates
+
+### Fix
+
+-   Use manipulate trait to check actions in chat
+
 ## Version 0.1.2
 
 ### Fix
