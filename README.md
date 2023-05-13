@@ -8,6 +8,8 @@
 Small module to notify that actor can use reaction:
 
 1. Check reaction for 5ft/10ft for reach weapon
+2. Check manipulate actions in chat
+3. Check reaction when someone makes range attack
 
 [Minimum Foundry 10]: https://img.shields.io/badge/Minimum%20Foundry-10.291-informational?style=flat-square
 [Verified Foundry 10]: https://img.shields.io/badge/Minimum%20Foundry-10.291-informational?style=flat-square
