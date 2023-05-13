@@ -108,6 +108,11 @@ export default function reactionHooks() {
                 || (message?.item?.type == 'action' && message?.item?.system?.traits?.value.includes("manipulate"))
             ) {
                 checkCombatantTriggerAttackOfOpportunity(message.actor?.type, message.actor._id, message.token.x, message.token.y, message.token.width);
+            } else if (user?.flags?.pf2e?.origin?.type == 'action') {
+                var actId = user.flags?.pf2e?.origin?.uuid.split('.').slice(-1)
+                if (game?.packs?.get("pf2e.actionspf2e")._source.find(a=>a._id==actId).system?.traits?.value.includes("manipulate")) {
+                    checkCombatantTriggerAttackOfOpportunity(message.actor?.type, message.actor._id, message.token.x, message.token.y, message.token.width);
+                }
             }
         }
     });

@@ -1,10 +1,14 @@
 # Changelog
 
-## Version 0.1.3
+## Version 0.1.4
 
 ### Data Updates
 
-### Fix
+-   Add handling of skill actions
+
+## Version 0.1.3
+
+### Data Updates
 
 -   Use manipulate trait to check actions in chat
 
