@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.1.6
+
+### Data Updates
+
+-   Add Glimpse of Redemption reaction check
+
 ## Version 0.1.5
 
 ### Data Updates

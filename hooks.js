@@ -125,6 +125,28 @@ export default function reactionHooks() {
                     }
                 }
             }
+            //Damage by
+            if ("damage-roll" == message?.flags?.pf2e?.context?.type && "character" == message.target.actor?.type) {
+                console.log(message);
+                game.combat.turns.filter(a=>a.actorId != message.target.actor._id && a.actor.type == "character")
+                .filter((cc=>cc.actor.itemTypes.action.find((feat => "glimpse-of-redemption" === feat.slug))))
+                .forEach(cc => {
+                    var dists = Math.min.apply(null, getCenters(cc.token.x, cc.token.y, cc.token.width)
+                    .map(a=>
+                        getCenters(message.target.token.x, message.target.token.y, message.target.token.width)
+                        .map(b=>getEnemyDistance(b, a))
+                    ).flat())
+                    var dists2 = Math.min.apply(null, getCenters(cc.token.x, cc.token.y, cc.token.width)
+                    .map(a=>
+                        getCenters(message.token.x, message.token.y, message.token.width)
+                        .map(b=>getEnemyDistance(b, a))
+                    ).flat())
+                    //glimpse-of-redemption
+                    if (dists <= 15 && dists2 <= 15) {
+                        postInChatTemplate("glimpse-of-redemption", cc.token);
+                    }
+                })
+            }
         }
     });
 
