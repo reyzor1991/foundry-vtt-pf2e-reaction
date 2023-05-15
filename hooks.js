@@ -1,7 +1,13 @@
 import Settings from "./settings.js";
 
+const attack_of_opportunity = "@UUID[Compendium.pf2e.actionspf2e.KAVf7AmRnbCAHrkT]"
+const glimpse_of_redemption = "@UUID[Compendium.pf2e.actionspf2e.tuZnRWHixLArvaIf]"
+const wicked_thorns = "@UUID[Compendium.pf2e.actionspf2e.ncdryKskPwHMgHFh]"
+const iron_command = "@UUID[Compendium.pf2e.actionspf2e.M8RCbthRhB4bxO9t]"
+const selfish_shield = "@UUID[Compendium.pf2e.actionspf2e.enQieRrITuEQZxx2]"
+
 function updateCombatantReactionState(combatant, newState) {
-    combatant.token.update({
+    combatant.update({
         "flags.reaction-check.state": newState
     });
 }
@@ -14,6 +20,10 @@ function getEnemyDistance(tcenter, dcenter) {
 function getCenterObj(x, y) {
     var a = canvas.grid.getCenter(x, y)
     return {"x": a[0],"y": a[1]}
+}
+
+function nonReach(arr) {
+    return !arr.find(b=>b.startsWith("reach"))
 }
 
 function getCenters(x, y, width) {
@@ -31,14 +41,14 @@ function getCenters(x, y, width) {
     return arr
 }
 
-async function postInChatTemplate(template, token) {
-    const content = await renderTemplate("./modules/pf2e-reaction/templates/"+template+".hbs", { token: token });
+async function postInChatTemplate(uuid, combatant) {
+    const content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", { uuid:uuid, token: combatant.token });
     ChatMessage.create({
         content: content,
         whisper: game.users.filter(u => u.isGM).map(u => u._id),
         flags: {
             "reaction-check": {
-                tokenId: token.id
+                cId: combatant._id
             }
         }
     });
@@ -47,7 +57,7 @@ async function postInChatTemplate(template, token) {
 function checkCombatantTriggerAttackOfOpportunity(actorType, actorId, x, y, width) {
     var filteredType = ((actorType  == "npc") ? 'character' : 'npc')
     game?.combats?.active?.combatants
-        .filter((c=>c.actorId != actorId && c.actor.type == filteredType && c.token.flags?.["reaction-check"]?.state))
+        .filter((c=>c.actorId != actorId && c.actor.type == filteredType && c.flags?.["reaction-check"]?.state))
         .filter((cc=>cc.actor.itemTypes.action.find((feat => "attack-of-opportunity" === feat.slug))))
         .forEach(cc => {
             var hasStrike = cc.token.actor.system.actions?.filter((e=>"strike"===e.type && e.ready));
@@ -59,7 +69,7 @@ function checkCombatantTriggerAttackOfOpportunity(actorType, actorId, x, y, widt
                     .map(a=>getEnemyDistance(cc.token.center, a))
                     .filter(a=> (a <= (isReach.length>0?Settings.weaponReachRange:Settings.weaponRange)))
                 if (canAttack.length>0) {
-                        postInChatTemplate("attack-of-opportunity", cc.token);
+                        postInChatTemplate(attack_of_opportunity, cc);
                 }
             }
         })
@@ -73,9 +83,9 @@ export default function reactionHooks() {
         var mid = $(this).parent().parent().data('message-id');
         if (mid) {
             var mes = game.messages.get(mid);
-            var t = mes.flags['reaction-check'].tokenId;
+            var t = mes.flags['reaction-check'].cId;
             if (t) {
-                var combatant = game.combat.turns.find(a=>a.tokenId === t);
+                var combatant = game.combat.turns.find(a=>a._id === t);
                 if (combatant) {
                     updateCombatantReactionState(combatant, false);
                     ui.chat.deleteMessage(mid, {})
@@ -85,15 +95,23 @@ export default function reactionHooks() {
 
     });
 
-    Hooks.on('combatRound', async combat => {
-        combat.turns.forEach(cc =>{
-            updateCombatantReactionState(cc, true)
-        })
+    Hooks.on('combatTurn', async (combat, updateData, updateOptions) => {
+        updateCombatantReactionState(combat.nextCombatant, true);
+    });
+
+    Hooks.on('combatRound', async (combat, updateData, updateOptions) => {
+        updateCombatantReactionState(combat.nextCombatant, true);
     });
 
     Hooks.on('deleteCombat', async combat => {
         combat.turns.forEach(cc =>{
             updateCombatantReactionState(cc, false)
+        })
+    });
+
+    Hooks.on('combatStart', async combat => {
+        combat.turns.forEach(cc =>{
+            updateCombatantReactionState(cc, true)
         })
     });
 
@@ -118,18 +136,27 @@ export default function reactionHooks() {
             if ('attack-roll' == message?.flags?.pf2e?.context?.type
                 && ("success" == message?.flags?.pf2e?.context?.outcome || "criticalSuccess" == message?.flags?.pf2e?.context?.outcome)
             ) {
-                if (message.target.token.flags?.["reaction-check"]?.state) {
+                if (message.target.token.combatant.flags?.["reaction-check"]?.state) {
                     //wicked-thorns
-                    if (message?.item?.traits.has("unarmed") || (message?.item?.isMelee && !message?.item?.traits.has("reach"))) {
-                        postInChatTemplate("wicked-thorns", message.target.token);
+                    if (message?.item?.traits.has("unarmed") || (message?.item?.isMelee && nonReach(message?.item?.traits))) {
+                        postInChatTemplate(wicked_thorns, message.target.token.combatant);
                     }
                 }
             }
             //Damage by
             if ("damage-roll" == message?.flags?.pf2e?.context?.type && "character" == message.target.actor?.type) {
-                console.log(message);
+                //15 ft damage you
+                if(message.target.token.combatant.flags?.["reaction-check"]?.state) {
+                    if (message.target.actor.itemTypes.action.find((feat => "iron-command" === feat.slug))) {
+                        postInChatTemplate(iron_command, message.target.token.combatant);
+                    } else if (message.target.actor.itemTypes.action.find((feat => "selfish-shield" === feat.slug))) {
+                        postInChatTemplate(selfish_shield, message.target.token.combatant);
+                    }
+                }
+
                 game.combat.turns.filter(a=>a.actorId != message.target.actor._id && a.actor.type == "character")
                 .filter((cc=>cc.actor.itemTypes.action.find((feat => "glimpse-of-redemption" === feat.slug))))
+                .filter(cc=>cc.flags?.["reaction-check"]?.state)
                 .forEach(cc => {
                     var dists = Math.min.apply(null, getCenters(cc.token.x, cc.token.y, cc.token.width)
                     .map(a=>
@@ -143,7 +170,7 @@ export default function reactionHooks() {
                     ).flat())
                     //glimpse-of-redemption
                     if (dists <= 15 && dists2 <= 15) {
-                        postInChatTemplate("glimpse-of-redemption", cc.token);
+                        postInChatTemplate(glimpse_of_redemption, cc);
                     }
                 })
             }

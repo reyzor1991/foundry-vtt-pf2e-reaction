@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 0.1.7
+
+### Data Updates
+
+-   Save reaction state in combatant
+-   Add iron command reaction check
+-   Add selfish shield reaction check
+
 ## Version 0.1.6
 
 ### Data Updates
