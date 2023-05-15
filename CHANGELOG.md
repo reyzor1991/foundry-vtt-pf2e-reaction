@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.1.5
+
+### Data Updates
+
+-   Add wicked thorns reaction check
+
 ## Version 0.1.4
 
 ### Data Updates

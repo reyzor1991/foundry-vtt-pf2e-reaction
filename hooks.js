@@ -31,14 +31,14 @@ function getCenters(x, y, width) {
     return arr
 }
 
-async function postInChat(combatant) {
-    const content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", { combatant: combatant });
+async function postInChatTemplate(template, token) {
+    const content = await renderTemplate("./modules/pf2e-reaction/templates/"+template+".hbs", { token: token });
     ChatMessage.create({
         content: content,
         whisper: game.users.filter(u => u.isGM).map(u => u._id),
         flags: {
             "reaction-check": {
-                tokenId: combatant.token.id
+                tokenId: token.id
             }
         }
     });
@@ -59,7 +59,7 @@ function checkCombatantTriggerAttackOfOpportunity(actorType, actorId, x, y, widt
                     .map(a=>getEnemyDistance(cc.token.center, a))
                     .filter(a=> (a <= (isReach.length>0?Settings.weaponReachRange:Settings.weaponRange)))
                 if (canAttack.length>0) {
-                    postInChat(cc);
+                        postInChatTemplate("attack-of-opportunity", cc.token);
                 }
             }
         })
@@ -112,6 +112,17 @@ export default function reactionHooks() {
                 var actId = user.flags?.pf2e?.origin?.uuid.split('.').slice(-1)
                 if (game?.packs?.get("pf2e.actionspf2e")._source.find(a=>a._id==actId).system?.traits?.value.includes("manipulate")) {
                     checkCombatantTriggerAttackOfOpportunity(message.actor?.type, message.actor._id, message.token.x, message.token.y, message.token.width);
+                }
+            }
+            //Hit by
+            if ('attack-roll' == message?.flags?.pf2e?.context?.type
+                && ("success" == message?.flags?.pf2e?.context?.outcome || "criticalSuccess" == message?.flags?.pf2e?.context?.outcome)
+            ) {
+                if (message.target.token.flags?.["reaction-check"]?.state) {
+                    //wicked-thorns
+                    if (message?.item?.traits.has("unarmed") || (message?.item?.isMelee && !message?.item?.traits.has("reach"))) {
+                        postInChatTemplate("wicked-thorns", message.target.token);
+                    }
                 }
             }
         }
