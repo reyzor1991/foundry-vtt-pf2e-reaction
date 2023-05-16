@@ -5,6 +5,8 @@ const glimpse_of_redemption = "@UUID[Compendium.pf2e.actionspf2e.tuZnRWHixLArvaI
 const wicked_thorns = "@UUID[Compendium.pf2e.actionspf2e.ncdryKskPwHMgHFh]"
 const iron_command = "@UUID[Compendium.pf2e.actionspf2e.M8RCbthRhB4bxO9t]"
 const selfish_shield = "@UUID[Compendium.pf2e.actionspf2e.enQieRrITuEQZxx2]"
+const destructive_vengeance = "@UUID[Compendium.pf2e.actionspf2e.r5Uth6yvCoE4tr9z]"
+const liberating_step = "@UUID[Compendium.pf2e.actionspf2e.IX1VlVCL5sFTptEE]"
 
 function updateCombatantReactionState(combatant, newState) {
     combatant.update({
@@ -42,7 +44,7 @@ function getCenters(x, y, width) {
 }
 
 async function postInChatTemplate(uuid, combatant) {
-    const content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", { uuid:uuid, token: combatant.token });
+    const content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", { uuid:uuid, name: combatant.token.name });
     ChatMessage.create({
         content: content,
         whisper: game.users.filter(u => u.isGM).map(u => u._id),
@@ -143,19 +145,46 @@ export default function reactionHooks() {
                     }
                 }
             }
+            //Skill check
+            if ("skill-check" == message?.flags?.pf2e?.context?.type && "character" == message.target.actor?.type
+                && ("success" == message?.flags?.pf2e?.context?.outcome || "criticalSuccess" == message?.flags?.pf2e?.context?.outcome)) {
+                game.combat.turns.filter(a=>a.actorId != message.target.actor._id && a.actor.type == "character")
+                .filter(cc=>cc.flags?.["reaction-check"]?.state)
+                .forEach(cc => {
+                    if (message?.flags?.pf2e?.context?.options.find(bb=>bb=="action:grapple")) {
+                        var dists = Math.min.apply(null, getCenters(cc.token.x, cc.token.y, cc.token.width)
+                        .map(a=>
+                            getCenters(message.target.token.x, message.target.token.y, message.target.token.width)
+                            .map(b=>getEnemyDistance(b, a))
+                        ).flat())
+                        var dists2 = Math.min.apply(null, getCenters(cc.token.x, cc.token.y, cc.token.width)
+                        .map(a=>
+                            getCenters(message.token.x, message.token.y, message.token.width)
+                            .map(b=>getEnemyDistance(b, a))
+                        ).flat())
+                        //glimpse-of-redemption
+                        if (dists <= 15 && dists2 <= 15 && cc.actor.itemTypes.action.find((feat => "liberating-step" === feat.slug))) {
+                            postInChatTemplate(liberating_step, cc);
+                        }
+                    }
+                })
+            }
             //Damage by
             if ("damage-roll" == message?.flags?.pf2e?.context?.type && "character" == message.target.actor?.type) {
                 //15 ft damage you
                 if(message.target.token.combatant.flags?.["reaction-check"]?.state) {
                     if (message.target.actor.itemTypes.action.find((feat => "iron-command" === feat.slug))) {
                         postInChatTemplate(iron_command, message.target.token.combatant);
-                    } else if (message.target.actor.itemTypes.action.find((feat => "selfish-shield" === feat.slug))) {
+                    }
+                    if (message.target.actor.itemTypes.action.find((feat => "selfish-shield" === feat.slug))) {
                         postInChatTemplate(selfish_shield, message.target.token.combatant);
+                    }
+                    if (message.target.actor.itemTypes.action.find((feat => "destructive-vengeance" === feat.slug))) {
+                        postInChatTemplate(destructive_vengeance, message.target.token.combatant);
                     }
                 }
 
                 game.combat.turns.filter(a=>a.actorId != message.target.actor._id && a.actor.type == "character")
-                .filter((cc=>cc.actor.itemTypes.action.find((feat => "glimpse-of-redemption" === feat.slug))))
                 .filter(cc=>cc.flags?.["reaction-check"]?.state)
                 .forEach(cc => {
                     var dists = Math.min.apply(null, getCenters(cc.token.x, cc.token.y, cc.token.width)
@@ -169,8 +198,11 @@ export default function reactionHooks() {
                         .map(b=>getEnemyDistance(b, a))
                     ).flat())
                     //glimpse-of-redemption
-                    if (dists <= 15 && dists2 <= 15) {
+                    if (dists <= 15 && dists2 <= 15 && cc.actor.itemTypes.action.find((feat => "glimpse-of-redemption" === feat.slug))) {
                         postInChatTemplate(glimpse_of_redemption, cc);
+                    }
+                    if (dists <= 15 && dists2 <= 15 && cc.actor.itemTypes.action.find((feat => "liberating-step" === feat.slug))) {
+                        postInChatTemplate(liberating_step, cc);
                     }
                 })
             }

@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.1.8
+
+### Data Updates
+
+-   Add Liberating Step reaction check
+
 ## Version 0.1.7
 
 ### Data Updates
