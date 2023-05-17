@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.1.9
+
+### Fix
+
+-   Fix issue with wicked thorns
+
 ## Version 0.1.8
 
 ### Data Updates
