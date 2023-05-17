@@ -140,8 +140,10 @@ export default function reactionHooks() {
             ) {
                 if (message.target.token.combatant.flags?.["reaction-check"]?.state) {
                     //wicked-thorns
-                    if (message?.item?.traits.has("unarmed") || (message?.item?.isMelee && nonReach(message?.item?.traits))) {
-                        postInChatTemplate(wicked_thorns, message.target.token.combatant);
+                    if (message.target.actor.itemTypes.action.find((feat => "wicked-thorns" === feat.slug))) {
+                        if (message?.item?.traits.has("unarmed") || (message?.item?.isMelee && nonReach(message?.item?.traits))) {
+                            postInChatTemplate(wicked_thorns, message.target.token.combatant);
+                        }
                     }
                 }
             }
