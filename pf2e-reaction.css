@@ -1,0 +1,9 @@
+#chat-log li.message.hide-reaction-check {
+	display: none;
+}
+
+#chat-log div.item-card div.card-content.hide-reaction-check {
+	display: none;
+	margin: 0;
+	padding: 0;
+}

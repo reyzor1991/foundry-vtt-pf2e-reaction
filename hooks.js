@@ -46,8 +46,17 @@ function getCenters(x, y, width) {
 async function postInChatTemplate(uuid, combatant) {
     const content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", { uuid:uuid, name: combatant.token.name });
     ChatMessage.create({
+        flavor: '',
+        user: null,
+        speaker: {
+            scene: null,
+            actor: null,
+            token: null,
+            alias: "System"
+        },
+        type: CONST.CHAT_MESSAGE_TYPES.OOC,
         content: content,
-        whisper: game.users.filter(u => u.isGM).map(u => u._id),
+        whisper: ChatMessage.getWhisperRecipients("GM").map((u) => u.id),
         flags: {
             "reaction-check": {
                 cId: combatant._id
@@ -90,7 +99,7 @@ export default function reactionHooks() {
                 var combatant = game.combat.turns.find(a=>a._id === t);
                 if (combatant) {
                     updateCombatantReactionState(combatant, false);
-                    ui.chat.deleteMessage(mid, {})
+                    mes.delete()
                 }
             }
         }
@@ -105,12 +114,6 @@ export default function reactionHooks() {
         updateCombatantReactionState(combat.nextCombatant, true);
     });
 
-    Hooks.on('deleteCombat', async combat => {
-        combat.turns.forEach(cc =>{
-            updateCombatantReactionState(cc, false)
-        })
-    });
-
     Hooks.on('combatStart', async combat => {
         combat.turns.forEach(cc =>{
             updateCombatantReactionState(cc, true)
@@ -119,6 +122,13 @@ export default function reactionHooks() {
 
     Hooks.on('createCombatant', async combatant => {
         updateCombatantReactionState(combatant, true)
+    });
+
+    Hooks.on('renderChatMessage', (app, html, msg) => {
+        if (app?.flags?.["reaction-check"] && !msg.user.isGM) {
+    		html.addClass('hide-reaction-check');
+		    html.hide();
+        }
     });
 
     Hooks.on('preCreateChatMessage',(message, user, _options, userId)=>{

@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 0.1.10
+
+### Fix
+
+-   Fix issue with ending combat
+-   Show message only for GM
+
 ## Version 0.1.9
 
 ### Fix
