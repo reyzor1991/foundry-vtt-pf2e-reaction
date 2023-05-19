@@ -160,7 +160,7 @@ export default function reactionHooks() {
                 }
             }
             //Skill check
-            if ("skill-check" == message?.flags?.pf2e?.context?.type && "character" == message.target.actor?.type
+            if ("skill-check" == message?.flags?.pf2e?.context?.type && "character" == message?.target?.actor?.type
                 && ("success" == message?.flags?.pf2e?.context?.outcome || "criticalSuccess" == message?.flags?.pf2e?.context?.outcome)) {
                 game.combat.turns.filter(a=>a.actorId != message.target.actor._id && a.actor.type == "character")
                 .filter(cc=>cc.flags?.["reaction-check"]?.state)
