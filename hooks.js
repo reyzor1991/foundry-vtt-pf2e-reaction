@@ -15,33 +15,12 @@ function updateCombatantReactionState(combatant, newState) {
     });
 }
 
-function getEnemyDistance(tcenter, dcenter) {
-    var distance = canvas.grid.measureDistance(tcenter, dcenter);
-    return Math.round(distance / 5) * 5
-}
-
-function getCenterObj(x, y) {
-    var a = canvas.grid.getCenter(x, y)
-    return {"x": a[0],"y": a[1]}
+function getEnemyDistance(token, target) {
+    return new CONFIG.Token.objectClass(token).distanceTo(new CONFIG.Token.objectClass(target))
 }
 
 function nonReach(arr) {
     return !arr.find(b=>b.startsWith("reach"))
-}
-
-function getCenters(x, y, width) {
-    var startY = y;
-    var arr = [];
-
-    for (let i = 0; i < width; i++) {
-        for (let j = 0; j < width; j++) {
-            arr.push(getCenterObj(x,y));
-            y += 100;
-        }
-        y = startY;
-        x += 100;
-    }
-    return arr
 }
 
 async function postInChatTemplate(uuid, combatant) {
@@ -66,7 +45,7 @@ async function postInChatTemplate(uuid, combatant) {
     });
 }
 
-function checkCombatantTriggerAttackOfOpportunity(actorType, actorId, x, y, width) {
+function checkCombatantTriggerAttackOfOpportunity(actorType, actorId, token) {
     var filteredType = ((actorType  == "npc") ? 'character' : 'npc')
     game?.combats?.active?.combatants
         .filter((c=>c.actorId != actorId && c.actor.type == filteredType && c.flags?.["reaction-check"]?.state))
@@ -77,11 +56,24 @@ function checkCombatantTriggerAttackOfOpportunity(actorType, actorId, x, y, widt
                 var isReach = actorType  == "npc"
                     ? hasStrike.filter((e=>e.weaponTraits.find(b=>b.name==="reach")))
                     : hasStrike.filter((e=>e.traits.find(b=>b.name.startsWith("reach"))));
-                var canAttack = getCenters(x, y, width)
-                    .map(a=>getEnemyDistance(cc.token.center, a))
-                    .filter(a=> (a <= (isReach.length>0?Settings.weaponReachRange:Settings.weaponRange)))
-                if (canAttack.length>0) {
-                        postInChatTemplate(attack_of_opportunity, cc);
+
+                var reachValue = Settings.weaponRange;
+                if (isReach.length>0) {
+                    reachValue = Settings.weaponReachRange;
+                    if (filteredType  == "npc") {
+                        var rV = Math.min.apply(null, isReach.map(a=>a.traits).flat()
+                            .filter(b=>b.name.startsWith("reach"))
+                            .map(c=>c.name)
+                            .map(c=>c.split('-').slice(-1)[0])
+                        );
+                        if (!isNaN(rV)) {
+                            reachValue = rV
+                        }
+                    }
+                }
+
+                if (getEnemyDistance(token, cc.token)<= reachValue) {
+                    postInChatTemplate(attack_of_opportunity, cc);
                 }
             }
         })
@@ -134,9 +126,10 @@ export default function reactionHooks() {
 
     Hooks.on('preUpdateToken', (tokenDoc, data, deep, id) => {
         if (data?.actorData?.system?.attributes?.hp?.value == 0
-            && tokenDoc?.combatant?.flags?.["reaction-check"]?.state
-            && tokenDoc?.actor?.itemTypes.action.find((feat => "ferocity" === feat.slug))) {
+            && tokenDoc?.combatant?.flags?.["reaction-check"]?.state) {
+            if (tokenDoc?.actor?.itemTypes.action.find((feat => "ferocity" === feat.slug))) {
                 postInChatTemplate(ferocity, tokenDoc.combatant);
+            }
         }
     });
 
@@ -146,11 +139,11 @@ export default function reactionHooks() {
                 ('attack-roll' == message?.flags?.pf2e?.context?.type && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll"))
                 || (message?.item?.type == 'action' && message?.item?.system?.traits?.value.includes("manipulate"))
             ) {
-                checkCombatantTriggerAttackOfOpportunity(message.actor?.type, message.actor._id, message.token.x, message.token.y, message.token.width);
+                checkCombatantTriggerAttackOfOpportunity(message.actor?.type, message.actor._id, message.token);
             } else if (user?.flags?.pf2e?.origin?.type == 'action') {
-                var actId = user.flags?.pf2e?.origin?.uuid.split('.').slice(-1)
-                if (game?.packs?.get("pf2e.actionspf2e")._source.find(a=>a._id==actId).system?.traits?.value.includes("manipulate")) {
-                    checkCombatantTriggerAttackOfOpportunity(message.actor?.type, message.actor._id, message.token.x, message.token.y, message.token.width);
+                var actId = user.flags?.pf2e?.origin?.uuid.split('.').slice(-1)[0]
+                if (game?.packs?.get("pf2e.actionspf2e")._source.find(a=>a._id==actId)?.system?.traits?.value.includes("manipulate")) {
+                    checkCombatantTriggerAttackOfOpportunity(message.actor?.type, message.actor._id, message.token);
                 }
             }
             //Hit by
@@ -173,27 +166,20 @@ export default function reactionHooks() {
                 .filter(cc=>cc.flags?.["reaction-check"]?.state)
                 .forEach(cc => {
                     if (message?.flags?.pf2e?.context?.options.find(bb=>bb=="action:grapple")) {
-                        var dists = Math.min.apply(null, getCenters(cc.token.x, cc.token.y, cc.token.width)
-                        .map(a=>
-                            getCenters(message.target.token.x, message.target.token.y, message.target.token.width)
-                            .map(b=>getEnemyDistance(b, a))
-                        ).flat())
-                        var dists2 = Math.min.apply(null, getCenters(cc.token.x, cc.token.y, cc.token.width)
-                        .map(a=>
-                            getCenters(message.token.x, message.token.y, message.token.width)
-                            .map(b=>getEnemyDistance(b, a))
-                        ).flat())
                         //glimpse-of-redemption
-                        if (dists <= 15 && dists2 <= 15 && cc.actor.itemTypes.action.find((feat => "liberating-step" === feat.slug))) {
-                            postInChatTemplate(liberating_step, cc);
+                        if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15){
+                            if (cc.actor.itemTypes.action.find((feat => "liberating-step" === feat.slug))) {
+                                postInChatTemplate(liberating_step, cc);
+                            }
                         }
                     }
                 })
             }
             //Damage by
-            if ("damage-roll" == message?.flags?.pf2e?.context?.type && "character" == message.target.actor?.type) {
+
+            if ("damage-roll" == message?.flags?.pf2e?.context?.type) {
                 //15 ft damage you
-                if(message.target.token.combatant.flags?.["reaction-check"]?.state) {
+                if(message?.target?.token.combatant.flags?.["reaction-check"]?.state) {
                     if (message.target.actor.itemTypes.action.find((feat => "iron-command" === feat.slug))) {
                         postInChatTemplate(iron_command, message.target.token.combatant);
                     }
@@ -205,25 +191,16 @@ export default function reactionHooks() {
                     }
                 }
 
-                game.combat.turns.filter(a=>a.actorId != message.target.actor._id && a.actor.type == "character")
+                game.combat.turns.filter(a=>a.actorId != message.target.actor._id && a.actor.type == message.target.actor?.type)
                 .filter(cc=>cc.flags?.["reaction-check"]?.state)
                 .forEach(cc => {
-                    var dists = Math.min.apply(null, getCenters(cc.token.x, cc.token.y, cc.token.width)
-                    .map(a=>
-                        getCenters(message.target.token.x, message.target.token.y, message.target.token.width)
-                        .map(b=>getEnemyDistance(b, a))
-                    ).flat())
-                    var dists2 = Math.min.apply(null, getCenters(cc.token.x, cc.token.y, cc.token.width)
-                    .map(a=>
-                        getCenters(message.token.x, message.token.y, message.token.width)
-                        .map(b=>getEnemyDistance(b, a))
-                    ).flat())
-                    //glimpse-of-redemption
-                    if (dists <= 15 && dists2 <= 15 && cc.actor.itemTypes.action.find((feat => "glimpse-of-redemption" === feat.slug))) {
-                        postInChatTemplate(glimpse_of_redemption, cc);
-                    }
-                    if (dists <= 15 && dists2 <= 15 && cc.actor.itemTypes.action.find((feat => "liberating-step" === feat.slug))) {
-                        postInChatTemplate(liberating_step, cc);
+                    if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15) {
+                        if (cc.actor.itemTypes.action.find((feat => "glimpse-of-redemption" === feat.slug))) {
+                            postInChatTemplate(glimpse_of_redemption, cc);
+                        }
+                        if (cc.actor.itemTypes.action.find((feat => "liberating-step" === feat.slug))) {
+                            postInChatTemplate(liberating_step, cc);
+                        }
                     }
                 })
             }
@@ -232,7 +209,7 @@ export default function reactionHooks() {
 
     Hooks.on('preUpdateToken',(_document, update, options, ..._args)=>{
         if (game?.combats?.active && (update.x > 0 || update.y > 0)) {
-            checkCombatantTriggerAttackOfOpportunity(_document.actor?.type, _document.actorId, _document.x,_document.y,_document.width);
+            checkCombatantTriggerAttackOfOpportunity(_document.actor?.type, _document.actorId, _document);
         }
     });
 

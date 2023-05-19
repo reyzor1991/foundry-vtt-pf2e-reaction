@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 0.1.12
+
+### Data Updates
+
+-   Use correct distance calculation
+-   Check actions for npcs
+
 ## Version 0.1.11
 
 ### Data Updates
