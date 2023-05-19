@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.1.11
+
+### Data Updates
+
+-   Add ferocity reaction check
+
 ## Version 0.1.10
 
 ### Fix

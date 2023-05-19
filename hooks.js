@@ -1,5 +1,6 @@
 import Settings from "./settings.js";
 
+const ferocity = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.N1kstYbHScxgUQtN]"
 const attack_of_opportunity = "@UUID[Compendium.pf2e.actionspf2e.KAVf7AmRnbCAHrkT]"
 const glimpse_of_redemption = "@UUID[Compendium.pf2e.actionspf2e.tuZnRWHixLArvaIf]"
 const wicked_thorns = "@UUID[Compendium.pf2e.actionspf2e.ncdryKskPwHMgHFh]"
@@ -128,6 +129,14 @@ export default function reactionHooks() {
         if (app?.flags?.["reaction-check"] && !msg.user.isGM) {
     		html.addClass('hide-reaction-check');
 		    html.hide();
+        }
+    });
+
+    Hooks.on('preUpdateToken', (tokenDoc, data, deep, id) => {
+        if (data?.actorData?.system?.attributes?.hp?.value == 0
+            && tokenDoc?.combatant?.flags?.["reaction-check"]?.state
+            && tokenDoc?.actor?.itemTypes.action.find((feat => "ferocity" === feat.slug))) {
+                postInChatTemplate(ferocity, tokenDoc.combatant);
         }
     });
 
