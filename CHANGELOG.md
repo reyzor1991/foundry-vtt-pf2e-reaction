@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 0.1.16
+
+### Data Updates
+
+-   Add Reactive Gnaw reaction check
+-   Add Vengeful Spite reaction check
+
 ## Version 0.1.15
 
 ### Data Updates

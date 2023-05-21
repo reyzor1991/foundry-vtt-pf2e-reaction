@@ -25,6 +25,10 @@ function nonReach(arr) {
     return !arr.find(b=>b.startsWith("reach"))
 }
 
+function _uuid(obj) {
+    return "@UUID["+obj.uuid+"]";
+}
+
 async function postInChatTemplate(uuid, combatant) {
     var text = game.i18n.format("pf2e-reaction.ask", {uuid:uuid, name:combatant.token.name});
     const content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text:text});
@@ -157,16 +161,25 @@ export default function reactionHooks() {
                     if (message?.item?.system?.attackEffects?.value.includes("improved-grab")) {
                         var fs = message?.actor?.itemTypes?.action.find((feat => "fast-swallow" === feat.slug));
                         if (fs) {
-                            postInChatTemplate("@UUID["+fs.uuid+"]", message?.token?.combatant);
+                            postInChatTemplate(_uuid(fs), message?.token?.combatant);
                         }
                     }
                 }
-                if (message.target.token.combatant.flags?.["reaction-check"]?.state) {
+                if (message?.target?.token?.combatant?.flags?.["reaction-check"]?.state) {
                     //wicked-thorns
                     if (message.target.actor.itemTypes.action.find((feat => "wicked-thorns" === feat.slug))) {
                         if (message?.item?.traits.has("unarmed") || (message?.item?.isMelee && nonReach(message?.item?.traits))) {
                             postInChatTemplate(wicked_thorns, message.target.token.combatant);
                         }
+                    }
+                }
+            }
+            //Hit by crit
+            if ('attack-roll' == message?.flags?.pf2e?.context?.type &&  "criticalSuccess" == message?.flags?.pf2e?.context?.outcome) {
+                if (message.target.token.combatant.flags?.["reaction-check"]?.state) {
+                    var vs = message.target.actor.itemTypes.action.find((feat => "vengeful-spite" === feat.slug));
+                    if (vs) {
+                        postInChatTemplate(_uuid(vs), message.target?.token?.combatant);
                     }
                 }
             }
@@ -187,18 +200,24 @@ export default function reactionHooks() {
                 })
             }
             //Damage by
-
             if ("damage-roll" == message?.flags?.pf2e?.context?.type) {
                 //15 ft damage you
-                if(message?.target?.token.combatant.flags?.["reaction-check"]?.state) {
-                    if (message.target.actor.itemTypes.action.find((feat => "iron-command" === feat.slug))) {
-                        postInChatTemplate(iron_command, message.target.token.combatant);
-                    }
-                    if (message.target.actor.itemTypes.action.find((feat => "selfish-shield" === feat.slug))) {
-                        postInChatTemplate(selfish_shield, message.target.token.combatant);
-                    }
-                    if (message.target.actor.itemTypes.action.find((feat => "destructive-vengeance" === feat.slug))) {
-                        postInChatTemplate(destructive_vengeance, message.target.token.combatant);
+                if(message?.target?.token?.combatant?.flags?.["reaction-check"]?.state) {
+                    if (getEnemyDistance(message.target.token, message.token) <= 5) {
+                        var rg = message.target.actor.itemTypes.action.find((feat => "reactive-gnaw" === feat.slug));
+                        if (rg && message?.item?.system?.damage?.damageType == "slashing") {
+                            postInChatTemplate(_uuid(rg), message.target.token.combatant);
+                        }
+                    } else if (getEnemyDistance(message.target.token, message.token) <= 15) {
+                        if (message.target.actor.itemTypes.action.find((feat => "iron-command" === feat.slug))) {
+                            postInChatTemplate(iron_command, message.target.token.combatant);
+                        }
+                        if (message.target.actor.itemTypes.action.find((feat => "selfish-shield" === feat.slug))) {
+                            postInChatTemplate(selfish_shield, message.target.token.combatant);
+                        }
+                        if (message.target.actor.itemTypes.action.find((feat => "destructive-vengeance" === feat.slug))) {
+                            postInChatTemplate(destructive_vengeance, message.target.token.combatant);
+                        }
                     }
                 }
                 //15 ft damage ally
