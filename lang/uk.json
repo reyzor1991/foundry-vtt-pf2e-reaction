@@ -1,5 +1,7 @@
 {
 	"I18N.LANGUAGE": "Українська",
+	"pf2e-reaction.recall-knowledge.name": "Згадати знання",
+	"pf2e-reaction.recall-knowledge.hint": "Додати Згадати знання до НІП листа",
 	"pf2e-reaction.weaponRange.name": "Базова відстань зброї",
 	"pf2e-reaction.weaponRange.hint": "Основна відстань зброї для перевірки атаки можливості",
 	"pf2e-reaction.weaponReachRange.name": "Відстань досяжності зброї",

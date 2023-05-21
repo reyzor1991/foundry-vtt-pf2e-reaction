@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.1.18
+
+### Data Updates
+
+-   Small feature for Recall Knowledge without lore
+
 ## Version 0.1.17
 
 ### Data Updates

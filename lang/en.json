@@ -1,5 +1,7 @@
 {
 	"I18N.LANGUAGE": "English",
+	"pf2e-reaction.recall-knowledge.name": "Recall Knowledge",
+	"pf2e-reaction.recall-knowledge.hint": "Add Recall Knowledge to NPC Sheet",
 	"pf2e-reaction.weaponRange.name": "Basic weapon distance",
 	"pf2e-reaction.weaponRange.hint": "Basic weapon distance to check attack of opportunity",
 	"pf2e-reaction.weaponReachRange.name": "Reach weapon distance",

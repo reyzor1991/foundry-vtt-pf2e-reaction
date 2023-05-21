@@ -11,6 +11,27 @@ const selfish_shield = "@UUID[Compendium.pf2e.actionspf2e.enQieRrITuEQZxx2]"
 const destructive_vengeance = "@UUID[Compendium.pf2e.actionspf2e.r5Uth6yvCoE4tr9z]"
 const liberating_step = "@UUID[Compendium.pf2e.actionspf2e.IX1VlVCL5sFTptEE]"
 
+const identifySkills = new Map([
+    ["aberration", ["occultism"]],
+    ["animal", ["nature"]],
+    ["astral", ["occultism"]],
+    ["beast", ["arcana", "nature"]],
+    ["celestial", ["religion"]],
+    ["construct", ["arcana", "crafting"]],
+    ["dragon", ["arcana"]],
+    ["elemental", ["arcana", "nature"]],
+    ["ethereal", ["occultism"]],
+    ["fey", ["nature"]],
+    ["fiend", ["religion"]],
+    ["fungus", ["nature"]],
+    ["humanoid", ["society"]],
+    ["monitor", ["religion"]],
+    ["ooze", ["occultism"]],
+    ["plant", ["nature"]],
+    ["spirit", ["occultism"]],
+    ["undead", ["religion"]],
+]);
+
 function updateCombatantReactionState(combatant, newState) {
     combatant.update({
         "flags.reaction-check.state": newState
@@ -128,6 +149,29 @@ export default function reactionHooks() {
         if (app?.flags?.["reaction-check"] && !msg.user.isGM) {
     		html.addClass('hide-reaction-check');
 		    html.hide();
+        }
+    });
+
+    Hooks.on("renderActorSheet", (sheet, html, data)=>{
+        if (game.user?.isGM && sheet.actor?.type === "npc" && sheet.token && Settings.recallKnowledge) {
+            var skills = Array.from(new Set(sheet.object.system.traits.value.flatMap((t) => identifySkills.get(t) ?? [])));
+            var dc = html.find(".recall-knowledge .section-body .identification-skills").eq(0).text().trim().match(/\d+/g)[0];
+            skills.forEach(skill => {
+                var loc_skill=game.i18n.localize("PF2E.Skill"+skill.replace(/^\w/, (c) => c.toUpperCase()))
+                var rec=game.i18n.localize("PF2E.RecallKnowledge.Label")
+                var but = document.createElement('button');
+                but.className = 'gm-recall-knowledge-'+skill
+                but.textContent = rec+': '+loc_skill
+                but.onclick = function () {
+                    let content = 'To Recall Knowledge '+(sheet?.token?.name?sheet?.token?.name:'') +', roll:';
+                    content += '<br>@Check[type:'+skill+'|dc:'+dc+'|traits:secret,action:recall-knowledge]';
+                    ChatMessage.create({
+                        content: TextEditor.enrichHTML(content, { async: false }),
+                        speaker: ChatMessage.getSpeaker({ token: sheet.token }),
+                    }).then();
+                };
+                html.find(".recall-knowledge").append(but);
+            });
         }
     });
 
