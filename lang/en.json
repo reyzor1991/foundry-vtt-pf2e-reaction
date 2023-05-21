@@ -3,5 +3,7 @@
 	"pf2e-reaction.weaponRange.name": "Basic weapon distance",
 	"pf2e-reaction.weaponRange.hint": "Basic weapon distance to check attack of opportunity",
 	"pf2e-reaction.weaponReachRange.name": "Reach weapon distance",
-	"pf2e-reaction.weaponReachRange.hint": "Reach weapon distance to check attack of opportunity"
+	"pf2e-reaction.weaponReachRange.hint": "Reach weapon distance to check attack of opportunity",
+	"pf2e-reaction.ask": "{name} may use {uuid}. Reaction was used??",
+	"pf2e-reaction.yes": "Yes"
 }

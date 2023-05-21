@@ -1,5 +1,6 @@
 import Settings from "./settings.js";
 
+const fast_swallow = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.IQtb58p4EaeUzTN1]"
 const retributive_strike = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.IQtb58p4EaeUzTN1]"
 const ferocity = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.N1kstYbHScxgUQtN]"
 const attack_of_opportunity = "@UUID[Compendium.pf2e.actionspf2e.KAVf7AmRnbCAHrkT]"
@@ -25,7 +26,8 @@ function nonReach(arr) {
 }
 
 async function postInChatTemplate(uuid, combatant) {
-    const content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", { uuid:uuid, name: combatant.token.name });
+    var text = game.i18n.format("pf2e-reaction.ask", {uuid:uuid, name:combatant.token.name});
+    const content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text:text});
     ChatMessage.create({
         flavor: '',
         user: null,
@@ -151,6 +153,14 @@ export default function reactionHooks() {
             if ('attack-roll' == message?.flags?.pf2e?.context?.type
                 && ("success" == message?.flags?.pf2e?.context?.outcome || "criticalSuccess" == message?.flags?.pf2e?.context?.outcome)
             ) {
+                if (message?.token?.combatant.flags?.["reaction-check"]?.state) {
+                    if (message?.item?.system?.attackEffects?.value.includes("improved-grab")) {
+                        var fs = message?.actor?.itemTypes?.action.find((feat => "fast-swallow" === feat.slug));
+                        if (fs) {
+                            postInChatTemplate("@UUID["+fs.uuid+"]", message?.token?.combatant);
+                        }
+                    }
+                }
                 if (message.target.token.combatant.flags?.["reaction-check"]?.state) {
                     //wicked-thorns
                     if (message.target.actor.itemTypes.action.find((feat => "wicked-thorns" === feat.slug))) {

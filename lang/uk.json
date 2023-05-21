@@ -3,5 +3,7 @@
 	"pf2e-reaction.weaponRange.name": "Базова відстань зброї",
 	"pf2e-reaction.weaponRange.hint": "Основна відстань зброї для перевірки атаки можливості",
 	"pf2e-reaction.weaponReachRange.name": "Відстань досяжності зброї",
-	"pf2e-reaction.weaponReachRange.hint": "Досягніть відстані зброї, щоб перевірити атаку можливості"
+	"pf2e-reaction.weaponReachRange.hint": "Досягніть відстані зброї, щоб перевірити атаку можливості",
+	"pf2e-reaction.ask": "{name} може використати {uuid}. Реація була використана??",
+	"pf2e-reaction.yes": "Так"
 }

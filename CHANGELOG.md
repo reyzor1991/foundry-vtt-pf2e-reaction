@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.1.15
+
+### Data Updates
+
+-   Add Fast Swallow reaction check
+
 ## Version 0.1.14
 
 ### Data Updates
