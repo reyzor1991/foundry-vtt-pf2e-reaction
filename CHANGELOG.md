@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.1.17
+
+### Data Updates
+
+-   Add Avenging Bite reaction check
+
 ## Version 0.1.16
 
 ### Data Updates

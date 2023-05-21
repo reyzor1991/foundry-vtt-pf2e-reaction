@@ -153,6 +153,21 @@ export default function reactionHooks() {
                     checkCombatantTriggerAttackOfOpportunity(message.actor?.type, message.actor._id, message.token);
                 }
             }
+            //Avenging Bite
+            if ('attack-roll' == message?.flags?.pf2e?.context?.type && "npc" == message?.target?.actor?.type) {
+                game.combat.turns.filter(a=>a.actorId != message.target.actor._id && a.actor.type == "npc")
+                .filter(cc=>cc.flags?.["reaction-check"]?.state)
+                .forEach(cc => {
+                    if (getEnemyDistance(message.token, cc.token) <= 5) {
+                        var ab = cc.actor.itemTypes.action.find((feat => "avenging-bite" === feat.slug));
+                        if (ab) {
+                            postInChatTemplate(_uuid(ab), cc?.token?.combatant);
+                        }
+                    }
+                })
+            }
+
+
             //Hit by
             if ('attack-roll' == message?.flags?.pf2e?.context?.type
                 && ("success" == message?.flags?.pf2e?.context?.outcome || "criticalSuccess" == message?.flags?.pf2e?.context?.outcome)

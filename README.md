@@ -10,19 +10,27 @@
 
 Small module to notify that actor can use reaction:
 
-1. Check reaction when token moves 5ft
-2. Check 10ft for reach weapon
-3. Check Token size
-4. Handling manipulate actions
-5. Check reaction when someone makes range attack
-6. Add wicked thorns reaction check
-7. Glimpse of Redemption
+### Reactions:
+1. Selfish Shield
+2. Iron Command
+3. Attack Of Opportunity
+4. Wicked thorns
+5. Glimpse of Redemption
+6. Fast Swallow
+7. Retributive Strike
+8. Ferocity
+9. Destructive Vengeance
+10. Liberating Step
+11. Reactive Gnaw
+12. Fast Swallow
+13. Vengeful Spite
+14. Avenging Bite
 
 [Foundry URL]: https://foundryvtt.com
 [Minimum Foundry 10]: https://img.shields.io/badge/Minimum%20Foundry-10.291-informational?style=flat-square
 [Verified Foundry 10]: https://img.shields.io/badge/Verified%20Foundry-10.291-informational?style=flat-square
 
-[Version]: https://img.shields.io/badge/Version-0.1.16-yellow?style=flat-square
+[Version]: https://img.shields.io/badge/Version-0.1.17-yellow?style=flat-square
 [Version URL]: https://github.com/reyzor1991/foundry-vtt-pf2e-reaction
 
 [GitHub Release Date]: https://img.shields.io/github/release-date/reyzor1991/foundry-vtt-pf2e-reaction
