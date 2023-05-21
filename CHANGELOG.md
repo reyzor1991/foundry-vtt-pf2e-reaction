@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.1.14
+
+### Data Updates
+
+-   Add retributive strike reaction check
+
 ## Version 0.1.13
 
 ### Fix

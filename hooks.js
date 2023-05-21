@@ -1,5 +1,6 @@
 import Settings from "./settings.js";
 
+const retributive_strike = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.IQtb58p4EaeUzTN1]"
 const ferocity = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.N1kstYbHScxgUQtN]"
 const attack_of_opportunity = "@UUID[Compendium.pf2e.actionspf2e.KAVf7AmRnbCAHrkT]"
 const glimpse_of_redemption = "@UUID[Compendium.pf2e.actionspf2e.tuZnRWHixLArvaIf]"
@@ -190,7 +191,7 @@ export default function reactionHooks() {
                         postInChatTemplate(destructive_vengeance, message.target.token.combatant);
                     }
                 }
-
+                //15 ft damage ally
                 game.combat.turns.filter(a=>a.actorId != message.target.actor._id && a.actor.type == message.target.actor?.type)
                 .filter(cc=>cc.flags?.["reaction-check"]?.state)
                 .forEach(cc => {
@@ -200,6 +201,9 @@ export default function reactionHooks() {
                         }
                         if (cc.actor.itemTypes.action.find((feat => "liberating-step" === feat.slug))) {
                             postInChatTemplate(liberating_step, cc);
+                        }
+                        if (cc.actor.itemTypes.action.find((feat => "retributive-strike" === feat.slug))) {
+                            postInChatTemplate(retributive_strike, cc);
                         }
                     }
                 })
