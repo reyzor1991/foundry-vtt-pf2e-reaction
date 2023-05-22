@@ -1,11 +1,13 @@
 {
 	"I18N.LANGUAGE": "English",
+	"pf2e-reaction.show-notification.name": "Show notification",
 	"pf2e-reaction.recall-knowledge.name": "Recall Knowledge",
 	"pf2e-reaction.recall-knowledge.hint": "Add Recall Knowledge to NPC Sheet",
 	"pf2e-reaction.weaponRange.name": "Basic weapon distance",
 	"pf2e-reaction.weaponRange.hint": "Basic weapon distance to check attack of opportunity",
 	"pf2e-reaction.weaponReachRange.name": "Reach weapon distance",
 	"pf2e-reaction.weaponReachRange.hint": "Reach weapon distance to check attack of opportunity",
+	"pf2e-reaction.notify": "{name} has {uuid}. Pay attention to this!",
 	"pf2e-reaction.ask": "{name} may use {uuid}. Reaction was used??",
 	"pf2e-reaction.yes": "Yes"
 }

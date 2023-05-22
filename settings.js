@@ -8,6 +8,9 @@ export default class Settings {
     static get recallKnowledge() {
         return game.settings.get("pf2e-reaction", "recall-knowledge");
     }
+    static get notification() {
+        return game.settings.get("pf2e-reaction", "on_notification");
+    }
     static register() {
         game.settings.register("pf2e-reaction", "weaponRange", {
             name: game.i18n.localize("pf2e-reaction.weaponRange.name"),
@@ -31,6 +34,13 @@ export default class Settings {
             scope: "world",
             config: true,
             default: true,
+            type: Boolean,
+        });
+        game.settings.register("pf2e-reaction", "on_notification", {
+            name: game.i18n.localize("pf2e-reaction.show-notification.name"),
+            scope: "world",
+            config: true,
+            default: false,
             type: Boolean,
         });
     }

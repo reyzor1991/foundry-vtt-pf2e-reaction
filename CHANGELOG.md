@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.1.19
+
+### Data Updates
+
+-   Add notification to inform GM about targeting pc/npc with nimble dodge
+
 ## Version 0.1.18
 
 ### Data Updates

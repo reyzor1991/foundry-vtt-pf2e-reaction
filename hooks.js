@@ -1,5 +1,7 @@
 import Settings from "./settings.js";
 
+const nimble_dodge_action = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.wCnsRCHvtZkZTmO0]"
+const nimble_dodge_feat = "@UUID[Compendium.pf2e.feats-srd.dNH8OHEvx3vI9NBQ]"
 const fast_swallow = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.IQtb58p4EaeUzTN1]"
 const retributive_strike = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.IQtb58p4EaeUzTN1]"
 const ferocity = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.N1kstYbHScxgUQtN]"
@@ -50,6 +52,10 @@ function _uuid(obj) {
     return "@UUID["+obj.uuid+"]";
 }
 
+function hasReaction(combatant) {
+    return combatant && combatant?.flags?.["reaction-check"]?.state
+}
+
 async function postInChatTemplate(uuid, combatant) {
     var text = game.i18n.format("pf2e-reaction.ask", {uuid:uuid, name:combatant.token.name});
     const content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text:text});
@@ -76,7 +82,7 @@ async function postInChatTemplate(uuid, combatant) {
 function checkCombatantTriggerAttackOfOpportunity(actorType, actorId, token) {
     var filteredType = ((actorType  == "npc") ? 'character' : 'npc')
     game?.combats?.active?.combatants
-        .filter((c=>c.actorId != actorId && c.actor.type == filteredType && c.flags?.["reaction-check"]?.state))
+        .filter((c=>c.actorId != actorId && c.actor.type == filteredType && hasReaction(c)))
         .filter((cc=>cc.actor.itemTypes.action.find((feat => "attack-of-opportunity" === feat.slug))))
         .forEach(cc => {
             var hasStrike = cc.token.actor.system.actions?.filter((e=>"strike"===e.type && e.ready));
@@ -177,7 +183,7 @@ export default function reactionHooks() {
 
     Hooks.on('preUpdateToken', (tokenDoc, data, deep, id) => {
         if (data?.actorData?.system?.attributes?.hp?.value == 0
-            && tokenDoc?.combatant?.flags?.["reaction-check"]?.state) {
+            && hasReaction(tokenDoc?.combatant)) {
             if (tokenDoc?.actor?.itemTypes.action.find((feat => "ferocity" === feat.slug))) {
                 postInChatTemplate(ferocity, tokenDoc.combatant);
             }
@@ -197,10 +203,26 @@ export default function reactionHooks() {
                     checkCombatantTriggerAttackOfOpportunity(message.actor?.type, message.actor._id, message.token);
                 }
             }
+            //Nimble Dodge
+            if ('attack-roll' == message?.flags?.pf2e?.context?.type) {
+                if (hasReaction(message?.target?.token?.combatant)) {
+                    if (message?.target?.actor?.type == "character") {
+                        if (message?.target?.actor.itemTypes.feat.find((feat => "nimble-dodge" === feat.slug))) {
+                            postInChatTemplate(nimble_dodge_feat, message.target.token.combatant);
+                        }
+                    } else {
+                        if (message?.target?.actor.itemTypes.action.find((feat => "nimble-dodge" === feat.slug))) {
+                            postInChatTemplate(nimble_dodge_action, message.target.token.combatant);
+                        }
+                    }
+                }
+            }
+
+
             //Avenging Bite
             if ('attack-roll' == message?.flags?.pf2e?.context?.type && "npc" == message?.target?.actor?.type) {
-                game.combat.turns.filter(a=>a.actorId != message.target.actor._id && a.actor.type == "npc")
-                .filter(cc=>cc.flags?.["reaction-check"]?.state)
+                game.combat.turns.filter(a=>a.actorId != message?.target?.actor._id && a.actor.type == "npc")
+                .filter(cc=>hasReaction(cc))
                 .forEach(cc => {
                     if (getEnemyDistance(message.token, cc.token) <= 5) {
                         var ab = cc.actor.itemTypes.action.find((feat => "avenging-bite" === feat.slug));
@@ -216,7 +238,7 @@ export default function reactionHooks() {
             if ('attack-roll' == message?.flags?.pf2e?.context?.type
                 && ("success" == message?.flags?.pf2e?.context?.outcome || "criticalSuccess" == message?.flags?.pf2e?.context?.outcome)
             ) {
-                if (message?.token?.combatant.flags?.["reaction-check"]?.state) {
+                if (hasReaction(message?.token?.combatant)) {
                     if (message?.item?.system?.attackEffects?.value.includes("improved-grab")) {
                         var fs = message?.actor?.itemTypes?.action.find((feat => "fast-swallow" === feat.slug));
                         if (fs) {
@@ -224,9 +246,9 @@ export default function reactionHooks() {
                         }
                     }
                 }
-                if (message?.target?.token?.combatant?.flags?.["reaction-check"]?.state) {
+                if (hasReaction(message?.target?.token?.combatant)) {
                     //wicked-thorns
-                    if (message.target.actor.itemTypes.action.find((feat => "wicked-thorns" === feat.slug))) {
+                    if (message?.target?.actor.itemTypes.action.find((feat => "wicked-thorns" === feat.slug))) {
                         if (message?.item?.traits.has("unarmed") || (message?.item?.isMelee && nonReach(message?.item?.traits))) {
                             postInChatTemplate(wicked_thorns, message.target.token.combatant);
                         }
@@ -235,8 +257,8 @@ export default function reactionHooks() {
             }
             //Hit by crit
             if ('attack-roll' == message?.flags?.pf2e?.context?.type &&  "criticalSuccess" == message?.flags?.pf2e?.context?.outcome) {
-                if (message.target.token.combatant.flags?.["reaction-check"]?.state) {
-                    var vs = message.target.actor.itemTypes.action.find((feat => "vengeful-spite" === feat.slug));
+                if (hasReaction(message?.target?.token?.combatant)) {
+                    var vs = message?.target?.actor.itemTypes.action.find((feat => "vengeful-spite" === feat.slug));
                     if (vs) {
                         postInChatTemplate(_uuid(vs), message.target?.token?.combatant);
                     }
@@ -245,8 +267,8 @@ export default function reactionHooks() {
             //Skill check
             if ("skill-check" == message?.flags?.pf2e?.context?.type && "character" == message?.target?.actor?.type
                 && ("success" == message?.flags?.pf2e?.context?.outcome || "criticalSuccess" == message?.flags?.pf2e?.context?.outcome)) {
-                game.combat.turns.filter(a=>a.actorId != message.target.actor._id && a.actor.type == "character")
-                .filter(cc=>cc.flags?.["reaction-check"]?.state)
+                game.combat.turns.filter(a=>a.actorId != message?.target?.actor._id && a.actor.type == "character")
+                .filter(cc=>hasReaction(cc))
                 .forEach(cc => {
                     if (message?.flags?.pf2e?.context?.options.find(bb=>bb=="action:grapple")) {
                         //glimpse-of-redemption
@@ -261,27 +283,27 @@ export default function reactionHooks() {
             //Damage by
             if ("damage-roll" == message?.flags?.pf2e?.context?.type) {
                 //15 ft damage you
-                if(message?.target?.token?.combatant?.flags?.["reaction-check"]?.state) {
+                if(hasReaction(message?.target?.token?.combatant)) {
                     if (getEnemyDistance(message.target.token, message.token) <= 5) {
-                        var rg = message.target.actor.itemTypes.action.find((feat => "reactive-gnaw" === feat.slug));
+                        var rg = message?.target?.actor.itemTypes.action.find((feat => "reactive-gnaw" === feat.slug));
                         if (rg && message?.item?.system?.damage?.damageType == "slashing") {
                             postInChatTemplate(_uuid(rg), message.target.token.combatant);
                         }
-                    } else if (getEnemyDistance(message.target.token, message.token) <= 15) {
-                        if (message.target.actor.itemTypes.action.find((feat => "iron-command" === feat.slug))) {
+                    } else if (getEnemyDistance(message?.target.token, message.token) <= 15) {
+                        if (message?.target?.actor.itemTypes.action.find((feat => "iron-command" === feat.slug))) {
                             postInChatTemplate(iron_command, message.target.token.combatant);
                         }
-                        if (message.target.actor.itemTypes.action.find((feat => "selfish-shield" === feat.slug))) {
+                        if (message?.target?.actor.itemTypes.action.find((feat => "selfish-shield" === feat.slug))) {
                             postInChatTemplate(selfish_shield, message.target.token.combatant);
                         }
-                        if (message.target.actor.itemTypes.action.find((feat => "destructive-vengeance" === feat.slug))) {
+                        if (message?.target?.actor.itemTypes.action.find((feat => "destructive-vengeance" === feat.slug))) {
                             postInChatTemplate(destructive_vengeance, message.target.token.combatant);
                         }
                     }
                 }
                 //15 ft damage ally
-                game.combat.turns.filter(a=>a.actorId != message.target.actor._id && a.actor.type == message.target.actor?.type)
-                .filter(cc=>cc.flags?.["reaction-check"]?.state)
+                game.combat.turns.filter(a=>a.actorId != message?.target?.actor._id && a.actor.type == message?.target?.actor?.type)
+                .filter(cc=>hasReaction(cc))
                 .forEach(cc => {
                     if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15) {
                         if (cc.actor.itemTypes.action.find((feat => "glimpse-of-redemption" === feat.slug))) {
@@ -302,6 +324,26 @@ export default function reactionHooks() {
     Hooks.on('preUpdateToken',(_document, update, options, ..._args)=>{
         if (game?.combats?.active && (update.x > 0 || update.y > 0)) {
             checkCombatantTriggerAttackOfOpportunity(_document.actor?.type, _document.actorId, _document);
+        }
+    });
+
+    Hooks.on("targetToken", (_user, token, isTargeted, opts) => {
+        if (Settings.notification && game?.combats?.active && isTargeted && hasReaction(token?.combatant)) {
+            if (game.user.isGM) {
+                if (token?.actor?.type == "character") {
+                    var nd = token.actor.itemTypes.feat.find((feat => "nimble-dodge" === feat.slug));
+                    if (nd) {
+                        var text = game.i18n.format("pf2e-reaction.notify", {uuid:nd.name, name:token.name});
+                        ui.notifications.info(`${_user.name} used target. ${text}`);
+                    }
+                } else {
+                    var nd = token.actor.itemTypes.action.find((feat => "nimble-dodge" === feat.slug));
+                    if (nd) {
+                        var text = game.i18n.format("pf2e-reaction.notify", {uuid:nd.name, name:token.name});
+                        ui.notifications.info(`${_user.name} used target. ${text}`);
+                    }
+                }
+            }
         }
     });
 
