@@ -1,10 +1,10 @@
 # Changelog
 
-## Version 0.1.20
+## Version 0.1.21
 
 ### Data Updates
 
--   Add Petrifying Gaze reaction check
+-   Add Petrifying Glance reaction check
 
 ## Version 0.1.19
 

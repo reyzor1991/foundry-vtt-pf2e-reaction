@@ -150,7 +150,7 @@ export default function reactionHooks() {
         if (combat.nextCombatant?.actor?.type == "character") {
             game.combat.turns.filter(a=>a.isNPC).filter(a=>hasReaction(a))
                 .forEach(cc => {
-                    var pg = actorAction(cc.actor, "petrifying-gaze")
+                    var pg = actorAction(cc.actor, "petrifying-glance")
                     if (pg && getEnemyDistance(combat.nextCombatant.token, cc.token) <= 30) {
                         postInChatTemplate(_uuid(pg), cc);
                     }
@@ -163,7 +163,7 @@ export default function reactionHooks() {
         if (combat.nextCombatant?.actor?.type == "character") {
             game.combat.turns.filter(a=>a.isNPC).filter(a=>hasReaction(a))
                 .forEach(cc => {
-                    var pg = actorAction(cc.actor, "petrifying-gaze")
+                    var pg = actorAction(cc.actor, "petrifying-glance")
                     if (pg && getEnemyDistance(combat.nextCombatant.token, cc.token <= 30)) {
                         postInChatTemplate(_uuid(pg), cc);
                     }
