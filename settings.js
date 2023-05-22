@@ -33,7 +33,7 @@ export default class Settings {
             hint: game.i18n.localize("pf2e-reaction.recall-knowledge.hint"),
             scope: "world",
             config: true,
-            default: true,
+            default: Boolean,
             type: Boolean,
         });
         game.settings.register("pf2e-reaction", "on_notification", {
