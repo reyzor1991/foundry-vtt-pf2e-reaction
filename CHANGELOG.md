@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.1.24
+
+### Data Updates
+
+- Add Triple Opportunity handling
+
 ## Version 0.1.23
 
 ### Bugfixes

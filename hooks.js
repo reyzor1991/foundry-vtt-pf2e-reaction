@@ -36,10 +36,30 @@ const identifySkills = new Map([
     ["undead", ["religion"]],
 ]);
 
-function updateCombatantReactionState(combatant, newState) {
-    combatant.update({
-        "flags.reaction-check.state": newState
-    });
+function updateCombatantReactionState(combatant, newState, actionName=undefined) {
+    if (combatant.actor.type == "npc") {
+        if (actorAction(combatant.actor, "triple-opportunity") && newState) {
+            combatant.update({
+                "flags.reaction-check.triple-opportunity": 2
+            });
+        }
+    }
+
+    if (!newState) {
+        if (actionName == "attack-of-opportunity") {
+            if (combatant?.flags?.['reaction-check']?.['triple-opportunity']) {
+                combatant['flags']['reaction-check']['triple-opportunity'] -= 1
+                return;
+            }
+        }
+        combatant.update({
+            "flags.reaction-check.state": false
+        });
+    } else {
+        combatant.update({
+            "flags.reaction-check.state": true
+        });
+    }
 }
 
 function getEnemyDistance(token, target) {
@@ -54,8 +74,10 @@ function _uuid(obj) {
     return "@UUID["+obj.uuid+"]";
 }
 
-function hasReaction(combatant) {
-    return combatant && combatant?.flags?.["reaction-check"]?.state
+function hasReaction(combatant, actionName=undefined) {
+    return combatant
+        && (combatant?.flags?.["reaction-check"]?.state
+            || (actionName == "attack-of-opportunity" && combatant?.flags?.['reaction-check']?.['triple-opportunity']))
 }
 
 function hasCondition(actor, con) {
@@ -70,7 +92,7 @@ function actorFeat(actor, feat) {
     return actor?.itemTypes?.feat?.find((c => feat === c.slug))
 }
 
-async function postInChatTemplate(uuid, combatant) {
+async function postInChatTemplate(uuid, combatant, actionName=undefined) {
     var text = game.i18n.format("pf2e-reaction.ask", {uuid:uuid, name:combatant.token.name});
     const content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text:text});
     ChatMessage.create({
@@ -87,7 +109,8 @@ async function postInChatTemplate(uuid, combatant) {
         whisper: ChatMessage.getWhisperRecipients("GM").map((u) => u.id),
         flags: {
             "reaction-check": {
-                cId: combatant._id
+                cId: combatant._id,
+                actionName: actionName
             }
         }
     });
@@ -96,7 +119,7 @@ async function postInChatTemplate(uuid, combatant) {
 function checkCombatantTriggerAttackOfOpportunity(actorType, actorId, token) {
     var filteredType = ((actorType  == "npc") ? 'character' : 'npc')
     game?.combats?.active?.combatants
-        .filter((c=>c.actorId != actorId && c.actor.type == filteredType && hasReaction(c)))
+        .filter((c=>c.actorId != actorId && c.actor.type == filteredType && hasReaction(c, "attack-of-opportunity")))
         .filter((cc=>actorAction(cc.actor, "attack-of-opportunity")))
         .forEach(cc => {
             var hasStrike = cc.token.actor.system.actions?.filter((e=>"strike"===e.type && e.ready));
@@ -108,7 +131,7 @@ function checkCombatantTriggerAttackOfOpportunity(actorType, actorId, token) {
                 var reachValue = Settings.weaponRange;
                 if (isReach.length>0) {
                     reachValue = Settings.weaponReachRange;
-                    if (filteredType  == "npc") {
+                    if (filteredType == "npc") {
                         var rV = Math.min.apply(null, isReach.map(a=>a.traits).flat()
                             .filter(b=>b.name.startsWith("reach"))
                             .map(c=>c.name)
@@ -121,7 +144,7 @@ function checkCombatantTriggerAttackOfOpportunity(actorType, actorId, token) {
                 }
 
                 if (getEnemyDistance(token, cc.token)<= reachValue) {
-                    postInChatTemplate(attack_of_opportunity, cc);
+                    postInChatTemplate(attack_of_opportunity, cc, "attack-of-opportunity");
                 }
             }
         })
@@ -139,7 +162,7 @@ export default function reactionHooks() {
             if (t) {
                 var combatant = game.combat.turns.find(a=>a._id === t);
                 if (combatant) {
-                    updateCombatantReactionState(combatant, false);
+                    updateCombatantReactionState(combatant, false, mes?.flags['reaction-check']?.actionName);
                     mes.delete()
                 }
             }
@@ -150,7 +173,7 @@ export default function reactionHooks() {
     Hooks.on('combatTurn', async (combat, updateData, updateOptions) => {
         updateCombatantReactionState(combat.nextCombatant, true);
         if (combat.nextCombatant?.actor?.type == "character") {
-            game.combat.turns.filter(a=>a.isNPC).filter(a=>hasReaction(a))
+            game.combat.turns.filter(a => a.actor.type == "npc").filter(a=>hasReaction(a))
                 .forEach(cc => {
                     var pg = actorAction(cc.actor, "petrifying-glance")
                     if (pg && getEnemyDistance(combat.nextCombatant.token, cc.token) <= 30) {
@@ -163,7 +186,7 @@ export default function reactionHooks() {
     Hooks.on('combatRound', async (combat, updateData, updateOptions) => {
         updateCombatantReactionState(combat.nextCombatant, true);
         if (combat.nextCombatant?.actor?.type == "character") {
-            game.combat.turns.filter(a=>a.isNPC).filter(a=>hasReaction(a))
+            game.combat.turns.filter(a => a.actor.type == "npc").filter(a=>hasReaction(a))
                 .forEach(cc => {
                     var pg = actorAction(cc.actor, "petrifying-glance")
                     if (pg && getEnemyDistance(combat.nextCombatant.token, cc.token <= 30)) {
@@ -255,7 +278,7 @@ export default function reactionHooks() {
                 }
             }
             if ('attack-roll' == message?.flags?.pf2e?.context?.type && "npc" == message?.target?.actor?.type) {
-                game.combat.turns.filter(a=>a.actorId != message?.target?.actor._id && a.isNPC)
+                game.combat.turns.filter(a=>a.actorId != message?.target?.actor._id && a.actor.type == "npc")
                 .filter(cc=>hasReaction(cc))
                 .forEach(cc => {
                     if (getEnemyDistance(message.token, cc.token) <= 5) {
@@ -298,7 +321,7 @@ export default function reactionHooks() {
             //Skill check
             if ("skill-check" == message?.flags?.pf2e?.context?.type && "character" == message?.target?.actor?.type
                 && ("success" == message?.flags?.pf2e?.context?.outcome || "criticalSuccess" == message?.flags?.pf2e?.context?.outcome)) {
-                game.combat.turns.filter(a=>a.actorId != message?.target?.actor._id && !a.isNPC)
+                game.combat.turns.filter(a=>a.actorId != message?.target?.actor._id && a.actor.type == "character")
                 .filter(cc=>hasReaction(cc))
                 .forEach(cc => {
                     if (message?.flags?.pf2e?.context?.options.find(bb=>bb=="action:grapple")) {

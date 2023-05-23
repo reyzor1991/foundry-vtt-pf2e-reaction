@@ -8,10 +8,16 @@
 ![GitHub Release Download]
 [![Forge Installs ULR]][Forge Installs Download]
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/W7W2LF8UA)
+
+
 Small module to notify that actor can use reaction:
 
 ### Reactions:
 See [REACTIONS.md](./REACTIONS.md)
+
+### Multiple reactions feature
+- Triple Opportunity
 
 ### Notification:
 #### Need to turn on in settings to notify GM about target reaction
@@ -35,7 +41,7 @@ See [CHANGELOG.md](./CHANGELOG.md)
 [Minimum Foundry 10]: https://img.shields.io/badge/Minimum%20Foundry-10.291-informational?style=flat-square
 [Verified Foundry 10]: https://img.shields.io/badge/Verified%20Foundry-10.291-informational?style=flat-square
 
-[Version]: https://img.shields.io/badge/Version-0.1.23-yellow?style=flat-square
+[Version]: https://img.shields.io/badge/Version-0.1.24-yellow?style=flat-square
 [Version URL]: https://github.com/reyzor1991/foundry-vtt-pf2e-reaction
 
 [GitHub Release Date]: https://img.shields.io/github/release-date/reyzor1991/foundry-vtt-pf2e-reaction
