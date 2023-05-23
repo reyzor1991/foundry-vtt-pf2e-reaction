@@ -9,5 +9,6 @@
 	"pf2e-reaction.weaponReachRange.hint": "Досягніть відстані зброї, щоб перевірити атаку можливості",
 	"pf2e-reaction.notify": "{name} має {uuid}. Зверніть на це увагу!",
 	"pf2e-reaction.ask": "{name} може використати {uuid}. Реація була використана??",
-	"pf2e-reaction.yes": "Так"
+	"pf2e-reaction.yes": "Так",
+	"pf2e-reaction.no": "Ні"
 }

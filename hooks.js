@@ -37,18 +37,18 @@ const identifySkills = new Map([
 ]);
 
 function updateCombatantReactionState(combatant, newState, actionName=undefined) {
-    if (combatant.actor.type == "npc") {
-        if (actorAction(combatant.actor, "triple-opportunity") && newState) {
-            combatant.update({
-                "flags.reaction-check.triple-opportunity": 2
-            });
-        }
-    }
-
     if (!newState) {
         if (actionName == "attack-of-opportunity") {
             if (combatant?.flags?.['reaction-check']?.['triple-opportunity']) {
-                combatant['flags']['reaction-check']['triple-opportunity'] -= 1
+                combatant.update({
+                    "flags.reaction-check.triple-opportunity": combatant['flags']['reaction-check']['triple-opportunity'] - 1
+                });
+                return;
+            }
+            if (combatant?.flags?.['reaction-check']?.['combat-reflexes']) {
+                combatant.update({
+                    "flags.reaction-check.combat-reflexes": combatant['flags']['reaction-check']['combat-reflexes'] - 1
+                });
                 return;
             }
         }
@@ -56,6 +56,20 @@ function updateCombatantReactionState(combatant, newState, actionName=undefined)
             "flags.reaction-check.state": false
         });
     } else {
+        if (combatant.actor.type == "npc") {
+            if (actorAction(combatant.actor, "triple-opportunity")) {
+                combatant.update({
+                    "flags.reaction-check.triple-opportunity": 2
+                });
+            }
+        } else {
+            if (actorFeat(combatant.actor, "combat-reflexes")) {
+                combatant.update({
+                    "flags.reaction-check.combat-reflexes": 1
+                });
+            }
+        }
+
         combatant.update({
             "flags.reaction-check.state": true
         });
@@ -77,7 +91,10 @@ function _uuid(obj) {
 function hasReaction(combatant, actionName=undefined) {
     return combatant
         && (combatant?.flags?.["reaction-check"]?.state
-            || (actionName == "attack-of-opportunity" && combatant?.flags?.['reaction-check']?.['triple-opportunity']))
+            || (actionName == "attack-of-opportunity"
+                && (combatant?.flags?.['reaction-check']?.['triple-opportunity'] || combatant?.flags?.['reaction-check']?.['combat-reflexes'])
+            )
+        )
 }
 
 function hasCondition(actor, con) {
@@ -155,7 +172,7 @@ export default function reactionHooks() {
     console.log("Pf2e-reaction | --- Add hooks");
 
     $(document).on('click', '.reaction-check', function () {
-        var mid = $(this).parent().parent().data('message-id');
+        var mid = $(this).parent().parent().parent().data('message-id');
         if (mid) {
             var mes = game.messages.get(mid);
             var t = mes.flags['reaction-check'].cId;
@@ -167,7 +184,13 @@ export default function reactionHooks() {
                 }
             }
         }
+    });
 
+    $(document).on('click', '.reaction-cancel', function () {
+        var mid = $(this).parent().parent().parent().data('message-id');
+        if (mid) {
+            game.messages.get(mid)?.delete()
+        }
     });
 
     Hooks.on('combatTurn', async (combat, updateData, updateOptions) => {
@@ -382,28 +405,28 @@ export default function reactionHooks() {
 
     Hooks.on("targetToken", (_user, token, isTargeted, opts) => {
         if (Settings.notification && game?.combats?.active && isTargeted && hasReaction(token?.combatant)) {
-            if (game.user.isGM) {
+            if (game.user.isGM || token.combatant.players.find(a=>a.id==game.user.id)) {
                 if (token?.actor?.type == "character") {
                     var nd = actorFeat(token.actor, "nimble-dodge");
                     if (nd && !hasCondition(token.actor, "encumbered")) {
                         var text = game.i18n.format("pf2e-reaction.notify", {uuid:nd.name, name:token.name});
-                        ui.notifications.info(`${_user.name} used target. ${text}`);
+                        ui.notifications.info(`${_user.name} targets ${token.name}. ${text}`);
                     }
                     var as = actorFeat(token.actor, "airy-step");
                     if (as) {
                         var text = game.i18n.format("pf2e-reaction.notify", {uuid:as.name, name:token.name});
-                        ui.notifications.info(`${_user.name} used target. ${text}`);
+                        ui.notifications.info(`${_user.name} targets ${token.name}. ${text}`);
                     }
                 } else {
                     var nd = actorAction(token.actor, "nimble-dodge");
                     if (nd && !hasCondition(token.actor, "encumbered")) {
                         var text = game.i18n.format("pf2e-reaction.notify", {uuid:nd.name, name:token.name});
-                        ui.notifications.info(`${_user.name} used target. ${text}`);
+                        ui.notifications.info(`${_user.name} targets ${token.name}. ${text}`);
                     }
                     var as = actorAction(token.actor, "airy-step");
                     if (as) {
                         var text = game.i18n.format("pf2e-reaction.notify", {uuid:as.name, name:token.name});
-                        ui.notifications.info(`${_user.name} used target. ${text}`);
+                        ui.notifications.info(`${_user.name} targets ${token.name}. ${text}`);
                     }
                 }
             }

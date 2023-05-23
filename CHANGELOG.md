@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 0.1.25
+
+### Data Updates
+
+- Add Combat Reflexes handling
+- Notify users when their token are targeted
+
 ## Version 0.1.24
 
 ### Data Updates

@@ -18,9 +18,10 @@ See [REACTIONS.md](./REACTIONS.md)
 
 ### Multiple reactions feature
 - Triple Opportunity
+- Combat Reflexes
 
 ### Notification:
-#### Need to turn on in settings to notify GM about target reaction
+#### Need to turn on in settings
 1. Nimble Dodge
 2. Airy Step
 
@@ -37,11 +38,18 @@ If you need to add a new feature, or you find issues, you can also reach me dire
 
 See [CHANGELOG.md](./CHANGELOG.md)
 
+### Next Feature:
+- Opportune Riposte
+- Reflexive Riposte
+
+### Contributing
+See [CONTRIBUTING.md](CONTRIBUTING.md) and [CONTRIBUTORS.md](CONTRIBUTORS.md)
+
 [Foundry URL]: https://foundryvtt.com
 [Minimum Foundry 10]: https://img.shields.io/badge/Minimum%20Foundry-10.291-informational?style=flat-square
 [Verified Foundry 10]: https://img.shields.io/badge/Verified%20Foundry-10.291-informational?style=flat-square
 
-[Version]: https://img.shields.io/badge/Version-0.1.24-yellow?style=flat-square
+[Version]: https://img.shields.io/badge/Version-0.1.25-yellow?style=flat-square
 [Version URL]: https://github.com/reyzor1991/foundry-vtt-pf2e-reaction
 
 [GitHub Release Date]: https://img.shields.io/github/release-date/reyzor1991/foundry-vtt-pf2e-reaction
