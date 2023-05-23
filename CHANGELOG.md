@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.1.23
+
+### Bugfixes
+
+-   Fix issue with open settings
+
 ## Version 0.1.22
 
 ### Data Updates
