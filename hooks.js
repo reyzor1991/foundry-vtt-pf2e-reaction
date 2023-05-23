@@ -1,5 +1,7 @@
 import Settings from "./settings.js";
 
+const airy_step_action = "@UUID[Compendium.pf2e.actionspf2e.akmQzZoNhyfCKFpL]"
+const airy_step_feat = "@UUID[Compendium.pf2e.feats-srd.hOD9de1ftfYRSEKn]"
 const nimble_dodge_action = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.wCnsRCHvtZkZTmO0]"
 const nimble_dodge_feat = "@UUID[Compendium.pf2e.feats-srd.dNH8OHEvx3vI9NBQ]"
 const fast_swallow = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.IQtb58p4EaeUzTN1]"
@@ -239,9 +241,15 @@ export default function reactionHooks() {
                         if (actorFeat(message?.target?.actor, "nimble-dodge") && !hasCondition(message?.target?.actor,"encumbered")) {
                             postInChatTemplate(nimble_dodge_feat, message.target.token.combatant);
                         }
+                        if (actorFeat(message?.target?.actor, "airy-step")) {
+                            postInChatTemplate(airy_step_feat, message.target.token.combatant);
+                        }
                     } else {
                         if (actorAction(message?.target?.actor, "nimble-dodge") && !hasCondition(message?.target?.actor,"encumbered")) {
                             postInChatTemplate(nimble_dodge_action, message.target.token.combatant);
+                        }
+                        if (actorAction(message?.target?.actor, "airy-step")) {
+                            postInChatTemplate(airy_step_action, message.target.token.combatant);
                         }
                     }
                 }
@@ -358,10 +366,20 @@ export default function reactionHooks() {
                         var text = game.i18n.format("pf2e-reaction.notify", {uuid:nd.name, name:token.name});
                         ui.notifications.info(`${_user.name} used target. ${text}`);
                     }
+                    var as = actorFeat(token.actor, "airy-step");
+                    if (as) {
+                        var text = game.i18n.format("pf2e-reaction.notify", {uuid:as.name, name:token.name});
+                        ui.notifications.info(`${_user.name} used target. ${text}`);
+                    }
                 } else {
                     var nd = actorAction(token.actor, "nimble-dodge");
                     if (nd && !hasCondition(token.actor, "encumbered")) {
                         var text = game.i18n.format("pf2e-reaction.notify", {uuid:nd.name, name:token.name});
+                        ui.notifications.info(`${_user.name} used target. ${text}`);
+                    }
+                    var as = actorAction(token.actor, "airy-step");
+                    if (as) {
+                        var text = game.i18n.format("pf2e-reaction.notify", {uuid:as.name, name:token.name});
                         ui.notifications.info(`${_user.name} used target. ${text}`);
                     }
                 }

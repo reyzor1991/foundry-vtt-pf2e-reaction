@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.1.22
+
+### Data Updates
+
+-   Add Airy Step reaction check
+
 ## Version 0.1.21
 
 ### Data Updates
