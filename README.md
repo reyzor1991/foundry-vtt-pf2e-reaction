@@ -45,6 +45,17 @@ See [CHANGELOG.md](./CHANGELOG.md)
 ### Contributing
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [CONTRIBUTORS.md](CONTRIBUTORS.md)
 
+### Licenses
+
+This module uses trademarks and/or copyrights owned by Paizo Inc., used
+under [Paizo's Community Use Policy (paizo.com/communityuse)](paizo.com/communityuse). We are expressly prohibited from
+charging you to use or access this content. This module is not published, endorsed, or specifically approved by Paizo.
+For more information about Paizo Inc. and Paizo products, visit [paizo.com](paizo.com).
+
+Open Game License:
+
+* See [OpenGameLicense.md](OpenGameLicense.md)
+
 [Foundry URL]: https://foundryvtt.com
 [Minimum Foundry 10]: https://img.shields.io/badge/Minimum%20Foundry-10.291-informational?style=flat-square
 [Verified Foundry 10]: https://img.shields.io/badge/Verified%20Foundry-10.291-informational?style=flat-square
