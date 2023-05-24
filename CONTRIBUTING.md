@@ -8,6 +8,8 @@ Make an issue if you have ideas or have found bugs, or a pull request if you hav
 
 If you see an already existing issue you would like to tackle, ping me in a comment on the issue first.
 
+### Do note we have a [code of conduct](CODE_OF_CONDUCT.md), please follow it in all your interactions with the project.
+
 ## To contribute translations
 
 To help translate an existing language, or to add support for a new language, do one of the following:
