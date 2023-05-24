@@ -1,0 +1,143 @@
+### Next Feature
+
+
+- Inexhaustible Countermoves
+-
+- Chemical Contagion
+- Retaliatory Cleansing
+-
+- Cleave
+- Corpse-Killer's Defiance
+- Embrace the Pain
+- Furious Vengeance
+- Mage Hunter
+- No Escape
+- Perfect Clarity
+- Spiritual Guides
+- Tangle of Battle
+- Wounded Rage
+-
+- Accompany
+- All in my Head
+- Courageous Opportunity
+- Educate Allies
+- Inspiring Resilience
+- Pirouette
+- Resounding Finale
+- Reverberate
+- Ringmaster's Introduction
+-
+- Divine Grace
+- Everdistant Defense
+- Inspiring Resilience
+- Miraculous Intervention
+- Sacrifice Armor
+- Shield Wall
+- Shield of Reckoning
+-
+- Denier of Destruction
+- Premonition of Avoidance
+- Premonition of Clarity
+- Rapid Response
+- Swift Banishment
+-
+- Fiery Retort
+- Reactive Transformation
+- Storm Retribution
+- Verdant Presence
+-
+- Cut from the Air
+- Desperate Finisher
+- Dueling Riposte
+- Farabellus Flip
+- Guardian's Deflection
+- Knight's Retaliation
+- Mirror Shield
+- Reactive Shield
+- Reflecting Riposte
+- Twin Riposte
+-
+- Hit the Dirt!
+- Fake Out
+- Instant Backup
+- Grit and Tenacity
+- Deflecting Shot
+- Redirecting Shot
+- Instant Return
+-
+- Distracting Explosion
+- Negate Damage
+- No! No! I Created You!
+- You Failed to Account for… This!
+-
+- Foresee Danger
+- Sense the Unseen
+- Suspect of Opportunity
+- Trickster's Ace
+-
+- Capture Magic
+- Emergency Targe
+- Preternatural Parry
+-
+- Align Ki
+- Crane Flutter
+- Deflect Arrow
+- Dodging Roll
+- Electric Counter
+- Impossible Technique
+- Prevailing Position
+- Rippling Spin
+- Stand Still
+-
+- Divine Aegis
+- Scapegoat Parallel Self
+-
+- All in your Head
+- Counter Thought
+- Mental Static
+- No!!!
+-
+- Disrupt Prey
+- Relentless Stalker
+- Roll with It (Ranger)
+-
+- Clever Gambit
+- Cognitive Loophole
+- Delay Trap
+- Hidden Paragon
+- Inspired Stratagem
+- Opportune Backstab
+- Reactive Distraction
+- Reactive Interference
+- Reactive Pursuit
+- Sidestep
+- Stay Down!
+- Swift Elusion
+- You're Next
+-
+- Counterspell
+- Energetic Resonance
+- Ruby Resurrection
+- Spell Relay
+-
+- Reactive Dismissal
+- Eidolon's Opportunity
+- Protective Bond
+- Summoner's Call
+-
+- Charmed Life
+- Cheat Death
+-
+- Turn Away Misfortune
+- Trespass Teleportation
+-
+- Convincing Illusion
+
+
+
+### 
+
+- Quick Shield Block
+- Divine Reflexes
+- Improved Twin Riposte
+- Improved Dueling Riposte

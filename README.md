@@ -40,15 +40,8 @@ If you need to add a new feature, or you find issues, you can also reach me dire
 See [CHANGELOG.md](./CHANGELOG.md)
 
 ### Next Feature:
-- Charmed Life
-- Cheat Death
-- Corpse-Killer's Defiance
-- Guardian's Deflection
-- Inexhaustible Countermoves
-- Inexhaustible Countermoves
-- Knight's Retaliation
-- Pirouette
-- You're Next
+
+See [NEXT_FEATURE.md](./NEXT_FEATURE.md)
 
 ### Contributing
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [CONTRIBUTORS.md](CONTRIBUTORS.md)
