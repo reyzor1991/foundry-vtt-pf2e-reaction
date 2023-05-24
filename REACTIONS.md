@@ -16,3 +16,4 @@
 15. Nimble Dodge
 16. Petrifying Glance
 17. Airy Step
+18. Opportune Riposte

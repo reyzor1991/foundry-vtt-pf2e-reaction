@@ -19,6 +19,7 @@ See [REACTIONS.md](./REACTIONS.md)
 ### Multiple reactions feature
 - Triple Opportunity
 - Combat Reflexes
+- Reflexive Riposte
 
 ### Notification:
 #### Need to turn on in settings
@@ -39,8 +40,15 @@ If you need to add a new feature, or you find issues, you can also reach me dire
 See [CHANGELOG.md](./CHANGELOG.md)
 
 ### Next Feature:
-- Opportune Riposte
-- Reflexive Riposte
+- Charmed Life
+- Cheat Death
+- Corpse-Killer's Defiance
+- Guardian's Deflection
+- Inexhaustible Countermoves
+- Inexhaustible Countermoves
+- Knight's Retaliation
+- Pirouette
+- You're Next
 
 ### Contributing
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [CONTRIBUTORS.md](CONTRIBUTORS.md)
@@ -48,7 +56,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [CONTRIBUTORS.md](CONTRIBUTORS.md)
 ### Licenses
 
 This module uses trademarks and/or copyrights owned by Paizo Inc., used
-under [Paizo's Community Use Policy (paizo.com/communityuse)](paizo.com/communityuse). We are expressly prohibited from
+under [Paizo's Community Use Policy](https://paizo.com/community/communityuse). We are expressly prohibited from
 charging you to use or access this content. This module is not published, endorsed, or specifically approved by Paizo.
 For more information about Paizo Inc. and Paizo products, visit [paizo.com](paizo.com).
 
@@ -60,7 +68,7 @@ Open Game License:
 [Minimum Foundry 10]: https://img.shields.io/badge/Minimum%20Foundry-10.291-informational?style=flat-square
 [Verified Foundry 10]: https://img.shields.io/badge/Verified%20Foundry-10.291-informational?style=flat-square
 
-[Version]: https://img.shields.io/badge/Version-0.1.25-yellow?style=flat-square
+[Version]: https://img.shields.io/badge/Version-0.1.26-yellow?style=flat-square
 [Version URL]: https://github.com/reyzor1991/foundry-vtt-pf2e-reaction
 
 [GitHub Release Date]: https://img.shields.io/github/release-date/reyzor1991/foundry-vtt-pf2e-reaction

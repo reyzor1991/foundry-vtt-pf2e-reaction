@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.1.26
+
+### Data Updates
+-   Add Opportune Riposte reaction check
+-   Add Reflexive Riposte handling
+
 ## Version 0.1.25
 
 ### Data Updates

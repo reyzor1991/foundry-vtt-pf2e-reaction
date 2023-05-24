@@ -1,5 +1,6 @@
 import Settings from "./settings.js";
 
+const opportune_riposte = "@UUID[Compendium.pf2e.actionspf2e.EfjoIuDmtUn4yiow]"
 const airy_step_action = "@UUID[Compendium.pf2e.actionspf2e.akmQzZoNhyfCKFpL]"
 const airy_step_feat = "@UUID[Compendium.pf2e.feats-srd.hOD9de1ftfYRSEKn]"
 const nimble_dodge_action = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.wCnsRCHvtZkZTmO0]"
@@ -51,6 +52,13 @@ function updateCombatantReactionState(combatant, newState, actionName=undefined)
                 });
                 return;
             }
+        } else if (actionName == "opportune-riposte") {
+            if (combatant?.flags?.['reaction-check']?.['reflexive-riposte']) {
+                combatant.update({
+                    "flags.reaction-check.reflexive-riposte": combatant['flags']['reaction-check']['reflexive-riposte'] - 1
+                });
+                return;
+            }
         }
         combatant.update({
             "flags.reaction-check.state": false
@@ -66,6 +74,11 @@ function updateCombatantReactionState(combatant, newState, actionName=undefined)
             if (actorFeat(combatant.actor, "combat-reflexes")) {
                 combatant.update({
                     "flags.reaction-check.combat-reflexes": 1
+                });
+            }
+            if (actorFeat(combatant.actor, "reflexive-riposte")) {
+                combatant.update({
+                    "flags.reaction-check.reflexive-riposte": 1
                 });
             }
         }
@@ -84,6 +97,14 @@ function nonReach(arr) {
     return !arr.find(b=>b.startsWith("reach"))
 }
 
+function hasReachWeapon(actor) {
+    return actor?.system?.actions?.filter(a=>a.ready).filter(a=>a.weaponTraits.find(b=>b.name=="reach")).length != 0
+}
+
+function isTargetCharacter(message) {
+    return "character" == message?.target?.actor?.type;
+}
+
 function _uuid(obj) {
     return "@UUID["+obj.uuid+"]";
 }
@@ -93,6 +114,9 @@ function hasReaction(combatant, actionName=undefined) {
         && (combatant?.flags?.["reaction-check"]?.state
             || (actionName == "attack-of-opportunity"
                 && (combatant?.flags?.['reaction-check']?.['triple-opportunity'] || combatant?.flags?.['reaction-check']?.['combat-reflexes'])
+            )
+            || (actionName == "opportune-riposte"
+                && (combatant?.flags?.['reaction-check']?.['reflexive-riposte'])
             )
         )
 }
@@ -168,9 +192,6 @@ function checkCombatantTriggerAttackOfOpportunity(actorType, actorId, token) {
 }
 
 export default function reactionHooks() {
-
-    console.log("Pf2e-reaction | --- Add hooks");
-
     $(document).on('click', '.reaction-check', function () {
         var mid = $(this).parent().parent().parent().data('message-id');
         if (mid) {
@@ -283,7 +304,7 @@ export default function reactionHooks() {
             }
             if ('attack-roll' == message?.flags?.pf2e?.context?.type) {
                 if (hasReaction(message?.target?.token?.combatant)) {
-                    if (message?.target?.actor?.type == "character") {
+                    if (isTargetCharacter(message)) {
                         if (actorFeat(message?.target?.actor, "nimble-dodge") && !hasCondition(message?.target?.actor,"encumbered")) {
                             postInChatTemplate(nimble_dodge_feat, message.target.token.combatant);
                         }
@@ -299,8 +320,15 @@ export default function reactionHooks() {
                         }
                     }
                 }
+                if ("criticalFailure" == message?.flags?.pf2e?.context?.outcome && hasReaction(message?.target?.token?.combatant, "opportune-riposte")) {
+                    var distance = getEnemyDistance(message.token, message?.target?.token);
+                    if (distance <= 5 || (distance <= 10 && hasReachWeapon(message?.target?.actor))) {
+                        postInChatTemplate(opportune_riposte, message.target.token.combatant, "opportune-riposte");
+                    }
+                }
             }
-            if ('attack-roll' == message?.flags?.pf2e?.context?.type && "npc" == message?.target?.actor?.type) {
+
+            if ('attack-roll' == message?.flags?.pf2e?.context?.type && !isTargetCharacter(message)) {
                 game.combat.turns.filter(a=>a.actorId != message?.target?.actor._id && a.actor.type == "npc")
                 .filter(cc=>hasReaction(cc))
                 .forEach(cc => {
@@ -342,7 +370,7 @@ export default function reactionHooks() {
                 }
             }
             //Skill check
-            if ("skill-check" == message?.flags?.pf2e?.context?.type && "character" == message?.target?.actor?.type
+            if ("skill-check" == message?.flags?.pf2e?.context?.type && isTargetCharacter(message)
                 && ("success" == message?.flags?.pf2e?.context?.outcome || "criticalSuccess" == message?.flags?.pf2e?.context?.outcome)) {
                 game.combat.turns.filter(a=>a.actorId != message?.target?.actor._id && a.actor.type == "character")
                 .filter(cc=>hasReaction(cc))
