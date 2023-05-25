@@ -37,6 +37,24 @@ const identifySkills = new Map([
     ["undead", ["religion"]],
 ]);
 
+function updateInexhaustibleCountermoves(combatant) {
+    if (combatant.actor.type == "npc") {
+        setInexhaustibleCountermoves(game.combat.combatants.filter(a=>a.actor.type=="character"), 1)
+    } else {
+        setInexhaustibleCountermoves(game.combat.combatants.filter(a=>a.actor.type=="character"), 0)
+    }
+}
+
+function setInexhaustibleCountermoves(combatants, val) {
+    combatants.forEach(cc=> {
+        if (actorFeat(cc.actor, "inexhaustible-countermoves")) {
+            cc.update({
+                "flags.reaction-check.inexhaustible-countermoves": val
+            });
+        }
+    })
+}
+
 function updateCombatantReactionState(combatant, newState, actionName=undefined) {
     if (!newState) {
         if (actionName == "attack-of-opportunity") {
@@ -52,10 +70,22 @@ function updateCombatantReactionState(combatant, newState, actionName=undefined)
                 });
                 return;
             }
+            if (combatant?.flags?.['reaction-check']?.['inexhaustible-countermoves']) {
+                combatant.update({
+                    "flags.reaction-check.inexhaustible-countermoves": combatant['flags']['reaction-check']['inexhaustible-countermoves'] - 1
+                });
+                return;
+            }
         } else if (actionName == "opportune-riposte") {
             if (combatant?.flags?.['reaction-check']?.['reflexive-riposte']) {
                 combatant.update({
                     "flags.reaction-check.reflexive-riposte": combatant['flags']['reaction-check']['reflexive-riposte'] - 1
+                });
+                return;
+            }
+            if (combatant?.flags?.['reaction-check']?.['inexhaustible-countermoves']) {
+                combatant.update({
+                    "flags.reaction-check.inexhaustible-countermoves": combatant['flags']['reaction-check']['inexhaustible-countermoves'] - 1
                 });
                 return;
             }
@@ -113,10 +143,10 @@ function hasReaction(combatant, actionName=undefined) {
     return combatant
         && (combatant?.flags?.["reaction-check"]?.state
             || (actionName == "attack-of-opportunity"
-                && (combatant?.flags?.['reaction-check']?.['triple-opportunity'] || combatant?.flags?.['reaction-check']?.['combat-reflexes'])
+                && (combatant?.flags?.['reaction-check']?.['triple-opportunity'] || combatant?.flags?.['reaction-check']?.['combat-reflexes'] || combatant?.flags?.['reaction-check']?.['inexhaustible-countermoves'])
             )
             || (actionName == "opportune-riposte"
-                && (combatant?.flags?.['reaction-check']?.['reflexive-riposte'])
+                && (combatant?.flags?.['reaction-check']?.['reflexive-riposte'] || combatant?.flags?.['reaction-check']?.['inexhaustible-countermoves'])
             )
         )
 }
@@ -216,6 +246,7 @@ export default function reactionHooks() {
 
     Hooks.on('combatTurn', async (combat, updateData, updateOptions) => {
         updateCombatantReactionState(combat.nextCombatant, true);
+        updateInexhaustibleCountermoves(combat.nextCombatant);
         if (combat.nextCombatant?.actor?.type == "character") {
             game.combat.turns.filter(a => a.actor.type == "npc").filter(a=>hasReaction(a))
                 .forEach(cc => {
@@ -229,6 +260,7 @@ export default function reactionHooks() {
 
     Hooks.on('combatRound', async (combat, updateData, updateOptions) => {
         updateCombatantReactionState(combat.nextCombatant, true);
+        updateInexhaustibleCountermoves(combat.nextCombatant);
         if (combat.nextCombatant?.actor?.type == "character") {
             game.combat.turns.filter(a => a.actor.type == "npc").filter(a=>hasReaction(a))
                 .forEach(cc => {
@@ -243,7 +275,8 @@ export default function reactionHooks() {
     Hooks.on('combatStart', async combat => {
         combat.turns.forEach(cc =>{
             updateCombatantReactionState(cc, true)
-        })
+        });
+        updateInexhaustibleCountermoves(combat.turns[0]);
     });
 
     Hooks.on('createCombatant', async combatant => {

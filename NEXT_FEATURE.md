@@ -1,8 +1,5 @@
 ### Next Feature
 
-
-- Inexhaustible Countermoves
--
 - Chemical Contagion
 - Retaliatory Cleansing
 -

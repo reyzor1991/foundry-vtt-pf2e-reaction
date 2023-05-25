@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.1.27
+
+### Data Updates
+
+- Add Inexhaustible Countermoves handling
+
 ## Version 0.1.26
 
 ### Data Updates

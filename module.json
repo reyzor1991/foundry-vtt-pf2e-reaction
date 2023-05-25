@@ -2,7 +2,7 @@
   "id": "pf2e-reaction",
   "title": "PF2e Reaction Checker",
   "description": "Check reaction of combatant",
-  "version": "0.1.26",
+  "version": "0.1.27",
   "authors": [
     {
       "name": "reyzor1991",
@@ -30,28 +30,28 @@
   "styles": [
     "pf2e-reaction.css"
   ],
-  "manifest": "https://raw.githubusercontent.com/reyzor1991/foundry-vtt-pf2e-reaction/main/module.json",
-  "download": "https://github.com/reyzor1991/foundry-vtt-pf2e-reaction/archive/refs/heads/main.zip",
+  "manifest": "https://github.com/reyzor1991/foundry-vtt-pf2e-reaction/releases/download/0.1.27/module.json",
+  "download": "https://github.com/reyzor1991/foundry-vtt-pf2e-reaction/releases/download/0.1.27/foundry-vtt-pf2e-reaction.zip",
   "url": "https://github.com/reyzor1991/foundry-vtt-pf2e-reaction",
+  "license": "https://github.com/reyzor1991/foundry-vtt-pf2e-reaction/blob/main/LICENSE",
+  "readme": "https://github.com/reyzor1991/foundry-vtt-pf2e-reaction/blob/main/README.md",
+  "bugs": "https://github.com/reyzor1991/foundry-vtt-pf2e-reaction/issues",
+  "changelog": "https://github.com/reyzor1991/foundry-vtt-pf2e-reaction/blob/main/CHANGELOG.md",
   "compatibility": {
     "minimum": "10",
     "verified": "10.291",
     "maximum": "10"
   },
   "relationships": {
-    "requires": [
+    "systems": [
       {
         "id": "pf2e",
         "type": "system",
-        "manifest": "https://raw.githubusercontent.com/foundryvtt/pf2e/master/system.json",
+        "manifest": "https://github.com/foundryvtt/pf2e/releases/download/latest/system.json",
         "compatibility": {
-          "minimum": "4.7.0"
+          "minimum": "4.7.0",
+          "verified": "4.12.3"
         }
-      }
-    ],
-    "systems": [
-      {
-        "id": "pf2e"
       }
     ]
   }
