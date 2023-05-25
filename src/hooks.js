@@ -57,6 +57,10 @@ function setInexhaustibleCountermoves(combatants, val) {
 
 function updateCombatantReactionState(combatant, newState, actionName=undefined) {
     if (!newState) {
+        if (!hasReaction(combatant, actionName) && game.user.isGM) {
+            ui.notifications.warn(`${combatant.name} does not have reaction anymore`);
+            return;
+        }
         if (actionName == "attack-of-opportunity") {
             if (combatant?.flags?.['reaction-check']?.['triple-opportunity']) {
                 combatant.update({
