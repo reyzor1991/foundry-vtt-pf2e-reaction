@@ -6,6 +6,7 @@
 
 ![GitHub Release Date]
 ![GitHub Release Download]
+![the latest version zip](https://img.shields.io/github/downloads/reyzor1991/foundry-vtt-pf2e-reaction/latest/pf2e-reaction.zip)
 [![Forge Installs ULR]][Forge Installs Download]
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/W7W2LF8UA)
