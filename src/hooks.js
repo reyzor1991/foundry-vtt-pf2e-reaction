@@ -284,7 +284,9 @@ export default function reactionHooks() {
     });
 
     Hooks.on('createCombatant', async combatant => {
-        updateCombatantReactionState(combatant, true)
+        if (game.user?.isGM) {
+            updateCombatantReactionState(combatant, true)
+        }
     });
 
     Hooks.on('renderChatMessage', (app, html, msg) => {

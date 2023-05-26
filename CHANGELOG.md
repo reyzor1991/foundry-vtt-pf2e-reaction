@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.1.28
+
+### Bugfixes
+
+-   Player Lacks Permission to Update Combant
+
 ## Version 0.1.27
 
 ### Data Updates
