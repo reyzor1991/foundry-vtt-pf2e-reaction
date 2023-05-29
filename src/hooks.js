@@ -2,6 +2,7 @@ import Settings from "./settings.js";
 
 const opportune_riposte = "@UUID[Compendium.pf2e.actionspf2e.EfjoIuDmtUn4yiow]"
 const airy_step_action = "@UUID[Compendium.pf2e.actionspf2e.akmQzZoNhyfCKFpL]"
+const retaliatory_cleansing = "@UUID[Compendium.pf2e.feats-srd.y7SYHv0DWkkwjT95]"
 const airy_step_feat = "@UUID[Compendium.pf2e.feats-srd.hOD9de1ftfYRSEKn]"
 const nimble_dodge_action = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.wCnsRCHvtZkZTmO0]"
 const nimble_dodge_feat = "@UUID[Compendium.pf2e.feats-srd.dNH8OHEvx3vI9NBQ]"
@@ -129,6 +130,10 @@ function getEnemyDistance(token, target) {
 
 function nonReach(arr) {
     return !arr.find(b=>b.startsWith("reach"))
+}
+
+function actorHeldWeapon(actor) {
+    return actor?.system?.actions?.filter(a=>a.ready)
 }
 
 function hasReachWeapon(actor) {
@@ -326,6 +331,9 @@ export default function reactionHooks() {
                 postInChatTemplate(ferocity, tokenDoc.combatant);
             }
         }
+        if (game?.combats?.active && (data.x > 0 || data.y > 0)) {
+            checkCombatantTriggerAttackOfOpportunity(tokenDoc.actor?.type, tokenDoc.actorId, tokenDoc);
+        }
     });
 
     Hooks.on('preCreateChatMessage',(message, user, _options, userId)=>{
@@ -432,6 +440,12 @@ export default function reactionHooks() {
                         if (rg && message?.item?.system?.damage?.damageType == "slashing") {
                             postInChatTemplate(_uuid(rg), message.target.token.combatant);
                         }
+                        var rc = actorFeat(message?.target?.actor, "retaliatory-cleansing");
+                        if (rc) {
+                            if (actorHeldWeapon(message?.target?.actor).filter(a=>a.slug=="holy-water" || (a.weaponTraits.filter(b=>b.name == "bomb").length > 0 && a.weaponTraits.filter(b=>b.name == "positive").length > 0)).length > 0) {
+                                postInChatTemplate(retaliatory_cleansing, message.target.token.combatant);
+                            }
+                        }
                     } else if (getEnemyDistance(message?.target.token, message.token) <= 15) {
                         if (actorAction(message?.target?.actor, "iron-command")) {
                             postInChatTemplate(iron_command, message.target.token.combatant);
@@ -461,12 +475,6 @@ export default function reactionHooks() {
                     }
                 })
             }
-        }
-    });
-
-    Hooks.on('preUpdateToken',(_document, update, options, ..._args)=>{
-        if (game?.combats?.active && (update.x > 0 || update.y > 0)) {
-            checkCombatantTriggerAttackOfOpportunity(_document.actor?.type, _document.actorId, _document);
         }
     });
 

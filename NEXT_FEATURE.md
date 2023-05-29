@@ -1,7 +1,6 @@
 ### Next Feature
 
 - Chemical Contagion
-- Retaliatory Cleansing
 -
 - Cleave
 - Corpse-Killer's Defiance

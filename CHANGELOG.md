@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.1.29
+
+### Data Updates
+-   Add Retaliatory Cleansing reaction check
+
 ## Version 0.1.28
 
 ### Bugfixes
