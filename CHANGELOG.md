@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.1.30
+
+### Data Updates
+-   Flip Token image (tested feature)
+
 ## Version 0.1.29
 
 ### Data Updates

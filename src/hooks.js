@@ -38,6 +38,14 @@ const identifySkills = new Map([
     ["undead", ["religion"]],
 ]);
 
+const BUTTON_HTML = `<div class="control-icon"><i class="fas fa-repeat"></i></div>`;
+const SOURCE_MENU = `<div class="control-icon flip-source-menu"></div>`;
+const SOURCE_MENU_ITEM = (img, tooltip) => {
+  return `<button type="button" class="flip-source-menu-item" >
+	  <img src="${img}" title="${tooltip}" />
+	</button>`;
+};
+
 function updateInexhaustibleCountermoves(combatant) {
     if (combatant.actor.type == "npc") {
         setInexhaustibleCountermoves(game.combat.combatants.filter(a=>a.actor.type=="character"), 1)
@@ -252,6 +260,53 @@ export default function reactionHooks() {
             game.messages.get(mid)?.delete()
         }
     });
+
+
+Hooks.once("ready", () => {
+  if (Settings.flip){
+
+  Hooks.on("renderTokenConfig", async (app, $html) => {
+    let tbutton = $('<button type="submit" class="flip-config"><i class="far fa-repeat"></i>Flip Config</button>');
+    tbutton.click(async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      new FlipFormApplication(app).render(true);
+    });
+    $html.find(".tab[data-tab='character']").prepend(tbutton);
+  });
+
+  Hooks.on("renderTokenHUD", (hud, hudHtml, hudData) => {
+
+        let tbutton = $(BUTTON_HTML);
+        let token = hud.object.document;
+        tbutton.find(".fa-repeat").contextmenu(async (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+        });
+        tbutton.find(".fa-repeat").click(async (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+            let values = hud.object.document.flags?.['reaction-check']?.['tokens']?.['values'];
+            if (values) {
+                let idx = hud.object.document.flags?.['reaction-check']?.['tokens']?.['idx'];
+                if ((idx +1) < values.length) {
+                    hud.object.document.update({
+                            "flags.reaction-check.tokens.idx": (idx +1)
+                    });
+                    hud.object.actor.update({"img": values[idx + 1]});
+                } else {
+                    hud.object.document.update({
+                            "flags.reaction-check.tokens.idx": 0
+                    });
+                    hud.object.actor.update({"img": values[0]});
+                }
+            }
+        });
+
+        hudHtml.find(".col.right").append(tbutton);
+      });
+    });
+  }
 
     Hooks.on('combatTurn', async (combat, updateData, updateOptions) => {
         updateCombatantReactionState(combat.nextCombatant, true);

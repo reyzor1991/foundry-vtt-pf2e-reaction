@@ -11,6 +11,9 @@ export default class Settings {
     static get notification() {
         return game.settings.get("pf2e-reaction", "on_notification");
     }
+    static get flip() {
+        return game.settings.get("pf2e-reaction", "flip");
+    }
     static register() {
         game.settings.register("pf2e-reaction", "weaponRange", {
             name: game.i18n.localize("pf2e-reaction.weaponRange.name"),
@@ -31,6 +34,14 @@ export default class Settings {
         game.settings.register("pf2e-reaction", "recall-knowledge", {
             name: game.i18n.localize("pf2e-reaction.recall-knowledge.name"),
             hint: game.i18n.localize("pf2e-reaction.recall-knowledge.hint"),
+            scope: "world",
+            config: true,
+            default: false,
+            type: Boolean,
+        });
+        game.settings.register("pf2e-reaction", "flip", {
+            name: "Flip token",
+            hint: "Tested feature",
             scope: "world",
             config: true,
             default: false,

@@ -1,0 +1,20 @@
+<form autocomplete="off">
+
+    {{#each values as |value|}}
+        <fieldset class="row">
+            <div class="form-group">
+                <label>Image path</label>
+                <div class="form-fields">
+                  {{filePicker target=value.target type="imagevideo"}}
+                  <input class="image" type="text" name={{value.target}} data-idx={{value.idx}} placeholder="path/image.png" value="{{value.path}}">
+                  <button type="button" class="flip-delete" data-idx={{value.idx}}><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+        </fieldset>
+    {{/each}}
+
+
+    <footer class="sheet-footer flexrow">
+        <button type="button" class="flip-save"><i class="fas fa-add"></i>Add token image</button>
+    </footer>
+</form>
