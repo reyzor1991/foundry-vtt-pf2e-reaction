@@ -261,21 +261,19 @@ export default function reactionHooks() {
         }
     });
 
+    Hooks.once("ready", () => {
+      if (!Settings.flip){return}
+      Hooks.on("renderTokenConfig", async (app, $html) => {
+        let tbutton = $('<button type="submit" class="flip-config"><i class="far fa-repeat"></i>Flip Config</button>');
+        tbutton.click(async (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          new FlipFormApplication(app).render(true);
+        });
+        $html.find(".tab[data-tab='character']").prepend(tbutton);
+      });
 
-Hooks.once("ready", () => {
-  if (Settings.flip){
-
-  Hooks.on("renderTokenConfig", async (app, $html) => {
-    let tbutton = $('<button type="submit" class="flip-config"><i class="far fa-repeat"></i>Flip Config</button>');
-    tbutton.click(async (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      new FlipFormApplication(app).render(true);
-    });
-    $html.find(".tab[data-tab='character']").prepend(tbutton);
-  });
-
-  Hooks.on("renderTokenHUD", (hud, hudHtml, hudData) => {
+      Hooks.on("renderTokenHUD", (hud, hudHtml, hudData) => {
 
         let tbutton = $(BUTTON_HTML);
         let token = hud.object.document;
@@ -305,8 +303,7 @@ Hooks.once("ready", () => {
 
         hudHtml.find(".col.right").append(tbutton);
       });
-    });
-  }
+});
 
     Hooks.on('combatTurn', async (combat, updateData, updateOptions) => {
         updateCombatantReactionState(combat.nextCombatant, true);
