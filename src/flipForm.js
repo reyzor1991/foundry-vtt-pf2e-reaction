@@ -41,7 +41,7 @@ export default class FlipFormApplication extends FormApplication {
                 "flags.reaction-check.tokens.idx": 0
         });
         if (this.paths.length > 0) {
-            this.object.token.actor.update({"img": this.paths[0]});
+            this.object.actor.update({"img": this.paths[0]});
         }
     }
 

@@ -17,3 +17,5 @@
 16. Petrifying Glance
 17. Airy Step
 18. Opportune Riposte
+19. Retaliatory Cleansing
+20. Embrace the Pain

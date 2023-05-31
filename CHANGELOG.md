@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.1.31
+
+### Data Updates
+-   Add Embrace the Pain reaction check
+
 ## Version 0.1.30
 
 ### Data Updates

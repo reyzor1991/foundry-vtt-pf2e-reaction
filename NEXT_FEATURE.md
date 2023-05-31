@@ -4,7 +4,6 @@
 -
 - Cleave
 - Corpse-Killer's Defiance
-- Embrace the Pain
 - Furious Vengeance
 - Mage Hunter
 - No Escape

@@ -1,5 +1,7 @@
 import Settings from "./settings.js";
+import FlipFormApplication from "./flipForm.js";
 
+const embrace_the_pain = "@UUID[Compendium.pf2e.feats-srd.j20djiiuVwUf8MqL]"
 const opportune_riposte = "@UUID[Compendium.pf2e.actionspf2e.EfjoIuDmtUn4yiow]"
 const airy_step_action = "@UUID[Compendium.pf2e.actionspf2e.akmQzZoNhyfCKFpL]"
 const retaliatory_cleansing = "@UUID[Compendium.pf2e.feats-srd.y7SYHv0DWkkwjT95]"
@@ -38,7 +40,7 @@ const identifySkills = new Map([
     ["undead", ["religion"]],
 ]);
 
-const BUTTON_HTML = `<div class="control-icon"><i class="fas fa-repeat"></i></div>`;
+const BUTTON_HTML = `<div class="control-icon" data-action="flip"><i class="fas fa-repeat"></i><div class="flip-tokens"></div></div>`;
 const SOURCE_MENU = `<div class="control-icon flip-source-menu"></div>`;
 const SOURCE_MENU_ITEM = (img, tooltip) => {
   return `<button type="button" class="flip-source-menu-item" >
@@ -280,6 +282,8 @@ export default function reactionHooks() {
         tbutton.find(".fa-repeat").contextmenu(async (event) => {
           event.preventDefault();
           event.stopPropagation();
+
+          $(event.currentTarget).parent().find('.flip-tokens').addClass("active");
         });
         tbutton.find(".fa-repeat").click(async (event) => {
           event.preventDefault();
@@ -291,14 +295,34 @@ export default function reactionHooks() {
                     hud.object.document.update({
                             "flags.reaction-check.tokens.idx": (idx +1)
                     });
-                    hud.object.actor.update({"img": values[idx + 1]});
+                    hud.object.document.update({"img": values[idx + 1]});
                 } else {
                     hud.object.document.update({
                             "flags.reaction-check.tokens.idx": 0
                     });
-                    hud.object.actor.update({"img": values[0]});
+                    hud.object.document.update({"img": values[0]});
                 }
             }
+        });
+
+        let values = hud.object.document.flags?.['reaction-check']?.['tokens']?.['values'] ?? [];
+        values.forEach(function (value, i) {
+            const picture = document.createElement("picture");
+            picture.classList.add("flip-token");
+            picture.dataset.idx = i;
+            picture.setAttribute("src", value);
+
+            const icon = document.createElement("img");
+            icon.src = value;
+            picture.append(icon);
+            $(picture).find('img').click(async (event) => {
+                hud.object.document.update({
+                        "flags.reaction-check.tokens.idx": i
+                });
+                hud.object.document.update({"img": value});
+            });
+
+            tbutton.find(".flip-tokens").append(picture);
         });
 
         hudHtml.find(".col.right").append(tbutton);
@@ -377,10 +401,11 @@ export default function reactionHooks() {
     });
 
     Hooks.on('preUpdateToken', (tokenDoc, data, deep, id) => {
-        if (data?.actorData?.system?.attributes?.hp?.value == 0
-            && hasReaction(tokenDoc?.combatant)) {
-            if (actorAction(tokenDoc?.actor, "ferocity")) {
-                postInChatTemplate(ferocity, tokenDoc.combatant);
+        if (data?.actorData?.system?.attributes?.hp?.value == 0) {
+            if (hasReaction(tokenDoc?.combatant)) {
+                if (actorAction(tokenDoc?.actor, "ferocity")) {
+                    postInChatTemplate(ferocity, tokenDoc.combatant);
+                }
             }
         }
         if (game?.combats?.active && (data.x > 0 || data.y > 0)) {
@@ -487,6 +512,9 @@ export default function reactionHooks() {
             if ("damage-roll" == message?.flags?.pf2e?.context?.type) {
                 //15 ft damage you
                 if(hasReaction(message?.target?.token?.combatant)) {
+                    if (message?.item?.isMelee && actorFeat(message?.target?.actor, "embrace-the-pain")) {
+                        postInChatTemplate(embrace_the_pain, message.target.token.combatant);
+                    }
                     if (getEnemyDistance(message.target.token, message.token) <= 5) {
                         var rg = actorAction(message?.target?.actor, "reactive-gnaw");
                         if (rg && message?.item?.system?.damage?.damageType == "slashing") {
