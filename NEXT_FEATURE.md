@@ -4,7 +4,6 @@
 -
 - Cleave
 - Corpse-Killer's Defiance
-- Furious Vengeance
 - Mage Hunter
 - No Escape
 - Perfect Clarity

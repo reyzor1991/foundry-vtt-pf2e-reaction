@@ -4,6 +4,7 @@
 
 ### Data Updates
 -   Move flip token feature to foundry-vtt-pf2e-flip-token
+-   Add Furious Vengeance reaction check
 
 ## Version 0.1.31
 

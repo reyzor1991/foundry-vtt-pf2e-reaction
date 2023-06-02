@@ -1,5 +1,6 @@
 import Settings from "./settings.js";
 
+const furious_vengeance = "@UUID[Compendium.pf2e.feats-srd.Oyml3OGNy468z3XI]"
 const embrace_the_pain = "@UUID[Compendium.pf2e.feats-srd.j20djiiuVwUf8MqL]"
 const opportune_riposte = "@UUID[Compendium.pf2e.actionspf2e.EfjoIuDmtUn4yiow]"
 const airy_step_action = "@UUID[Compendium.pf2e.actionspf2e.akmQzZoNhyfCKFpL]"
@@ -171,6 +172,11 @@ function actorAction(actor, action) {
 
 function actorFeat(actor, feat) {
     return actor?.itemTypes?.feat?.find((c => feat === c.slug))
+}
+
+function canReachEnemy(attackerToken, defendToken, defendActor) {
+    var distance = getEnemyDistance(attackerToken, defendToken);
+    return distance <= 5 || (distance <= 10 && hasReachWeapon(defendActor))
 }
 
 async function postInChatTemplate(uuid, combatant, actionName=undefined) {
@@ -370,8 +376,7 @@ export default function reactionHooks() {
                     }
                 }
                 if ("criticalFailure" == message?.flags?.pf2e?.context?.outcome && hasReaction(message?.target?.token?.combatant, "opportune-riposte")) {
-                    var distance = getEnemyDistance(message.token, message?.target?.token);
-                    if (distance <= 5 || (distance <= 10 && hasReachWeapon(message?.target?.actor))) {
+                    if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor)) {
                         postInChatTemplate(opportune_riposte, message.target.token.combatant, "opportune-riposte");
                     }
                 }
@@ -415,6 +420,9 @@ export default function reactionHooks() {
                     var vs = actorAction(message?.target?.actor, "vengeful-spite");
                     if (vs) {
                         postInChatTemplate(_uuid(vs), message.target?.token?.combatant);
+                    }
+                    if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && actorFeat(message?.target?.actor, "furious-vengeance")) {
+                        postInChatTemplate(furious_vengeance, message.target.token.combatant);
                     }
                 }
             }

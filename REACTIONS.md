@@ -19,3 +19,4 @@
 18. Opportune Riposte
 19. Retaliatory Cleansing
 20. Embrace the Pain
+21. Furious Vengeance
