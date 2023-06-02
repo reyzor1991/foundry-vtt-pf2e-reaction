@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.1.32
+
+### Data Updates
+-   Move flip token feature to foundry-vtt-pf2e-flip-token
+
 ## Version 0.1.31
 
 ### Data Updates

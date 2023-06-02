@@ -1,5 +1,4 @@
 import Settings from "./settings.js";
-import FlipFormApplication from "./flipForm.js";
 
 const embrace_the_pain = "@UUID[Compendium.pf2e.feats-srd.j20djiiuVwUf8MqL]"
 const opportune_riposte = "@UUID[Compendium.pf2e.actionspf2e.EfjoIuDmtUn4yiow]"
@@ -39,14 +38,6 @@ const identifySkills = new Map([
     ["spirit", ["occultism"]],
     ["undead", ["religion"]],
 ]);
-
-const BUTTON_HTML = `<div class="control-icon" data-action="flip"><i class="fas fa-repeat"></i><div class="flip-tokens"></div></div>`;
-const SOURCE_MENU = `<div class="control-icon flip-source-menu"></div>`;
-const SOURCE_MENU_ITEM = (img, tooltip) => {
-  return `<button type="button" class="flip-source-menu-item" >
-	  <img src="${img}" title="${tooltip}" />
-	</button>`;
-};
 
 function updateInexhaustibleCountermoves(combatant) {
     if (combatant.actor.type == "npc") {
@@ -262,72 +253,6 @@ export default function reactionHooks() {
             game.messages.get(mid)?.delete()
         }
     });
-
-    Hooks.once("ready", () => {
-      if (!Settings.flip){return}
-      Hooks.on("renderTokenConfig", async (app, $html) => {
-        let tbutton = $('<button type="submit" class="flip-config"><i class="far fa-repeat"></i>Flip Config</button>');
-        tbutton.click(async (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          new FlipFormApplication(app).render(true);
-        });
-        $html.find(".tab[data-tab='character']").prepend(tbutton);
-      });
-
-      Hooks.on("renderTokenHUD", (hud, hudHtml, hudData) => {
-
-        let tbutton = $(BUTTON_HTML);
-        let token = hud.object.document;
-        tbutton.find(".fa-repeat").contextmenu(async (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-
-          $(event.currentTarget).parent().find('.flip-tokens').addClass("active");
-        });
-        tbutton.find(".fa-repeat").click(async (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-            let values = hud.object.document.flags?.['reaction-check']?.['tokens']?.['values'];
-            if (values) {
-                let idx = hud.object.document.flags?.['reaction-check']?.['tokens']?.['idx'];
-                if ((idx +1) < values.length) {
-                    hud.object.document.update({
-                            "flags.reaction-check.tokens.idx": (idx +1)
-                    });
-                    hud.object.document.update({"img": values[idx + 1]});
-                } else {
-                    hud.object.document.update({
-                            "flags.reaction-check.tokens.idx": 0
-                    });
-                    hud.object.document.update({"img": values[0]});
-                }
-            }
-        });
-
-        let values = hud.object.document.flags?.['reaction-check']?.['tokens']?.['values'] ?? [];
-        values.forEach(function (value, i) {
-            const picture = document.createElement("picture");
-            picture.classList.add("flip-token");
-            picture.dataset.idx = i;
-            picture.setAttribute("src", value);
-
-            const icon = document.createElement("img");
-            icon.src = value;
-            picture.append(icon);
-            $(picture).find('img').click(async (event) => {
-                hud.object.document.update({
-                        "flags.reaction-check.tokens.idx": i
-                });
-                hud.object.document.update({"img": value});
-            });
-
-            tbutton.find(".flip-tokens").append(picture);
-        });
-
-        hudHtml.find(".col.right").append(tbutton);
-      });
-});
 
     Hooks.on('combatTurn', async (combat, updateData, updateOptions) => {
         updateCombatantReactionState(combat.nextCombatant, true);
