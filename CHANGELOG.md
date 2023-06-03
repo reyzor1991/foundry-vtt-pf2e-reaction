@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 0.1.34
+
+### Bugfixes
+-   Fix issue with Opportune Riposte
+
+### Data Updates
+-   Add No Escape reaction check
+
 ## Version 0.1.33
 
 ### Data Updates

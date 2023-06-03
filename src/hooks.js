@@ -13,6 +13,7 @@ const fast_swallow = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.IQtb58
 const retributive_strike = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.IQtb58p4EaeUzTN1]"
 const ferocity = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.N1kstYbHScxgUQtN]"
 const attack_of_opportunity = "@UUID[Compendium.pf2e.actionspf2e.KAVf7AmRnbCAHrkT]"
+const no_escape = "@UUID[Compendium.pf2e.feats-srd.lT8XlX1Ig900BblS]"
 const glimpse_of_redemption = "@UUID[Compendium.pf2e.actionspf2e.tuZnRWHixLArvaIf]"
 const wicked_thorns = "@UUID[Compendium.pf2e.actionspf2e.ncdryKskPwHMgHFh]"
 const iron_command = "@UUID[Compendium.pf2e.actionspf2e.M8RCbthRhB4bxO9t]"
@@ -354,6 +355,14 @@ export default function reactionHooks() {
         }
         if (game?.combats?.active && (data.x > 0 || data.y > 0)) {
             checkCombatantTriggerAttackOfOpportunity(tokenDoc.actor?.type, tokenDoc.actorId, tokenDoc);
+            characterWithReaction()
+                .filter(a=>a.tokenId != tokenDoc._id)
+                .filter(a=>actorFeat(a.actor, "no-escape"))
+                .forEach(cc => {
+                    if (canReachEnemy(tokenDoc, cc.token, cc.actor)) {
+                        postInChatTemplate(no_escape, cc);
+                    }
+                });
         }
     });
 
@@ -374,10 +383,8 @@ export default function reactionHooks() {
             if ("spell-cast" == message?.flags?.pf2e?.context?.type) {
                 characterWithReaction()
                 .forEach(cc => {
-                    console.log(cc);
                     if (canReachEnemy(message.token, cc.token, cc.actor)) {
                         if (actorFeat(cc.actor, "mage-hunter")) {
-                            console.log('POST');
                             postInChatTemplate(mage_hunter, cc);
                         }
                     }
@@ -403,7 +410,7 @@ export default function reactionHooks() {
                     }
                 }
                 if ("criticalFailure" == message?.flags?.pf2e?.context?.outcome && hasReaction(message?.target?.token?.combatant, "opportune-riposte")) {
-                    if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor)) {
+                    if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && actorFeat(message?.target?.actor, "opportune-riposte")) {
                         postInChatTemplate(opportune_riposte, message.target.token.combatant, "opportune-riposte");
                     }
                 }

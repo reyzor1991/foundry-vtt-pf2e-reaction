@@ -4,7 +4,7 @@
 -
 - Cleave
 - Corpse-Killer's Defiance
-- No Escape
+- 
 - Perfect Clarity
 - Spiritual Guides
 - Tangle of Battle
