@@ -1,5 +1,6 @@
 import Settings from "./settings.js";
 
+const mage_hunter = "@UUID[Compendium.pf2e.feats-srd.mqLPCNdCSNyY7gyI]"
 const furious_vengeance = "@UUID[Compendium.pf2e.feats-srd.Oyml3OGNy468z3XI]"
 const embrace_the_pain = "@UUID[Compendium.pf2e.feats-srd.j20djiiuVwUf8MqL]"
 const opportune_riposte = "@UUID[Compendium.pf2e.actionspf2e.EfjoIuDmtUn4yiow]"
@@ -162,6 +163,18 @@ function hasReaction(combatant, actionName=undefined) {
         )
 }
 
+function characterWithReaction() {
+    return actorWithReactionForType("character");
+}
+
+function npcWithReaction() {
+    return actorWithReactionForType("npc");
+}
+
+function actorWithReactionForType(type) {
+    return game.combat.turns.filter(a => a.actor.type == type).filter(a=>hasReaction(a));
+}
+
 function hasCondition(actor, con) {
     return actor && actor?.itemTypes?.condition?.find((c => c.type == "condition" && con === c.slug))
 }
@@ -264,7 +277,7 @@ export default function reactionHooks() {
         updateCombatantReactionState(combat.nextCombatant, true);
         updateInexhaustibleCountermoves(combat.nextCombatant);
         if (combat.nextCombatant?.actor?.type == "character") {
-            game.combat.turns.filter(a => a.actor.type == "npc").filter(a=>hasReaction(a))
+            npcWithReaction()
                 .forEach(cc => {
                     var pg = actorAction(cc.actor, "petrifying-glance")
                     if (pg && getEnemyDistance(combat.nextCombatant.token, cc.token) <= 30) {
@@ -278,7 +291,7 @@ export default function reactionHooks() {
         updateCombatantReactionState(combat.nextCombatant, true);
         updateInexhaustibleCountermoves(combat.nextCombatant);
         if (combat.nextCombatant?.actor?.type == "character") {
-            game.combat.turns.filter(a => a.actor.type == "npc").filter(a=>hasReaction(a))
+            npcWithReaction()
                 .forEach(cc => {
                     var pg = actorAction(cc.actor, "petrifying-glance")
                     if (pg && getEnemyDistance(combat.nextCombatant.token, cc.token <= 30)) {
@@ -357,6 +370,20 @@ export default function reactionHooks() {
                     checkCombatantTriggerAttackOfOpportunity(message.actor?.type, message.actor._id, message.token);
                 }
             }
+
+            if ("spell-cast" == message?.flags?.pf2e?.context?.type) {
+                characterWithReaction()
+                .forEach(cc => {
+                    console.log(cc);
+                    if (canReachEnemy(message.token, cc.token, cc.actor)) {
+                        if (actorFeat(cc.actor, "mage-hunter")) {
+                            console.log('POST');
+                            postInChatTemplate(mage_hunter, cc);
+                        }
+                    }
+                })
+            }
+
             if ('attack-roll' == message?.flags?.pf2e?.context?.type) {
                 if (hasReaction(message?.target?.token?.combatant)) {
                     if (isTargetCharacter(message)) {
@@ -383,8 +410,8 @@ export default function reactionHooks() {
             }
 
             if ('attack-roll' == message?.flags?.pf2e?.context?.type && !isTargetCharacter(message)) {
-                game.combat.turns.filter(a=>a.actorId != message?.target?.actor._id && a.actor.type == "npc")
-                .filter(cc=>hasReaction(cc))
+                npcWithReaction()
+                .filter(a=>a.actorId != message?.target?.actor._id)
                 .forEach(cc => {
                     if (getEnemyDistance(message.token, cc.token) <= 5) {
                         var ab = actorAction(cc.actor, "avenging-bite");
@@ -429,8 +456,8 @@ export default function reactionHooks() {
             //Skill check
             if ("skill-check" == message?.flags?.pf2e?.context?.type && isTargetCharacter(message)
                 && ("success" == message?.flags?.pf2e?.context?.outcome || "criticalSuccess" == message?.flags?.pf2e?.context?.outcome)) {
-                game.combat.turns.filter(a=>a.actorId != message?.target?.actor._id && a.actor.type == "character")
-                .filter(cc=>hasReaction(cc))
+                characterWithReaction()
+                .filter(a=>a.actorId != message?.target?.actor._id)
                 .forEach(cc => {
                     if (message?.flags?.pf2e?.context?.options.find(bb=>bb=="action:grapple")) {
                         if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15){
@@ -472,8 +499,8 @@ export default function reactionHooks() {
                     }
                 }
                 //15 ft damage ally
-                game.combat.turns.filter(a=>a.actorId != message?.target?.actor._id && a.actor.type == message?.target?.actor?.type)
-                .filter(cc=>hasReaction(cc))
+                actorWithReactionForType(message?.target?.actor?.type)
+                .filter(a=>a.actorId != message?.target?.actor._id)
                 .forEach(cc => {
                     if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15) {
                         if (actorAction(cc.actor, "glimpse-of-redemption")) {

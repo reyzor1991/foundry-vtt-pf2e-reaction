@@ -4,7 +4,6 @@
 -
 - Cleave
 - Corpse-Killer's Defiance
-- Mage Hunter
 - No Escape
 - Perfect Clarity
 - Spiritual Guides

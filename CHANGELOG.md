@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.1.33
+
+### Data Updates
+-   Add Mage Hunter reaction check
+
 ## Version 0.1.32
 
 ### Data Updates
