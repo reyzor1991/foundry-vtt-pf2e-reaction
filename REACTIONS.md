@@ -22,3 +22,4 @@
 21. Furious Vengeance
 22. Mage Hunter
 23. No Escape
+24. Perfect Clarity

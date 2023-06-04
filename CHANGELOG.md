@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.1.35
+
+### Data Updates
+-   Add Perfect Clarity reaction check
+
 ## Version 0.1.34
 
 ### Bugfixes

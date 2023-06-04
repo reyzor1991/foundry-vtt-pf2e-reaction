@@ -4,6 +4,8 @@ const mage_hunter = "@UUID[Compendium.pf2e.feats-srd.mqLPCNdCSNyY7gyI]"
 const furious_vengeance = "@UUID[Compendium.pf2e.feats-srd.Oyml3OGNy468z3XI]"
 const embrace_the_pain = "@UUID[Compendium.pf2e.feats-srd.j20djiiuVwUf8MqL]"
 const opportune_riposte = "@UUID[Compendium.pf2e.actionspf2e.EfjoIuDmtUn4yiow]"
+const perfect_clarity = "@UUID[Compendium.pf2e.feats-srd.JkQjKyzfhMWLr9Gs]"
+const opportune_riposte_action = "@UUID[Compendium.pf2e.actionspf2e.EfjoIuDmtUn4yiow]"
 const airy_step_action = "@UUID[Compendium.pf2e.actionspf2e.akmQzZoNhyfCKFpL]"
 const retaliatory_cleansing = "@UUID[Compendium.pf2e.feats-srd.y7SYHv0DWkkwjT95]"
 const airy_step_feat = "@UUID[Compendium.pf2e.feats-srd.hOD9de1ftfYRSEKn]"
@@ -141,7 +143,10 @@ function actorHeldWeapon(actor) {
 }
 
 function hasReachWeapon(actor) {
-    return actor?.system?.actions?.filter(a=>a.ready).filter(a=>a.weaponTraits.find(b=>b.name=="reach")).length != 0
+    return actor?.system?.actions
+        ?.filter(a=>a.ready)
+        ?.filter(a=>a?.weaponTraits?.find(b=>b.name=="reach") || a?.traits?.find(b=>b.name.startsWith("reach")))
+        ?.length != 0
 }
 
 function isTargetCharacter(message) {
@@ -410,8 +415,21 @@ export default function reactionHooks() {
                     }
                 }
                 if ("criticalFailure" == message?.flags?.pf2e?.context?.outcome && hasReaction(message?.target?.token?.combatant, "opportune-riposte")) {
-                    if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && actorFeat(message?.target?.actor, "opportune-riposte")) {
-                        postInChatTemplate(opportune_riposte, message.target.token.combatant, "opportune-riposte");
+                    if (message.actor?.type == 'npc') {
+                        if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && actorFeat(message?.target?.actor, "opportune-riposte")) {
+                            postInChatTemplate(opportune_riposte, message.target.token.combatant, "opportune-riposte");
+                        }
+                    } else {
+                        if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && actorAction(message?.target?.actor, "opportune-riposte")) {
+                            postInChatTemplate(opportune_riposte_action, message.target.token.combatant, "opportune-riposte");
+                        }
+                    }
+                }
+                if ("criticalFailure" == message?.flags?.pf2e?.context?.outcome || "failure" == message?.flags?.pf2e?.context?.outcome) {
+                    if (hasReaction(message?.token?.combatant)) {
+                        if (actorFeat(message?.actor, "perfect-clarity")) {
+                            postInChatTemplate(perfect_clarity, message?.token?.combatant);
+                        }
                     }
                 }
             }
