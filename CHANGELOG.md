@@ -1,8 +1,15 @@
 # Changelog
 
+## Version 0.1.36
+
+### New feature
+-   Add Tangle of Battle reaction check
+-   Add Spiritual Guides reaction check
+-   Add a setting to allow player-controlled tokens to see reaction messages
+
 ## Version 0.1.35
 
-### Data Updates
+### New feature
 -   Add Perfect Clarity reaction check
 
 ## Version 0.1.34
@@ -10,33 +17,33 @@
 ### Bugfixes
 -   Fix issue with Opportune Riposte
 
-### Data Updates
+### New feature
 -   Add No Escape reaction check
 
 ## Version 0.1.33
 
-### Data Updates
+### New feature
 -   Add Mage Hunter reaction check
 
 ## Version 0.1.32
 
-### Data Updates
+### New feature
 -   Move flip token feature to foundry-vtt-pf2e-flip-token
 -   Add Furious Vengeance reaction check
 
 ## Version 0.1.31
 
-### Data Updates
+### New feature
 -   Add Embrace the Pain reaction check
 
 ## Version 0.1.30
 
-### Data Updates
+### New feature
 -   Flip Token image (tested feature)
 
 ## Version 0.1.29
 
-### Data Updates
+### New feature
 -   Add Retaliatory Cleansing reaction check
 
 ## Version 0.1.28
@@ -47,26 +54,26 @@
 
 ## Version 0.1.27
 
-### Data Updates
+### New feature
 
 - Add Inexhaustible Countermoves handling
 
 ## Version 0.1.26
 
-### Data Updates
+### New feature
 -   Add Opportune Riposte reaction check
 -   Add Reflexive Riposte handling
 
 ## Version 0.1.25
 
-### Data Updates
+### New feature
 
 - Add Combat Reflexes handling
 - Notify users when their token are targeted
 
 ## Version 0.1.24
 
-### Data Updates
+### New feature
 
 - Add Triple Opportunity handling
 
@@ -78,50 +85,50 @@
 
 ## Version 0.1.22
 
-### Data Updates
+### New feature
 
 -   Add Airy Step reaction check
 
 ## Version 0.1.21
 
-### Data Updates
+### New feature
 
 -   Add Petrifying Glance reaction check
 
 ## Version 0.1.19
 
-### Data Updates
+### New feature
 
 -   Add notification to inform GM about targeting pc/npc with nimble dodge
 
 ## Version 0.1.18
 
-### Data Updates
+### New feature
 
 -   Small feature for Recall Knowledge without lore
 
 ## Version 0.1.17
 
-### Data Updates
+### New feature
 
 -   Add Avenging Bite reaction check
 
 ## Version 0.1.16
 
-### Data Updates
+### New feature
 
 -   Add Reactive Gnaw reaction check
 -   Add Vengeful Spite reaction check
 
 ## Version 0.1.15
 
-### Data Updates
+### New feature
 
 -   Add Fast Swallow reaction check
 
 ## Version 0.1.14
 
-### Data Updates
+### New feature
 
 -   Add retributive strike reaction check
 
@@ -133,14 +140,14 @@
 
 ## Version 0.1.12
 
-### Data Updates
+### New feature
 
 -   Use correct distance calculation
 -   Check actions for npcs
 
 ## Version 0.1.11
 
-### Data Updates
+### New feature
 
 -   Add ferocity reaction check
 
@@ -159,13 +166,13 @@
 
 ## Version 0.1.8
 
-### Data Updates
+### New feature
 
 -   Add Liberating Step reaction check
 
 ## Version 0.1.7
 
-### Data Updates
+### New feature
 
 -   Save reaction state in combatant
 -   Add iron command reaction check
@@ -173,25 +180,25 @@
 
 ## Version 0.1.6
 
-### Data Updates
+### New feature
 
 -   Add Glimpse of Redemption reaction check
 
 ## Version 0.1.5
 
-### Data Updates
+### New feature
 
 -   Add wicked thorns reaction check
 
 ## Version 0.1.4
 
-### Data Updates
+### New feature
 
 -   Add handling of skill actions
 
 ## Version 0.1.3
 
-### Data Updates
+### New feature
 
 -   Use manipulate trait to check actions in chat
 
@@ -203,14 +210,14 @@
 
 ## Version 0.1.1
 
-### Data Updates
+### New feature
 
 -   Check reaction when token manipulates
 -   Check reaction makes range attack
 
 ## Version 0.1.0
 
-### Data Updates
+### New feature
 
 -   Check reaction when token moves 5ft 
 -   Check 10ft for reach weapon

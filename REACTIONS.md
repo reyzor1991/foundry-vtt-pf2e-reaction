@@ -23,3 +23,5 @@
 22. Mage Hunter
 23. No Escape
 24. Perfect Clarity
+25. Tangle of Battle
+26. Spiritual Guides

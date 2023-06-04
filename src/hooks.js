@@ -1,5 +1,7 @@
 import Settings from "./settings.js";
 
+const spiritual_guides = "@UUID[Compendium.pf2e.feats-srd.cEu8BUS41dlPyPGW]"
+const tangle_of_battle = "@UUID[Compendium.pf2e.feats-srd.GLbl3qoWCvvjJr4S]"
 const mage_hunter = "@UUID[Compendium.pf2e.feats-srd.mqLPCNdCSNyY7gyI]"
 const furious_vengeance = "@UUID[Compendium.pf2e.feats-srd.Oyml3OGNy468z3XI]"
 const embrace_the_pain = "@UUID[Compendium.pf2e.feats-srd.j20djiiuVwUf8MqL]"
@@ -321,7 +323,10 @@ export default function reactionHooks() {
     });
 
     Hooks.on('renderChatMessage', (app, html, msg) => {
-        if (app?.flags?.["reaction-check"] && !msg.user.isGM) {
+        if (msg.user.isGM || Settings.showToPlayers) {
+            return
+        }
+        if (app?.flags?.["reaction-check"]) {
     		html.addClass('hide-reaction-check');
 		    html.hide();
         }
@@ -394,9 +399,7 @@ export default function reactionHooks() {
                         }
                     }
                 })
-            }
-
-            if ('attack-roll' == message?.flags?.pf2e?.context?.type) {
+            } else if ('attack-roll' == message?.flags?.pf2e?.context?.type) {
                 if (hasReaction(message?.target?.token?.combatant)) {
                     if (isTargetCharacter(message)) {
                         if (actorFeat(message?.target?.actor, "nimble-dodge") && !hasCondition(message?.target?.actor,"encumbered")) {
@@ -432,69 +435,87 @@ export default function reactionHooks() {
                         }
                     }
                 }
-            }
 
-            if ('attack-roll' == message?.flags?.pf2e?.context?.type && !isTargetCharacter(message)) {
-                npcWithReaction()
-                .filter(a=>a.actorId != message?.target?.actor._id)
-                .forEach(cc => {
-                    if (getEnemyDistance(message.token, cc.token) <= 5) {
-                        var ab = actorAction(cc.actor, "avenging-bite");
-                        if (ab) {
-                            postInChatTemplate(_uuid(ab), cc?.token?.combatant);
+                if (!isTargetCharacter(message)) {
+                    npcWithReaction()
+                    .filter(a=>a.actorId != message?.target?.actor._id)
+                    .forEach(cc => {
+                        if (getEnemyDistance(message.token, cc.token) <= 5) {
+                            var ab = actorAction(cc.actor, "avenging-bite");
+                            if (ab) {
+                                postInChatTemplate(_uuid(ab), cc?.token?.combatant);
+                            }
                         }
-                    }
-                })
-            }
-            //Hit by
-            if ('attack-roll' == message?.flags?.pf2e?.context?.type
-                && ("success" == message?.flags?.pf2e?.context?.outcome || "criticalSuccess" == message?.flags?.pf2e?.context?.outcome)
-            ) {
-                if (hasReaction(message?.token?.combatant)) {
-                    if (message?.item?.system?.attackEffects?.value.includes("improved-grab")) {
-                        var fs = actorAction(message?.actor, "fast-swallow");
-                        if (fs) {
-                            postInChatTemplate(_uuid(fs), message?.token?.combatant);
-                        }
-                    }
+                    })
                 }
-                if (hasReaction(message?.target?.token?.combatant)) {
-                    if (actorAction(message?.target?.actor, "wicked-thorns")) {
-                        if (message?.item?.traits.has("unarmed") || (message?.item?.isMelee && nonReach(message?.item?.traits))) {
-                            postInChatTemplate(wicked_thorns, message.target.token.combatant);
-                        }
-                    }
-                }
-            }
-            //Hit by crit
-            if ('attack-roll' == message?.flags?.pf2e?.context?.type &&  "criticalSuccess" == message?.flags?.pf2e?.context?.outcome) {
-                if (hasReaction(message?.target?.token?.combatant)) {
-                    var vs = actorAction(message?.target?.actor, "vengeful-spite");
-                    if (vs) {
-                        postInChatTemplate(_uuid(vs), message.target?.token?.combatant);
-                    }
-                    if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && actorFeat(message?.target?.actor, "furious-vengeance")) {
-                        postInChatTemplate(furious_vengeance, message.target.token.combatant);
-                    }
-                }
-            }
-            //Skill check
-            if ("skill-check" == message?.flags?.pf2e?.context?.type && isTargetCharacter(message)
-                && ("success" == message?.flags?.pf2e?.context?.outcome || "criticalSuccess" == message?.flags?.pf2e?.context?.outcome)) {
-                characterWithReaction()
-                .filter(a=>a.actorId != message?.target?.actor._id)
-                .forEach(cc => {
-                    if (message?.flags?.pf2e?.context?.options.find(bb=>bb=="action:grapple")) {
-                        if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15){
-                            if (actorAction(cc.actor, "liberating-step")) {
-                                postInChatTemplate(liberating_step, cc);
+
+                //Hit by
+                if ("success" == message?.flags?.pf2e?.context?.outcome || "criticalSuccess" == message?.flags?.pf2e?.context?.outcome) {
+                    if (hasReaction(message?.token?.combatant)) {
+                        if (message?.item?.system?.attackEffects?.value.includes("improved-grab")) {
+                            var fs = actorAction(message?.actor, "fast-swallow");
+                            if (fs) {
+                                postInChatTemplate(_uuid(fs), message?.token?.combatant);
                             }
                         }
                     }
-                })
-            }
-            //Damage by
-            if ("damage-roll" == message?.flags?.pf2e?.context?.type) {
+                    if (hasReaction(message?.target?.token?.combatant)) {
+                        if (actorAction(message?.target?.actor, "wicked-thorns")) {
+                            if (message?.item?.traits.has("unarmed") || (message?.item?.isMelee && nonReach(message?.item?.traits))) {
+                                postInChatTemplate(wicked_thorns, message.target.token.combatant);
+                            }
+                        }
+                    }
+                }
+
+                //Hit by crit
+                if ("criticalSuccess" == message?.flags?.pf2e?.context?.outcome) {
+                    if (hasReaction(message?.target?.token?.combatant)) {
+                        var vs = actorAction(message?.target?.actor, "vengeful-spite");
+                        if (vs) {
+                            postInChatTemplate(_uuid(vs), message.target?.token?.combatant);
+                        }
+                        if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && actorFeat(message?.target?.actor, "furious-vengeance")) {
+                            postInChatTemplate(furious_vengeance, message.target.token.combatant);
+                        }
+                    }
+                    if (hasReaction(message?.token?.combatant)) {
+                        if (actorFeat(message?.actor, "tangle-of-battle") && getEnemyDistance(message.target.token, message?.token) <= 5) {
+                            postInChatTemplate(tangle_of_battle, message.token.combatant);
+                        }
+                    }
+                }
+            } else if ("perception-check" == message?.flags?.pf2e?.context?.type) {
+                if ("failure" == message?.flags?.pf2e?.context?.outcome) {
+                    if (hasReaction(message?.token?.combatant)) {
+                        if (actorFeat(message?.actor, "spiritual-guides")) {
+                            postInChatTemplate(spiritual_guides, message.token.combatant);
+                        }
+                    }
+                }
+            } else if ("skill-check" == message?.flags?.pf2e?.context?.type) {
+                if (isTargetCharacter(message) && ("success" == message?.flags?.pf2e?.context?.outcome || "criticalSuccess" == message?.flags?.pf2e?.context?.outcome)) {
+                    characterWithReaction()
+                    .filter(a=>a.actorId != message?.target?.actor._id)
+                    .forEach(cc => {
+                        if (message?.flags?.pf2e?.context?.options.find(bb=>bb=="action:grapple")) {
+                            if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15){
+                                if (actorAction(cc.actor, "liberating-step")) {
+                                    postInChatTemplate(liberating_step, cc);
+                                }
+                            }
+                        }
+                    })
+                }
+                if ("failure" == message?.flags?.pf2e?.context?.outcome) {
+                    if (hasReaction(message?.token?.combatant)) {
+                        if (actorFeat(message?.actor, "spiritual-guides")) {
+                            postInChatTemplate(spiritual_guides, message.token.combatant);
+                        }
+                    }
+                }
+
+            } else if ("damage-roll" == message?.flags?.pf2e?.context?.type) {
                 //15 ft damage you
                 if(hasReaction(message?.target?.token?.combatant)) {
                     if (message?.item?.isMelee && actorFeat(message?.target?.actor, "embrace-the-pain")) {

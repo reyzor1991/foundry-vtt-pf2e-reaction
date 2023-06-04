@@ -34,6 +34,7 @@ Add Recall Knowledge feature. Button for standard identification DCs based on cr
 
 ### Issues:
 1. Nimble Dodge spam notification with area spell
+2. Reaction with Frequency once per day not handle correctly
 
 If you need to add a new feature, or you find issues, you can also reach me directly via email at mishabudjakov@gmail.com or on Discord at Reyzor1991#6258.
 
@@ -63,7 +64,7 @@ Open Game License:
 [Minimum Foundry 10]: https://img.shields.io/badge/Minimum%20Foundry-10.291-informational?style=flat-square
 [Verified Foundry 10]: https://img.shields.io/badge/Verified%20Foundry-10.291-informational?style=flat-square
 
-[Version]: https://img.shields.io/badge/Version-0.1.35-yellow?style=flat-square
+[Version]: https://img.shields.io/badge/Version-0.1.36-yellow?style=flat-square
 [Version URL]: https://github.com/reyzor1991/foundry-vtt-pf2e-reaction
 
 [GitHub Release Date]: https://img.shields.io/github/release-date/reyzor1991/foundry-vtt-pf2e-reaction

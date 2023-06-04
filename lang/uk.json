@@ -1,5 +1,6 @@
 {
 	"I18N.LANGUAGE": "Українська",
+	"pf2e-reaction.show-to-players.name": "Показувати повідомлення реакцій гравцям",
 	"pf2e-reaction.show-notification.name": "Показувати сповіщення",
 	"pf2e-reaction.recall-knowledge.name": "Згадати знання",
 	"pf2e-reaction.recall-knowledge.hint": "Додати Згадати знання до НІП листа",

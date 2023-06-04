@@ -1,5 +1,6 @@
 {
 	"I18N.LANGUAGE": "English",
+	"pf2e-reaction.show-to-players.name": "Show reaction message to players",
 	"pf2e-reaction.show-notification.name": "Show notification",
 	"pf2e-reaction.recall-knowledge.name": "Recall Knowledge",
 	"pf2e-reaction.recall-knowledge.hint": "Add Recall Knowledge to NPC Sheet",

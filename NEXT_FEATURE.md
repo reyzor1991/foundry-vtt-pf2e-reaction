@@ -4,8 +4,6 @@
 -
 - Cleave
 - Corpse-Killer's Defiance
-- Spiritual Guides
-- Tangle of Battle
 - Wounded Rage
 -
 - Accompany
