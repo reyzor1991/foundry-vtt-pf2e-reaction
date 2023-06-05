@@ -17,6 +17,9 @@ Small module to notify that actor can use reaction:
 ### Reactions:
 See [REACTIONS.md](./REACTIONS.md)
 
+### Grouping messages
+![Grouping](./grouping.gif)
+
 ### Multiple reactions feature
 - Triple Opportunity
 - Combat Reflexes
@@ -64,7 +67,7 @@ Open Game License:
 [Minimum Foundry 10]: https://img.shields.io/badge/Minimum%20Foundry-10.291-informational?style=flat-square
 [Verified Foundry 10]: https://img.shields.io/badge/Verified%20Foundry-10.291-informational?style=flat-square
 
-[Version]: https://img.shields.io/badge/Version-0.1.36-yellow?style=flat-square
+[Version]: https://img.shields.io/badge/Version-0.1.37-yellow?style=flat-square
 [Version URL]: https://github.com/reyzor1991/foundry-vtt-pf2e-reaction
 
 [GitHub Release Date]: https://img.shields.io/github/release-date/reyzor1991/foundry-vtt-pf2e-reaction

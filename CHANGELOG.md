@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.1.37
+
+### New feature
+-   Grouping messages
+
 ## Version 0.1.36
 
 ### New feature

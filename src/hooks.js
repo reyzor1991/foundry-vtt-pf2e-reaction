@@ -159,16 +159,27 @@ function _uuid(obj) {
     return "@UUID["+obj.uuid+"]";
 }
 
+function countReaction(combatant, actionName=undefined) {
+    var count = 0;
+    if (combatant) {
+        if (combatant?.flags?.["reaction-check"]?.state) {
+            count += 1;
+        }
+        if (actionName == "attack-of-opportunity") {
+            count += combatant?.flags?.['reaction-check']?.['triple-opportunity'] ?? 0;
+            count += combatant?.flags?.['reaction-check']?.['combat-reflexes'] ?? 0;
+            count += combatant?.flags?.['reaction-check']?.['inexhaustible-countermoves'] ?? 0;
+         } else if (actionName == "opportune-riposte") {
+            count += combatant?.flags?.['reaction-check']?.['reflexive-riposte'] ?? 0;
+            count += combatant?.flags?.['reaction-check']?.['inexhaustible-countermoves'] ?? 0;
+         }
+
+    }
+    return count;
+}
+
 function hasReaction(combatant, actionName=undefined) {
-    return combatant
-        && (combatant?.flags?.["reaction-check"]?.state
-            || (actionName == "attack-of-opportunity"
-                && (combatant?.flags?.['reaction-check']?.['triple-opportunity'] || combatant?.flags?.['reaction-check']?.['combat-reflexes'] || combatant?.flags?.['reaction-check']?.['inexhaustible-countermoves'])
-            )
-            || (actionName == "opportune-riposte"
-                && (combatant?.flags?.['reaction-check']?.['reflexive-riposte'] || combatant?.flags?.['reaction-check']?.['inexhaustible-countermoves'])
-            )
-        )
+    return countReaction(combatant, actionName) > 0;
 }
 
 function characterWithReaction() {
@@ -202,26 +213,50 @@ function canReachEnemy(attackerToken, defendToken, defendActor) {
 
 async function postInChatTemplate(uuid, combatant, actionName=undefined) {
     var text = game.i18n.format("pf2e-reaction.ask", {uuid:uuid, name:combatant.token.name});
-    const content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text:text});
-    ChatMessage.create({
-        flavor: '',
-        user: null,
-        speaker: {
-            scene: null,
-            actor: null,
-            token: null,
-            alias: "System"
-        },
-        type: CONST.CHAT_MESSAGE_TYPES.OOC,
-        content: content,
-        whisper: ChatMessage.getWhisperRecipients("GM").map((u) => u.id),
-        flags: {
-            "reaction-check": {
-                cId: combatant._id,
-                actionName: actionName
-            }
-        }
-    });
+    var content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text:text});
+    var check = {
+        cId: combatant._id,
+        actionName: actionName
+    }
+    if (game.messages.size > 0 && content == game.messages.contents[game.messages.size-1].content) {
+        check['count'] = 2
+        check['content'] = content
+        check['uuid'] = uuid
+        check['reactions'] = countReaction(combatant, actionName)
+
+        text = game.i18n.format("pf2e-reaction.askMultiple", {uuid:uuid, name:combatant.token.name, count: 2});
+        content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text:text});
+
+        game.messages.contents[game.messages.size-1].update({
+            'content': content,
+            "flags.reaction-check": check
+        })
+    } else if (game.messages.size > 0 && content == game.messages.contents[game.messages.size-1]?.flags?.["reaction-check"]?.content) {
+        var count = game.messages.contents[game.messages.size-1]?.flags?.["reaction-check"]?.count + 1;
+        text = game.i18n.format("pf2e-reaction.askMultiple", {uuid:uuid, name:combatant.token.name, count: count});
+        content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text:text});
+
+        game.messages.contents[game.messages.size-1].update({
+            'content': content,
+            "flags.reaction-check.count": count,
+            "flags.reaction-check.reactions": countReaction(combatant, actionName)
+        })
+    } else {
+        ChatMessage.create({
+            flavor: '',
+            user: null,
+            speaker: {
+                scene: null,
+                actor: null,
+                token: null,
+                alias: "System"
+            },
+            type: CONST.CHAT_MESSAGE_TYPES.OOC,
+            content: content,
+            whisper: ChatMessage.getWhisperRecipients("GM").map((u) => u.id),
+            flags: {"reaction-check": check}
+        });
+    }
 }
 
 function checkCombatantTriggerAttackOfOpportunity(actorType, actorId, token) {
@@ -259,16 +294,32 @@ function checkCombatantTriggerAttackOfOpportunity(actorType, actorId, token) {
 }
 
 export default function reactionHooks() {
-    $(document).on('click', '.reaction-check', function () {
+    $(document).on('click', '.reaction-check', async function () {
         var mid = $(this).parent().parent().parent().data('message-id');
         if (mid) {
             var mes = game.messages.get(mid);
             var t = mes.flags['reaction-check'].cId;
+            var reactions = mes.flags['reaction-check'].reactions;
+            var count = mes.flags['reaction-check'].count;
+            var uuid = mes.flags['reaction-check'].uuid;
             if (t) {
                 var combatant = game.combat.turns.find(a=>a._id === t);
                 if (combatant) {
                     updateCombatantReactionState(combatant, false, mes?.flags['reaction-check']?.actionName);
-                    mes.delete()
+                    if (reactions > 1 && count > 1) {
+                        var text = game.i18n.format("pf2e-reaction.ask", {uuid:uuid, name:combatant.token.name});
+                        if (count-1 > 1) {
+                            text = game.i18n.format("pf2e-reaction.askMultiple", {uuid:uuid, name:combatant.token.name, count: count -1});
+                        }
+                        var content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text:text});
+                        mes.update({
+                            'content': content,
+                            "flags.reaction-check.count": count - 1,
+                            "flags.reaction-check.reactions": reactions - 1
+                        })
+                    } else {
+                        mes.delete()
+                    }
                 }
             }
         }

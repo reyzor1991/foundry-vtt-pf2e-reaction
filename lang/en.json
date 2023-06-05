@@ -10,6 +10,7 @@
 	"pf2e-reaction.weaponReachRange.hint": "Reach weapon distance to check attack of opportunity",
 	"pf2e-reaction.notify": "{name} has {uuid}. Pay attention to this!",
 	"pf2e-reaction.ask": "{name} may use {uuid}. Reaction was used??",
+	"pf2e-reaction.askMultiple": "{name} may use {uuid}, it happened {count} times. Reaction was used??",
 	"pf2e-reaction.yes": "Yes",
 	"pf2e-reaction.no": "No"
 }
