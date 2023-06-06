@@ -1,5 +1,7 @@
 import Settings from "./settings.js";
 
+const pirouette = "@UUID[Compendium.pf2e.feats-srd.RlKGaxQWWLa7xJSc]"
+const accompany = "@UUID[Compendium.pf2e.feats-srd.oTTddwzF9TPNkMyd]"
 const spiritual_guides = "@UUID[Compendium.pf2e.feats-srd.cEu8BUS41dlPyPGW]"
 const tangle_of_battle = "@UUID[Compendium.pf2e.feats-srd.GLbl3qoWCvvjJr4S]"
 const mage_hunter = "@UUID[Compendium.pf2e.feats-srd.mqLPCNdCSNyY7gyI]"
@@ -196,6 +198,10 @@ function actorWithReactionForType(type) {
 
 function hasCondition(actor, con) {
     return actor && actor?.itemTypes?.condition?.find((c => c.type == "condition" && con === c.slug))
+}
+
+function hasEffect(actor, eff) {
+    return actor && actor?.itemTypes?.effect?.find((c => eff === c.slug))
 }
 
 function actorAction(actor, action) {
@@ -441,15 +447,30 @@ export default function reactionHooks() {
                 }
             }
 
-            if ("spell-cast" == message?.flags?.pf2e?.context?.type) {
-                characterWithReaction()
-                .forEach(cc => {
-                    if (canReachEnemy(message.token, cc.token, cc.actor)) {
-                        if (actorFeat(cc.actor, "mage-hunter")) {
-                            postInChatTemplate(mage_hunter, cc);
+            if (message?.flags?.pf2e?.casting || "spell-cast" == message?.flags?.pf2e?.context?.type) {
+                var charWithReact = characterWithReaction();
+
+                charWithReact
+                    .forEach(cc => {
+                        if (canReachEnemy(message.token, cc.token, cc.actor)) {
+                            if (actorFeat(cc.actor, "mage-hunter")) {
+                                postInChatTemplate(mage_hunter, cc);
+                            }
                         }
+                    })
+                if (message?.item) {
+                    if (!message?.item?.isCantrip) {
+                        charWithReact
+                            .filter(a=>a.actorId != message?.actor?._id)
+                            .filter(a=>getEnemyDistance(message.token, a.token) <= 30)
+                            .forEach(cc => {
+                                if (actorFeat(cc.actor, "accompany")) {
+                                    postInChatTemplate(accompany, cc);
+                                }
+                            })
                     }
-                })
+                }
+
             } else if ('attack-roll' == message?.flags?.pf2e?.context?.type) {
                 if (hasReaction(message?.target?.token?.combatant)) {
                     if (isTargetCharacter(message)) {
@@ -458,6 +479,9 @@ export default function reactionHooks() {
                         }
                         if (actorFeat(message?.target?.actor, "airy-step")) {
                             postInChatTemplate(airy_step_feat, message.target.token.combatant);
+                        }
+                        if (actorFeat(message?.target?.actor, "pirouette") && hasEffect(message?.target?.actor, "stance-masquerade-of-seasons-stance")) {
+                            postInChatTemplate(pirouette, message.target.token.combatant);
                         }
                     } else {
                         if (actorAction(message?.target?.actor, "nimble-dodge") && !hasCondition(message?.target?.actor,"encumbered")) {
@@ -627,6 +651,11 @@ export default function reactionHooks() {
                     var as = actorFeat(token.actor, "airy-step");
                     if (as) {
                         var text = game.i18n.format("pf2e-reaction.notify", {uuid:as.name, name:token.name});
+                        ui.notifications.info(`${_user.name} targets ${token.name}. ${text}`);
+                    }
+                    var pir = actorFeat(token.actor, "pirouette");
+                    if (pir && hasEffect(token.actor, "stance-masquerade-of-seasons-stance")) {
+                        var text = game.i18n.format("pf2e-reaction.notify", {uuid:pir.name, name:token.name});
                         ui.notifications.info(`${_user.name} targets ${token.name}. ${text}`);
                     }
                 } else {

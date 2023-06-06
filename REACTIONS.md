@@ -25,3 +25,5 @@
 24. Perfect Clarity
 25. Tangle of Battle
 26. Spiritual Guides
+27. Accompany
+28. Pirouette

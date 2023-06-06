@@ -6,7 +6,6 @@
 - Corpse-Killer's Defiance
 - Wounded Rage
 -
-- Accompany
 - All in my Head
 - Courageous Opportunity
 - Educate Allies

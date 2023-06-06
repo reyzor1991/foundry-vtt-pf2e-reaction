@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.1.38
+
+### New feature
+-   Add Accompany reaction check
+-   Add Pirouette reaction check
+
 ## Version 0.1.37
 
 ### New feature
