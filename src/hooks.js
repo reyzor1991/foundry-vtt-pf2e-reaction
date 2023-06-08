@@ -224,6 +224,12 @@ async function postInChatTemplate(uuid, combatant, actionName=undefined) {
         cId: combatant._id,
         actionName: actionName
     }
+
+    var whispers = ChatMessage.getWhisperRecipients("GM").map((u) => u.id);
+    if (combatant.players) {
+        whispers = whispers.concat(combatant.players.map((u) => u.id));
+    }
+
     if (game.messages.size > 0 && content == game.messages.contents[game.messages.size-1].content) {
         check['count'] = 2
         check['content'] = content
@@ -259,7 +265,7 @@ async function postInChatTemplate(uuid, combatant, actionName=undefined) {
             },
             type: CONST.CHAT_MESSAGE_TYPES.OOC,
             content: content,
-            whisper: ChatMessage.getWhisperRecipients("GM").map((u) => u.id),
+            whisper: whispers,
             flags: {"reaction-check": check}
         });
     }
