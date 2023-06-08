@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.1.39
+
+### Bug fixes
+-   Change list of whispers
+
 ## Version 0.1.38
 
 ### New feature
