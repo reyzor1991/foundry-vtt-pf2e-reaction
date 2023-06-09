@@ -1,5 +1,8 @@
 import Settings from "./settings.js";
 
+const shield_wall = "@UUID[Compendium.pf2e.feats-srd.QpRzvfWdj6YH9TyE]"
+const sacrifice_armor = "@UUID[Compendium.pf2e.feats-srd.bYijGvCvCmJnW6aA]"
+const ringmasters_introduction = "@UUID[Compendium.pf2e.feats-srd.OliKxFIqzky2o6vk]"
 const pirouette = "@UUID[Compendium.pf2e.feats-srd.RlKGaxQWWLa7xJSc]"
 const accompany = "@UUID[Compendium.pf2e.feats-srd.oTTddwzF9TPNkMyd]"
 const spiritual_guides = "@UUID[Compendium.pf2e.feats-srd.cEu8BUS41dlPyPGW]"
@@ -305,6 +308,19 @@ function checkCombatantTriggerAttackOfOpportunity(actorType, actorId, token) {
         })
 }
 
+function checkRingmasterIntroduction(combatant) {
+    if (combatant?.actor?.type == "character") {
+        characterWithReaction()
+            .filter(a=>a.tokenId != combatant.tokenId)
+            .filter(a=>hasReaction(a))
+            .forEach(cc => {
+                if (actorFeat(cc.actor, "ringmasters-introduction")) {
+                    postInChatTemplate(ringmasters_introduction, cc);
+                }
+            })
+    }
+}
+
 export default function reactionHooks() {
     $(document).on('click', '.reaction-check', async function () {
         var mid = $(this).parent().parent().parent().data('message-id');
@@ -356,6 +372,9 @@ export default function reactionHooks() {
                     }
                 })
         }
+        if (combat.round == 1) {
+            checkRingmasterIntroduction(combat.nextCombatant)
+        }
     });
 
     Hooks.on('combatRound', async (combat, updateData, updateOptions) => {
@@ -377,6 +396,7 @@ export default function reactionHooks() {
             updateCombatantReactionState(cc, true)
         });
         updateInexhaustibleCountermoves(combat.turns[0]);
+        checkRingmasterIntroduction(combat.turns[0]);
     });
 
     Hooks.on('createCombatant', async combatant => {
@@ -418,6 +438,27 @@ export default function reactionHooks() {
         }
     });
 
+    Hooks.on('createItem', (effect, data, id) => {
+        if ("effect-raise-a-shield" == effect.slug && effect.actor.type ==  "character") {
+            var currCom = game.combat.turns.find(a=>a.actorId == effect.actor.id);
+            var withShield = game.combat.turns.filter(a => a.actor.type == "character")
+                .filter(a=>hasEffect(a.actor, "effect-raise-a-shield"));
+            if (hasReaction(currCom) && actorFeat(currCom.actor, "shield-wall")) {
+                var adjacent = withShield
+                .filter(a=>getEnemyDistance(a.token, currCom.token) <= 5);
+                if (adjacent.length > 1) {
+                    postInChatTemplate(shield_wall, currCom);
+                }
+            }
+            withShield.filter(a=>hasReaction(a) && actorFeat(a.actor, "shield-wall"))
+            .filter(a=>a.id != currCom.id)
+            .filter(a=>getEnemyDistance(a.token, currCom.token) <= 5)
+            .forEach(cc => {
+                postInChatTemplate(shield_wall, cc);
+            });
+        }
+    });
+
     Hooks.on('preUpdateToken', (tokenDoc, data, deep, id) => {
         if (data?.actorData?.system?.attributes?.hp?.value == 0) {
             if (hasReaction(tokenDoc?.combatant)) {
@@ -454,9 +495,7 @@ export default function reactionHooks() {
             }
 
             if (message?.flags?.pf2e?.casting || "spell-cast" == message?.flags?.pf2e?.context?.type) {
-                var charWithReact = characterWithReaction();
-
-                charWithReact
+                ("character" == message?.actor?.type ? npcWithReaction() : characterWithReaction())
                     .forEach(cc => {
                         if (canReachEnemy(message.token, cc.token, cc.actor)) {
                             if (actorFeat(cc.actor, "mage-hunter")) {
@@ -464,9 +503,9 @@ export default function reactionHooks() {
                             }
                         }
                     })
-                if (message?.item) {
+                if (message?.item && "character" == message?.actor?.type) {
                     if (!message?.item?.isCantrip) {
-                        charWithReact
+                        ("character" == message?.actor?.type ? characterWithReaction() : npcWithReaction())
                             .filter(a=>a.actorId != message?.actor?._id)
                             .filter(a=>getEnemyDistance(message.token, a.token) <= 30)
                             .forEach(cc => {
@@ -597,8 +636,19 @@ export default function reactionHooks() {
                 }
 
             } else if ("damage-roll" == message?.flags?.pf2e?.context?.type) {
+
+
                 //15 ft damage you
                 if(hasReaction(message?.target?.token?.combatant)) {
+                    if (message?.item?.system?.damageRolls) {
+                        var dTypes = Object.values(message?.item?.system?.damageRolls).map(a=>a.damageType);
+                        if (dTypes.filter(a=> a== "bludgeoning" || a == "piercing" || a== "slashing").length > 0) {
+                            if (actorFeat(message?.target?.actor, "sacrifice-armor")) {
+                                postInChatTemplate(sacrifice_armor, message.target.token.combatant);
+                            }
+                        }
+                    }
+
                     if (message?.item?.isMelee && actorFeat(message?.target?.actor, "embrace-the-pain")) {
                         postInChatTemplate(embrace_the_pain, message.target.token.combatant);
                     }

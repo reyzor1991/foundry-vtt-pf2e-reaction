@@ -27,3 +27,6 @@
 26. Spiritual Guides
 27. Accompany
 28. Pirouette
+29. Ringmaster's Introduction
+30. Sacrifice Armor
+31. Shield Wall

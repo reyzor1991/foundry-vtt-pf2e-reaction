@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 0.1.40
+
+### New feature
+-   Add Ringmaster's Introduction reaction check
+-   Add Sacrifice Armor reaction check
+-   Add Shield Wall reaction check
+
 ## Version 0.1.39
 
 ### Bug fixes
