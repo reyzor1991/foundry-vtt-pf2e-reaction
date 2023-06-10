@@ -349,7 +349,7 @@ function anyFailureMessageOutcome(message) {
 }
 
 function anySuccessMessageOutcome(message) {
-    return anySuccessMessageOutcome(message) || criticalSuccessMessageOutcome(message);
+    return successMessageOutcome(message) || criticalSuccessMessageOutcome(message);
 }
 
 export default function reactionHooks() {
@@ -504,6 +504,20 @@ export default function reactionHooks() {
                     });
             }
 
+            handleHomebrewMessages({
+                'token': tokenDoc,
+                'item': {
+                    'type': 'action',
+                    'system': {
+                        'traits': {
+                            'value': ['move']
+                        }
+                    }
+                },
+                'actor': {
+                    'type': tokenDoc.actor?.type
+                }
+            })
         }
     });
 
@@ -530,7 +544,7 @@ export default function reactionHooks() {
             }
             if (
                 (messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll"))
-                || (message?.item?.type == 'action' && message?.item?.system?.traits?.value.includes("manipulate"))
+                || (message?.item?.type == 'action' && (message?.item?.system?.traits?.value.includes("manipulate") || message?.item?.system?.traits?.value.includes("move")))
             ) {
                 checkCombatantTriggerAttackOfOpportunity(message.actor?.type, message.actor._id, message.token);
             } else if (user?.flags?.pf2e?.origin?.type == 'action') {
@@ -750,8 +764,99 @@ export default function reactionHooks() {
                     }
                 }
             }
+
+            handleHomebrewMessages(message)
         }
     });
+
+    function handleHomebrewTrigger(tr, message) {
+        if (tr.name == 'EnemyUseRangedAttack' && messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll")) {
+            return true;
+        }
+        if (tr.name == 'EnemyUseManipulateAction' && message?.item?.type == 'action' && message?.item?.system?.traits?.value.includes("manipulate")) {
+            return true;
+        }
+        if (tr.name == 'EnemyUseMoveAction' && message?.item?.type == 'action' && message?.item?.system?.traits?.value.includes("move")) {
+            return true;
+        }
+        if (tr.name == 'FailSavingThrow' && messageType(message, 'saving-throw')) {
+            return true;
+        }
+        if (tr.name == 'CriticallyHitCreature' && messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
+            return true;
+        }
+        if (tr.name == 'AllyTakeDamage' && messageType(message, 'damage-roll')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    function filterByDistance(t, tr, message) {
+        var r = t;
+        if (tr.reach) {
+            r = r.filter(cc=>canReachEnemy(message.token, cc.token, cc.actor));
+        } else if (tr.adjacent) {
+            r = r.filter(a=>getEnemyDistance(message.token, a.token) <= 5);
+        } else if (tr.reachValue > 0) {
+            r = r.filter(a=>getEnemyDistance(message.token, a.token) <= tr.reachValue);
+        }
+        return r;
+    }
+
+    function combatantsForTriggers(tt, message) {
+        var res = [];
+
+        tt.forEach(tr => {
+            if (tr.name == 'EnemyUseRangedAttack' && messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll")) {
+                var t = filterByDistance(("character" == message?.actor?.type ? npcWithReaction() : characterWithReaction()), tr, message);
+                res = res.concat(t);
+            }
+            if (tr.name == 'EnemyUseManipulateAction' && message?.item?.type == 'action' && message?.item?.system?.traits?.value.includes("manipulate")) {
+                var t = filterByDistance(("character" == message?.actor?.type ? npcWithReaction() : characterWithReaction()), tr, message);
+                res = res.concat(t);
+            }
+            if (tr.name == 'EnemyUseMoveAction' && message?.item?.type == 'action' && message?.item?.system?.traits?.value.includes("move")) {
+                var t = filterByDistance(("character" == message?.actor?.type ? npcWithReaction() : characterWithReaction()), tr, message);
+                res = res.concat(t);
+            }
+            if (tr.name == 'FailSavingThrow' && messageType(message, 'saving-throw')) {
+                var t = filterByDistance([message?.token?.combatant], tr, message);
+                res = res.concat(t);
+            }
+            if (tr.name == 'CriticallyHitCreature' && messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
+                var t = filterByDistance([message?.token?.combatant], tr, message);
+                res = res.concat(t);
+            }
+            if (tr.name == 'AllyTakeDamage' && messageType(message, 'damage-roll')) {
+                var t = filterByDistance(actorWithReactionForType(message?.target?.actor?.type)
+                .filter(a=>a.actorId != message?.target?.actor._id), tr, message);
+                res = res.concat(t);
+            }
+        });
+
+        res = [...new Map(res.map(item =>[item['actorId'], item])).values()];
+
+        return res;
+    }
+
+    async function handleHomebrewMessages(message) {
+        if (Settings.useHomebrew) {
+            Settings.homebrewReactions
+                .filter(a=>a.slug.length > 0 && a.uuid.length > 0 && a.triggers.length > 0)
+                .filter(a=>a.triggers.filter(a=> a.name != "None").length > 0)
+                .forEach(hr => {
+                    var tt = hr.triggers.filter(a=> a.name != "None");
+                    if (tt.some(a=>handleHomebrewTrigger(a, message))) {
+                        combatantsForTriggers(tt, message)
+                            .filter(a=>actorFeat(a.actor, hr.slug))
+                            .forEach(cc => {
+                                postInChatTemplate(_uuid(hr), cc);
+                            })
+                    }
+                })
+        }
+    }
 
     Hooks.on("targetToken", (_user, token, isTargeted, opts) => {
         if (Settings.notification && game?.combats?.active && isTargeted && hasReaction(token?.combatant)) {

@@ -1,0 +1,55 @@
+<form autocomplete="off" onsubmit="event.preventDefault();">
+    {{#each settings as |setting|}}
+        <div class="form-group">
+            <label for="{{setting.key}}">{{localize setting.name}}</label>
+            <div class="form-fields">
+                {{#if setting.isCheckbox}}
+                    <input type="checkbox" name="{{setting.key}}" {{checked setting.value}} />
+                {{/if}}
+            </div>
+        </div>
+    {{/each}}
+
+    {{#each homebrewReactions as |homebrewReaction|}}
+        <fieldset class="row">
+            <div class="form-group first-line">
+                <label>Slug</label>
+                <input type="text" name="homebrewReaction.{{homebrewReaction.idx}}.slug" value="{{homebrewReaction.slug}}"/>
+                <button type="button" class="homebrew-reaction-delete" data-idx={{homebrewReaction.idx}}><i class="fas fa-trash"></i></button>
+            </div>
+            <div class="form-group">
+                <label>UUID</label>
+                <input type="text" name="homebrewReaction.{{homebrewReaction.idx}}.uuid" value="{{homebrewReaction.uuid}}"/>
+            </div>
+            <button type="button" class="add-reaction-trigger" data-idx={{homebrewReaction.idx}}><i class="fas fa-add"></i>{{localize "pf2e-reaction.SETTINGS.addTrigger"}}</button>
+            {{#each homebrewReaction.triggers as |t|}}
+                <div class="form-group">
+                    <label>Triggers</label>
+                    <select name="homebrewReaction.{{homebrewReaction.idx}}.triggers.{{t.idx}}.name">
+                        {{#each t.choices as |v k|}}
+                            <option value="{{k}}" {{#if (eq k t.name)}} selected {{/if}}>{{localize v}}</option>
+                        {{/each}}
+                    </select>
+                    <label>Reach value</label>
+                    <input type="number" min="0" name="homebrewReaction.{{homebrewReaction.idx}}.triggers.{{t.idx}}.reachValue" value="{{t.reachValue}}"/>
+                    <label>Reach</label>
+                    <input type="checkbox" name="homebrewReaction.{{homebrewReaction.idx}}.triggers.{{t.idx}}.reach" {{#if t.reach}} checked {{/if}}/>
+                    <label>Adjacent</label>
+                    <input type="checkbox" name="homebrewReaction.{{homebrewReaction.idx}}.triggers.{{t.idx}}.adjacent" {{#if t.adjacent}} checked {{/if}}/>
+                    <button type="button" class="trigger-reaction-delete" data-parent={{homebrewReaction.idx}} data-idx={{t.idx}}><i class="fas fa-trash"></i></button>
+                </div>
+            {{/each}}
+
+        </fieldset>
+    {{/each}}
+
+    <footer class="sheet-footer flexrow">
+        <button type="button" class="add-reaction"><i class="fas fa-add"></i>{{localize "pf2e-reaction.SETTINGS.addReaction"}}</button>
+    </footer>
+
+    <div class="form-group buttons">
+        <button type="submit" name="submit">
+            <i class="far fa-save"></i> {{localize "SETTINGS.Save"}}
+        </button>
+    </div>
+</form>

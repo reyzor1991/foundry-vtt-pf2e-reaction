@@ -1,3 +1,5 @@
+import ReactionHomebrewSettings from "./homebrew.js";
+
 export default class Settings {
     static get weaponRange() {
         return game.settings.get("pf2e-reaction", "weaponRange");
@@ -14,7 +16,16 @@ export default class Settings {
     static get showToPlayers() {
         return game.settings.get("pf2e-reaction", "show-to-players");
     }
+    static get useHomebrew() {
+        return game.settings.get("pf2e-reaction", "useHomebrew");
+    }
+    static get homebrewReactions() {
+        return game.settings.get("pf2e-reaction", "homebrewReactions");
+    }
     static register() {
+
+        ReactionHomebrewSettings.init();
+
         game.settings.register("pf2e-reaction", "weaponRange", {
             name: game.i18n.localize("pf2e-reaction.weaponRange.name"),
             hint: game.i18n.localize("pf2e-reaction.weaponRange.hint"),

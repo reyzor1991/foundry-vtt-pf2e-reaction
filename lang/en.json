@@ -1,5 +1,24 @@
 {
 	"I18N.LANGUAGE": "English",
+
+   "pf2e-reaction.SETTINGS.trigger.None":  "None",
+   "pf2e-reaction.SETTINGS.trigger.FailSavingThrow":  "Fail Saving Throw",
+   "pf2e-reaction.SETTINGS.trigger.CriticallyHitCreature":  "Critically hit a creature",
+   "pf2e-reaction.SETTINGS.trigger.EnemyUseManipulateAction":  "Enemy use manipulate action",
+   "pf2e-reaction.SETTINGS.trigger.EnemyUseMoveAction":  "Enemy use move action",
+   "pf2e-reaction.SETTINGS.trigger.EnemyUseRangedAttack":  "Enemy use ranged attack",
+   "pf2e-reaction.SETTINGS.trigger.AllyTakeDamage":  "Ally take damage",
+
+	"pf2e-reaction.SETTINGS.addReaction": "Add Homebrew Reaction",
+	"pf2e-reaction.SETTINGS.addTrigger": "Add Reaction Trigger",
+
+	"pf2e-reaction.SETTINGS.useHomebrew.name": "Use homebrew reactions",
+	"pf2e-reaction.SETTINGS.homebrewReactions.name": "Homebrew reactions",
+
+	"pf2e-reaction.SETTINGS.homebrewSettings.name": "Homebrew reactions Settings",
+	"pf2e-reaction.SETTINGS.homebrewSettings.label": "Manage Homebrew reactions Settings",
+	"pf2e-reaction.SETTINGS.homebrewSettings.hint": "Enable and configure Homebrew reactions",
+
 	"pf2e-reaction.show-to-players.name": "Show reaction message to players",
 	"pf2e-reaction.show-notification.name": "Show notification",
 	"pf2e-reaction.recall-knowledge.name": "Recall Knowledge",

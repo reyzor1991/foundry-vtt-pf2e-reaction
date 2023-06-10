@@ -21,6 +21,10 @@ See [REACTIONS.md](./REACTIONS.md)
 ### Grouping messages
 ![Grouping](./grouping.gif)
 
+### Homebrew reactions
+![Grouping](./homebrew.png)
+![Grouping](./homebrew_settings.png)
+
 ### Multiple reactions feature
 - Triple Opportunity
 - Combat Reflexes
@@ -67,7 +71,7 @@ Open Game License:
 
 [Foundry URL]: https://foundryvtt.com
 
-[Version]: https://img.shields.io/badge/Version-0.1.43-yellow?style=flat-square
+[Version]: https://img.shields.io/badge/Version-0.2.0-yellow?style=flat-square
 [Version URL]: https://github.com/reyzor1991/foundry-vtt-pf2e-reaction
 
 [GitHub Release Date]: https://img.shields.io/github/release-date/reyzor1991/foundry-vtt-pf2e-reaction

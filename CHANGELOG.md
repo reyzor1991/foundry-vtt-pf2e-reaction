@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.0
+
+### New feature
+-   Add Homebrew Reactions handler
+
 ## Version 0.1.43
 
 ### New feature

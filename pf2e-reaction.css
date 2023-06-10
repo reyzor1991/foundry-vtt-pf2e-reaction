@@ -7,3 +7,16 @@
 	margin: 0;
 	padding: 0;
 }
+
+#homebrewSettings-settings form button.homebrew-reaction-delete {
+    flex: 0.2;
+}
+
+#homebrewSettings-settings form .form-group > label {
+    flex: 2;
+    padding-left: 4px;
+}
+
+#homebrewSettings-settings .first-line > label {
+    flex: 2.2!important;
+}
