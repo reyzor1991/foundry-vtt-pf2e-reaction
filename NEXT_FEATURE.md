@@ -19,7 +19,6 @@
 - Miraculous Intervention
 - Shield of Reckoning
 -
-- Denier of Destruction
 - Premonition of Avoidance
 - Premonition of Clarity
 - Rapid Response

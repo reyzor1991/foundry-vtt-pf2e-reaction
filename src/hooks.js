@@ -1,5 +1,6 @@
 import Settings from "./settings.js";
 
+const denier_of_destruction = "@UUID[Compendium.pf2e.feats-srd.Item.siegOEdEpevAJNFw]"
 const shield_wall = "@UUID[Compendium.pf2e.feats-srd.QpRzvfWdj6YH9TyE]"
 const sacrifice_armor = "@UUID[Compendium.pf2e.feats-srd.bYijGvCvCmJnW6aA]"
 const ringmasters_introduction = "@UUID[Compendium.pf2e.feats-srd.OliKxFIqzky2o6vk]"
@@ -636,8 +637,6 @@ export default function reactionHooks() {
                 }
 
             } else if ("damage-roll" == message?.flags?.pf2e?.context?.type) {
-
-
                 //15 ft damage you
                 if(hasReaction(message?.target?.token?.combatant)) {
                     if (message?.item?.system?.damageRolls) {
@@ -675,7 +674,7 @@ export default function reactionHooks() {
                         }
                     }
                 }
-                //15 ft damage ally
+                //ally damaged
                 actorWithReactionForType(message?.target?.actor?.type)
                 .filter(a=>a.actorId != message?.target?.actor._id)
                 .forEach(cc => {
@@ -688,6 +687,11 @@ export default function reactionHooks() {
                         }
                         if (actorAction(cc.actor, "retributive-strike")) {
                             postInChatTemplate(retributive_strike, cc);
+                        }
+                    }
+                    if (getEnemyDistance(message.target.token, cc.token) <= 30) {
+                        if (actorFeat(cc.actor, "denier-of-destruction")) {
+                            postInChatTemplate(denier_of_destruction, cc);
                         }
                     }
                 })

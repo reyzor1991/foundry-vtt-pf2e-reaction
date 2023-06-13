@@ -30,3 +30,4 @@
 29. Ringmaster's Introduction
 30. Sacrifice Armor
 31. Shield Wall
+32. Denier of Destruction

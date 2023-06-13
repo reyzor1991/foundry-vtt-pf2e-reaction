@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.1.41
+
+### New feature
+-   Add Denier of Destruction reaction check
+
 ## Version 0.1.40
 
 ### New feature
