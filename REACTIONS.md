@@ -31,3 +31,4 @@
 30. Sacrifice Armor
 31. Shield Wall
 32. Denier of Destruction
+33. Rapid Response

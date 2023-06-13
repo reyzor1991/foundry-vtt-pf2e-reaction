@@ -1,5 +1,6 @@
 import Settings from "./settings.js";
 
+const rapid_response = "@UUID[Compendium.pf2e.feats-srd.Item.OcBaEnGdDm6CuSnr]"
 const denier_of_destruction = "@UUID[Compendium.pf2e.feats-srd.Item.siegOEdEpevAJNFw]"
 const shield_wall = "@UUID[Compendium.pf2e.feats-srd.QpRzvfWdj6YH9TyE]"
 const sacrifice_armor = "@UUID[Compendium.pf2e.feats-srd.bYijGvCvCmJnW6aA]"
@@ -461,28 +462,43 @@ export default function reactionHooks() {
     });
 
     Hooks.on('preUpdateToken', (tokenDoc, data, deep, id) => {
-        if (data?.actorData?.system?.attributes?.hp?.value == 0) {
-            if (hasReaction(tokenDoc?.combatant)) {
-                if (actorAction(tokenDoc?.actor, "ferocity")) {
-                    postInChatTemplate(ferocity, tokenDoc.combatant);
-                }
-            }
-        }
         if (game?.combats?.active && (data.x > 0 || data.y > 0)) {
             checkCombatantTriggerAttackOfOpportunity(tokenDoc.actor?.type, tokenDoc.actorId, tokenDoc);
-            characterWithReaction()
-                .filter(a=>a.tokenId != tokenDoc._id)
-                .filter(a=>actorFeat(a.actor, "no-escape"))
-                .forEach(cc => {
-                    if (canReachEnemy(tokenDoc, cc.token, cc.actor)) {
-                        postInChatTemplate(no_escape, cc);
-                    }
-                });
+            if (tokenDoc.actor.type == "npc") {
+                characterWithReaction()
+                    .filter(a=>a.tokenId != tokenDoc._id)
+                    .filter(a=>actorFeat(a.actor, "no-escape"))
+                    .forEach(cc => {
+                        if (canReachEnemy(tokenDoc, cc.token, cc.actor)) {
+                            postInChatTemplate(no_escape, cc);
+                        }
+                    });
+            }
+
         }
     });
 
     Hooks.on('preCreateChatMessage',(message, user, _options, userId)=>{
         if (game?.combats?.active) {
+            if (message?.flags?.pf2e?.appliedDamage && !message?.flags?.pf2e?.appliedDamage?.isHealing) {
+                if (message.actor.system?.attributes?.hp?.value == 0) {
+                    if (hasReaction(message?.token?.combatant)) {
+                        if (actorAction(message?.actor, "ferocity")) {
+                            postInChatTemplate(ferocity, message?.token?.combatant);
+                        }
+                    }
+                    // ally
+                    if ("character" == message?.actor?.type) {
+                        characterWithReaction()
+                        .filter(a=>a.actorId != message?.actor?._id)
+                        .filter(a=>actorFeat(a.actor, "rapid-response"))
+                        .forEach(cc => {
+                            postInChatTemplate(rapid_response, cc);
+                        });
+                    }
+
+                }
+            }
             if (
                 ('attack-roll' == message?.flags?.pf2e?.context?.type && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll"))
                 || (message?.item?.type == 'action' && message?.item?.system?.traits?.value.includes("manipulate"))

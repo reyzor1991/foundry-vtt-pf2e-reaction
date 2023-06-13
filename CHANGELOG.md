@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.1.42
+
+### New feature
+-   Add Rapid Response reaction check
+
 ## Version 0.1.41
 
 ### New feature

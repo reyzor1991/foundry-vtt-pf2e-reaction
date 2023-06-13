@@ -21,7 +21,6 @@
 -
 - Premonition of Avoidance
 - Premonition of Clarity
-- Rapid Response
 - Swift Banishment
 -
 - Fiery Retort
