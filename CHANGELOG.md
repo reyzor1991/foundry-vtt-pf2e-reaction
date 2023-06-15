@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.1.43
+
+### New feature
+-   Add Premonition of Clarity reaction check
+
 ## Version 0.1.42
 
 ### New feature

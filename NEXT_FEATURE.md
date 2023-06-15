@@ -20,7 +20,6 @@
 - Shield of Reckoning
 -
 - Premonition of Avoidance
-- Premonition of Clarity
 - Swift Banishment
 -
 - Fiery Retort

@@ -32,3 +32,4 @@
 31. Shield Wall
 32. Denier of Destruction
 33. Rapid Response
+34. Premonition of Clarity

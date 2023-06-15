@@ -1,5 +1,6 @@
 import Settings from "./settings.js";
 
+const premonition_of_clarity = "@UUID[Compendium.pf2e.feats-srd.Item.2h8a6pKhXTXwpJjP]"
 const rapid_response = "@UUID[Compendium.pf2e.feats-srd.Item.OcBaEnGdDm6CuSnr]"
 const denier_of_destruction = "@UUID[Compendium.pf2e.feats-srd.Item.siegOEdEpevAJNFw]"
 const shield_wall = "@UUID[Compendium.pf2e.feats-srd.QpRzvfWdj6YH9TyE]"
@@ -323,6 +324,34 @@ function checkRingmasterIntroduction(combatant) {
     }
 }
 
+function messageType(message, type) {
+    return type == message?.flags?.pf2e?.context?.type;
+}
+
+function failureMessageOutcome(message) {
+    return "failure" == message?.flags?.pf2e?.context?.outcome;
+}
+
+function criticalFailureMessageOutcome(message) {
+    return "criticalFailure" == message?.flags?.pf2e?.context?.outcome;
+}
+
+function successMessageOutcome(message) {
+    return "success" == message?.flags?.pf2e?.context?.outcome;
+}
+
+function criticalSuccessMessageOutcome(message) {
+    return "criticalSuccess" == message?.flags?.pf2e?.context?.outcome;
+}
+
+function anyFailureMessageOutcome(message) {
+    return failureMessageOutcome(message) || criticalFailureMessageOutcome(message);
+}
+
+function anySuccessMessageOutcome(message) {
+    return anySuccessMessageOutcome(message) || criticalSuccessMessageOutcome(message);
+}
+
 export default function reactionHooks() {
     $(document).on('click', '.reaction-check', async function () {
         var mid = $(this).parent().parent().parent().data('message-id');
@@ -478,7 +507,7 @@ export default function reactionHooks() {
         }
     });
 
-    Hooks.on('preCreateChatMessage',(message, user, _options, userId)=>{
+    Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
         if (game?.combats?.active) {
             if (message?.flags?.pf2e?.appliedDamage && !message?.flags?.pf2e?.appliedDamage?.isHealing) {
                 if (message.actor.system?.attributes?.hp?.value == 0) {
@@ -500,7 +529,7 @@ export default function reactionHooks() {
                 }
             }
             if (
-                ('attack-roll' == message?.flags?.pf2e?.context?.type && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll"))
+                (messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll"))
                 || (message?.item?.type == 'action' && message?.item?.system?.traits?.value.includes("manipulate"))
             ) {
                 checkCombatantTriggerAttackOfOpportunity(message.actor?.type, message.actor._id, message.token);
@@ -511,7 +540,7 @@ export default function reactionHooks() {
                 }
             }
 
-            if (message?.flags?.pf2e?.casting || "spell-cast" == message?.flags?.pf2e?.context?.type) {
+            if (message?.flags?.pf2e?.casting || messageType(message, 'spell-cast')) {
                 ("character" == message?.actor?.type ? npcWithReaction() : characterWithReaction())
                     .forEach(cc => {
                         if (canReachEnemy(message.token, cc.token, cc.actor)) {
@@ -533,7 +562,7 @@ export default function reactionHooks() {
                     }
                 }
 
-            } else if ('attack-roll' == message?.flags?.pf2e?.context?.type) {
+            } else if (messageType(message, 'attack-roll')) {
                 if (hasReaction(message?.target?.token?.combatant)) {
                     if (isTargetCharacter(message)) {
                         if (actorFeat(message?.target?.actor, "nimble-dodge") && !hasCondition(message?.target?.actor,"encumbered")) {
@@ -554,7 +583,7 @@ export default function reactionHooks() {
                         }
                     }
                 }
-                if ("criticalFailure" == message?.flags?.pf2e?.context?.outcome && hasReaction(message?.target?.token?.combatant, "opportune-riposte")) {
+                if (criticalFailureMessageOutcome(message) && hasReaction(message?.target?.token?.combatant, "opportune-riposte")) {
                     if (message.actor?.type == 'npc') {
                         if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && actorFeat(message?.target?.actor, "opportune-riposte")) {
                             postInChatTemplate(opportune_riposte, message.target.token.combatant, "opportune-riposte");
@@ -565,7 +594,7 @@ export default function reactionHooks() {
                         }
                     }
                 }
-                if ("criticalFailure" == message?.flags?.pf2e?.context?.outcome || "failure" == message?.flags?.pf2e?.context?.outcome) {
+                if (anyFailureMessageOutcome()) {
                     if (hasReaction(message?.token?.combatant)) {
                         if (actorFeat(message?.actor, "perfect-clarity")) {
                             postInChatTemplate(perfect_clarity, message?.token?.combatant);
@@ -587,7 +616,7 @@ export default function reactionHooks() {
                 }
 
                 //Hit by
-                if ("success" == message?.flags?.pf2e?.context?.outcome || "criticalSuccess" == message?.flags?.pf2e?.context?.outcome) {
+                if (anySuccessMessageOutcome(message)) {
                     if (hasReaction(message?.token?.combatant)) {
                         if (message?.item?.system?.attackEffects?.value.includes("improved-grab")) {
                             var fs = actorAction(message?.actor, "fast-swallow");
@@ -606,7 +635,7 @@ export default function reactionHooks() {
                 }
 
                 //Hit by crit
-                if ("criticalSuccess" == message?.flags?.pf2e?.context?.outcome) {
+                if (criticalSuccessMessageOutcome(message)) {
                     if (hasReaction(message?.target?.token?.combatant)) {
                         var vs = actorAction(message?.target?.actor, "vengeful-spite");
                         if (vs) {
@@ -622,16 +651,16 @@ export default function reactionHooks() {
                         }
                     }
                 }
-            } else if ("perception-check" == message?.flags?.pf2e?.context?.type) {
-                if ("failure" == message?.flags?.pf2e?.context?.outcome) {
+            } else if (messageType(message, 'perception-check')) {
+                if (failureMessageOutcome(message)) {
                     if (hasReaction(message?.token?.combatant)) {
                         if (actorFeat(message?.actor, "spiritual-guides")) {
                             postInChatTemplate(spiritual_guides, message.token.combatant);
                         }
                     }
                 }
-            } else if ("skill-check" == message?.flags?.pf2e?.context?.type) {
-                if (isTargetCharacter(message) && ("success" == message?.flags?.pf2e?.context?.outcome || "criticalSuccess" == message?.flags?.pf2e?.context?.outcome)) {
+            } else if (messageType(message, 'skill-check')) {
+                if (isTargetCharacter(message) && anySuccessMessageOutcome(message)) {
                     characterWithReaction()
                     .filter(a=>a.actorId != message?.target?.actor._id)
                     .forEach(cc => {
@@ -644,7 +673,7 @@ export default function reactionHooks() {
                         }
                     })
                 }
-                if ("failure" == message?.flags?.pf2e?.context?.outcome) {
+                if (failureMessageOutcome(message)) {
                     if (hasReaction(message?.token?.combatant)) {
                         if (actorFeat(message?.actor, "spiritual-guides")) {
                             postInChatTemplate(spiritual_guides, message.token.combatant);
@@ -652,7 +681,7 @@ export default function reactionHooks() {
                     }
                 }
 
-            } else if ("damage-roll" == message?.flags?.pf2e?.context?.type) {
+            } else if (messageType(message, 'damage-roll')) {
                 //15 ft damage you
                 if(hasReaction(message?.target?.token?.combatant)) {
                     if (message?.item?.system?.damageRolls) {
@@ -711,6 +740,15 @@ export default function reactionHooks() {
                         }
                     }
                 })
+            } else if (messageType(message, "saving-throw")) {
+                var origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
+                if (hasReaction(message?.token?.combatant)) {
+                    if (anyFailureMessageOutcome(message)) {
+                        if (actorFeat(message.actor, "premonition-of-clarity") && origin?.traits?.has("mental")) {
+                            postInChatTemplate(premonition_of_clarity, message.token.combatant);
+                        }
+                    }
+                }
             }
         }
     });
