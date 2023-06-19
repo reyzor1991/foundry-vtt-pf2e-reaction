@@ -3,6 +3,16 @@
 ## Version 0.2.0
 
 ### New feature
+-   Add Courageous Opportunity reaction check
+-   Add Fiery Retort reaction check
+-   Add Reactive Transformation reaction check
+-   Add Storm Retribution reaction check
+-   Add Verdant Presence reaction check
+-   Add Dueling Riposte reaction check
+
+## Version 0.2.0
+
+### New feature
 -   Add Homebrew Reactions handler
 
 ## Version 0.1.43

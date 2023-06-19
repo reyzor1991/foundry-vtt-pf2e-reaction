@@ -33,3 +33,9 @@
 32. Denier of Destruction
 33. Rapid Response
 34. Premonition of Clarity
+35. Courageous Opportunity
+36. Fiery Retort
+37. Reactive Transformation
+38. Storm Retribution
+39. Verdant Presence
+40. Dueling Riposte
