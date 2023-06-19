@@ -1,6 +1,20 @@
 # Changelog
 
-## Version 0.2.0
+## Version 0.2.2
+
+### New feature
+-   Extend homebrew triggers
+-   Add Farabellus Flip reaction check
+-   Add Guardian's Deflection reaction check
+-   Add Knight's Retaliation reaction check
+-   Add Mirror Shield reaction check
+-   Add Reactive Shield reaction check
+-   Add Twin Riposte reaction check
+-   Add Cheat Death reaction check
+-   Add Spell Relay reaction check
+-   Add Ruby Resurrection reaction check
+
+## Version 0.2.1
 
 ### New feature
 -   Add Courageous Opportunity reaction check

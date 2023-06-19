@@ -25,7 +25,7 @@
             {{#each homebrewReaction.triggers as |t|}}
                 <div class="form-group">
                     <label>Triggers</label>
-                    <select name="homebrewReaction.{{homebrewReaction.idx}}.triggers.{{t.idx}}.name">
+                    <select name="homebrewReaction.{{homebrewReaction.idx}}.triggers.{{t.idx}}.name" class="homebrew-reaction-trigger" data-idx={{t.idx}} data-parent={{homebrewReaction.idx}}>
                         {{#each t.choices as |v k|}}
                             <option value="{{k}}" {{#if (eq k t.name)}} selected {{/if}}>{{localize v}}</option>
                         {{/each}}
@@ -36,6 +36,8 @@
                     <input type="checkbox" name="homebrewReaction.{{homebrewReaction.idx}}.triggers.{{t.idx}}.reach" {{#if t.reach}} checked {{/if}}/>
                     <label>Adjacent</label>
                     <input type="checkbox" name="homebrewReaction.{{homebrewReaction.idx}}.triggers.{{t.idx}}.adjacent" {{#if t.adjacent}} checked {{/if}}/>
+                    <label>Trait</label>
+                    <input type="text" name="homebrewReaction.{{homebrewReaction.idx}}.triggers.{{t.idx}}.trait" value="{{t.trait}}"  {{#unless (eq "EnemyUsesTrait" t.name)}} disabled {{/unless}}/>
                     <button type="button" class="trigger-reaction-delete" data-parent={{homebrewReaction.idx}} data-idx={{t.idx}}><i class="fas fa-trash"></i></button>
                 </div>
             {{/each}}

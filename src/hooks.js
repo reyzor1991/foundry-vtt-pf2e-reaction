@@ -1,5 +1,12 @@
 import Settings from "./settings.js";
 
+const ruby_resurrection = "@UUID[Compendium.pf2e.feats-srd.Item.9Slu8lSOYnDtKsIb]"
+const spell_relay = "@UUID[Compendium.pf2e.feats-srd.Item.zwEaXGKqnlBTllfE]"
+const cheat_death = "@UUID[Compendium.pf2e.feats-srd.Item.D2KSVHPRlBEibrV8]"
+const twin_riposte = "@UUID[Compendium.pf2e.feats-srd.Item.GJIAecRq1bD2r8O0]"
+const guardians_deflection_swashbuckler = "@UUID[Compendium.pf2e.feats-srd.Item.YJIzE2RhGRGfbt9j]"
+const guardians_deflection_fighter = "@UUID[Compendium.pf2e.feats-srd.Item.JdCRxwgtdQkJ1Ha6]"
+const farabellus_flip = "@UUID[Compendium.pf2e.feats-srd.Item.PH5b61x3iJSKP3Xi]"
 const dueling_riposte = "@UUID[Compendium.pf2e.feats-srd.Item.mf2cdCRV8uowOMOm]"
 const verdant_presence = "@UUID[Compendium.pf2e.feats-srd.Item.Lbpm0OrQb4u2LVtj]"
 const storm_retribution = "@UUID[Compendium.pf2e.feats-srd.Item.F1DVDJRARfdb1Kjz]"
@@ -38,6 +45,9 @@ const iron_command = "@UUID[Compendium.pf2e.actionspf2e.M8RCbthRhB4bxO9t]"
 const selfish_shield = "@UUID[Compendium.pf2e.actionspf2e.enQieRrITuEQZxx2]"
 const destructive_vengeance = "@UUID[Compendium.pf2e.actionspf2e.r5Uth6yvCoE4tr9z]"
 const liberating_step = "@UUID[Compendium.pf2e.actionspf2e.IX1VlVCL5sFTptEE]"
+const knights_retaliation = "@UUID[Compendium.pf2e.feats-srd.Item.jZy91ekcS9ZqmdEH]"
+const mirror_shield = "@UUID[Compendium.pf2e.feats-srd.Item.kQEIPYoKTt69yXxV]"
+const reactive_shield = "@UUID[Compendium.pf2e.feats-srd.Item.w8Ycgeq2zfyshtoS]"
 
 const identifySkills = new Map([
     ["aberration", ["occultism"]],
@@ -59,6 +69,26 @@ const identifySkills = new Map([
     ["spirit", ["occultism"]],
     ["undead", ["religion"]],
 ]);
+
+function adjustDegreeByDieValue(dieResult, degree) {
+        if (dieResult === 20) {
+            return degree + 1;
+        } else if (dieResult === 1) {
+            return degree - 1;
+        }
+        return degree;
+}
+
+function calculateDegreeOfSuccess(dc, rollTotal, dieResult) {
+        if (rollTotal - dc >= 10) {
+            return adjustDegreeByDieValue(dieResult, 3);
+        } else if (dc - rollTotal >= 10) {
+            return adjustDegreeByDieValue(dieResult, 0);
+        } else if (rollTotal >= dc) {
+            return adjustDegreeByDieValue(dieResult, 2);
+        }
+        return adjustDegreeByDieValue(dieResult, 1);
+}
 
 function updateInexhaustibleCountermoves(combatant) {
     if (combatant.actor.type == "npc") {
@@ -183,11 +213,10 @@ function countReaction(combatant, actionName=undefined) {
             count += combatant?.flags?.['reaction-check']?.['triple-opportunity'] ?? 0;
             count += combatant?.flags?.['reaction-check']?.['combat-reflexes'] ?? 0;
             count += combatant?.flags?.['reaction-check']?.['inexhaustible-countermoves'] ?? 0;
-         } else if (actionName == "opportune-riposte") {
+        } else if (actionName == "opportune-riposte") {
             count += combatant?.flags?.['reaction-check']?.['reflexive-riposte'] ?? 0;
             count += combatant?.flags?.['reaction-check']?.['inexhaustible-countermoves'] ?? 0;
-         }
-
+        }
     }
     return count;
 }
@@ -551,6 +580,12 @@ export default function reactionHooks() {
                         if (actorAction(message?.actor, "ferocity")) {
                             postInChatTemplate(ferocity, message?.token?.combatant);
                         }
+                        if (actorFeat(message?.actor, "cheat-death")) {
+                            postInChatTemplate(cheat_death, message?.token?.combatant);
+                        }
+                        if (actorFeat(message?.actor, "ruby-resurrection")) {
+                            postInChatTemplate(ruby_resurrection, message?.token?.combatant);
+                        }
                     }
                     // ally
                     if ("character" == message?.actor?.type) {
@@ -593,7 +628,7 @@ export default function reactionHooks() {
                     })
                 if (message?.item && "character" == message?.actor?.type) {
                     if (!message?.item?.isCantrip) {
-                        ("character" == message?.actor?.type ? characterWithReaction() : npcWithReaction())
+                        characterWithReaction()
                             .filter(a=>a.actorId != message?.actor?._id)
                             .filter(a=>getEnemyDistance(message.token, a.token) <= 30)
                             .forEach(cc => {
@@ -606,8 +641,28 @@ export default function reactionHooks() {
                     if (actorFeat(message?.actor, "verdant-presence") && message?.item?.system?.traditions.value.includes("primal")) {
                         postInChatTemplate(verdant_presence, message?.token?.combatant);
                     }
+
+                    let spellRange = message?.item?.system?.range?.value?.match(/\d+/g);
+                    spellRange = spellRange ? spellRange[0] : 0;
+
+                    characterWithReaction()
+                        .filter(a=>a.actorId != message?.actor?._id)
+                        .filter(a=>getEnemyDistance(message.token, a.token) <= spellRange)
+                        .filter(a=>actorFeat(a.actor, "spell-relay"))
+                        .forEach(cc => {
+                            postInChatTemplate(spell_relay, cc);
+                        })
+
                 }
 
+            } else if (messageType(message, "spell-attack-roll")) {
+                if (hasReaction(message?.target?.token?.combatant)) {
+                    if (criticalFailureMessageOutcome(message)) {
+                        if (actorFeat(message?.target?.actor, "mirror-shield")) {
+                            postInChatTemplate(mirror_shield, message?.target?.token?.combatant);
+                        }
+                    }
+                }
             } else if (messageType(message, 'attack-roll')) {
                 if (hasReaction(message?.target?.token?.combatant)) {
                     if (isTargetCharacter(message)) {
@@ -617,12 +672,24 @@ export default function reactionHooks() {
                         if (actorFeat(message?.target?.actor, "airy-step")) {
                             postInChatTemplate(airy_step_feat, message.target.token.combatant);
                         }
+                        if (actorFeat(message?.target?.actor, "farabellus-flip")) {
+                            postInChatTemplate(farabellus_flip, message.target.token.combatant);
+                        }
+                        if (actorFeat(message?.target?.actor, "reactive-shield") && anySuccessMessageOutcome(message) && message?.item?.isMelee) {
+                            postInChatTemplate(reactive_shield, message.target.token.combatant);
+                        }
                         if (actorFeat(message?.target?.actor, "pirouette") && hasEffect(message?.target?.actor, "stance-masquerade-of-seasons-stance")) {
                             postInChatTemplate(pirouette, message.target.token.combatant);
                         }
                         if (actorFeat(message?.target?.actor, "fiery-retort") && adjacentEnemy(message.token, message.target.token)
                             && (message?.item?.isMelee|| message?.item?.traits?.has("unarmed"))) {
                             postInChatTemplate(fiery_retort, message.target.token.combatant);
+                        }
+                        if (actorFeat(message?.target?.actor, "knights-retaliation")
+                            && message?.actor?.system.traits.value.includes("undead")
+                            && criticalFailureMessageOutcome(message)
+                        ) {
+                            postInChatTemplate(knights_retaliation, message.target.token.combatant);
                         }
                     } else {
                         if (actorAction(message?.target?.actor, "nimble-dodge") && !hasCondition(message?.target?.actor,"encumbered")) {
@@ -648,8 +715,12 @@ export default function reactionHooks() {
                     if (actorFeat(message?.target?.actor, "dueling-riposte") && hasEffect(message.target.actor, "effect-dueling-parry")) {
                         postInChatTemplate(dueling_riposte, message.target.token.combatant);
                     }
+                    if (actorFeat(message?.target?.actor, "twin-riposte") && canReachEnemy(message.token, message?.target?.token, message?.target?.actor)
+                        && (hasEffect(message.target.actor, "effect-twin-parry")||hasEffect(message.target.actor, "effect-twin-parry-parry-trait"))) {
+                        postInChatTemplate(twin_riposte, message.target.token.combatant);
+                    }
                 }
-                if (anyFailureMessageOutcome()) {
+                if (anyFailureMessageOutcome(message)) {
                     if (hasReaction(message?.token?.combatant)) {
                         if (actorFeat(message?.actor, "perfect-clarity")) {
                             postInChatTemplate(perfect_clarity, message?.token?.combatant);
@@ -685,6 +756,25 @@ export default function reactionHooks() {
                             if (message?.item?.traits.has("unarmed") || (message?.item?.isMelee && nonReach(message?.item?.traits))) {
                                 postInChatTemplate(wicked_thorns, message.target.token.combatant);
                             }
+                        }
+                    }
+
+                    if (isTargetCharacter(message)) {
+                        const rr = message.rolls.at(0);
+                        let newR = calculateDegreeOfSuccess(message?.flags?.pf2e?.context?.dc?.value, rr._total - 2, rr.dice.at(0).total)
+
+                        if (rr.degreeOfSuccess != newR) {
+                            characterWithReaction()
+                                .filter(a=>a.actorId != message?.target?.actor._id)
+                                .filter(cc=>canReachEnemy(message?.target?.token, cc.token, cc.actor))
+                                .forEach(cc => {
+                                    if (actorFeat(cc.actor, "guardians-deflection-fighter")) {
+                                        postInChatTemplate(guardians_deflection_fighter, cc);
+                                    }
+                                    if (actorFeat(cc.actor, "guardians-deflection-swashbuckler")) {
+                                        postInChatTemplate(guardians_deflection_swashbuckler, cc);
+                                    }
+                                })
                         }
                     }
                 }
@@ -848,7 +938,40 @@ export default function reactionHooks() {
         if (tr.name == 'AllyTakeDamage' && messageType(message, 'damage-roll')) {
             return true;
         }
-
+        if (tr.name == 'ActorTakeDamage' && messageType(message, 'damage-roll')) {
+            return true;
+        }
+        if ((tr.name == 'YouHPZero' || tr.name == "AllyHPZero")
+            && message?.flags?.pf2e?.appliedDamage
+            && !message?.flags?.pf2e?.appliedDamage?.isHealing
+            && message.actor.system?.attributes?.hp?.value == 0) {
+            return true;
+        }
+        if (tr.name == 'EnemyUsesTrait'
+            && message?.item?.system?.traits?.value?.includes(tr.trait)) {
+            return true;
+        }
+        if (tr.name == 'EnemyCastSpell' && (message?.flags?.pf2e?.casting || messageType(message, 'spell-cast'))) {
+            return true;
+        }
+        if (tr.name == 'EnemyHitsActor' && messageType(message, 'attack-roll')) {
+            return true;
+        }
+        if (tr.name == 'EnemyCriticallyFailHitsActor' && messageType(message, 'attack-roll') && criticalFailureMessageOutcome(message)) {
+            return true;
+        }
+        if (tr.name == 'EnemyFailHitsActor' && messageType(message, 'attack-roll') && anyFailureMessageOutcome(message)) {
+            return true;
+        }
+        if (tr.name == 'ActorFailsHit' && messageType(message, 'attack-roll') && anyFailureMessageOutcome(message)) {
+            return true;
+        }
+        if (tr.name == 'CreatureAttacksAlly' && messageType(message, 'attack-roll')) {
+            return true;
+        }
+        if (tr.name == 'ActorFailsSkillCheck' && messageType(message, 'skill-check') && anyFailureMessageOutcome(message)) {
+            return true;
+        }
         return false;
     }
 
@@ -893,6 +1016,62 @@ export default function reactionHooks() {
                 .filter(a=>a.actorId != message?.target?.actor._id), tr, message);
                 res = res.concat(t);
             }
+            if (tr.name == 'ActorTakeDamage' && messageType(message, 'damage-roll')) {
+                var t = filterByDistance([message?.target?.token?.combatant], tr, message);
+                res = res.concat(t);
+            }
+            if ((tr.name == 'YouHPZero')
+                && message?.flags?.pf2e?.appliedDamage
+                && !message?.flags?.pf2e?.appliedDamage?.isHealing
+                && message.actor.system?.attributes?.hp?.value == 0) {
+
+                var t = filterByDistance([message?.token?.combatant], tr, message);
+                res = res.concat(t);
+            }
+            if ((tr.name == "AllyHPZero")
+                && message?.flags?.pf2e?.appliedDamage
+                && !message?.flags?.pf2e?.appliedDamage?.isHealing
+                && message.actor.system?.attributes?.hp?.value == 0) {
+
+                var t = filterByDistance(actorWithReactionForType(message?.actor?.type)
+                    .filter(a=>a.actorId != message?.actor?._id), tr, message);
+                res = res.concat(t);
+            }
+            if (tr.name == 'EnemyUsesTrait'
+                && message?.item?.system?.traits?.value?.includes(tr.trait)) {
+
+                var t = filterByDistance(("character" == message.actor?.type ? npcWithReaction() : characterWithReaction()), tr, message);
+                res = res.concat(t);
+            }
+            if (tr.name == 'EnemyCastSpell' && (message?.flags?.pf2e?.casting || messageType(message, 'spell-cast'))) {
+                var t = filterByDistance(("character" == message.actor?.type ? npcWithReaction() : characterWithReaction()), tr, message);
+                res = res.concat(t);
+            }
+            if (tr.name == 'EnemyHitsActor' && messageType(message, 'attack-roll')) {
+                var t = filterByDistance([message?.target?.token?.combatant], tr, message);
+                res = res.concat(t);
+            }
+            if (tr.name == 'EnemyCriticallyFailHitsActor' && messageType(message, 'attack-roll') && criticalFailureMessageOutcome(message)) {
+                var t = filterByDistance([message?.target?.token?.combatant], tr, message);
+                res = res.concat(t);
+            }
+            if (tr.name == 'EnemyFailHitsActor' && messageType(message, 'attack-roll') && anyFailureMessageOutcome(message)) {
+                var t = filterByDistance([message?.target?.token?.combatant], tr, message);
+                res = res.concat(t);
+            }
+            if (tr.name == 'ActorFailsHit' && messageType(message, 'attack-roll') && anyFailureMessageOutcome(message)) {
+                var t = filterByDistance([message?.token?.combatant], tr, message);
+                res = res.concat(t);
+            }
+            if (tr.name == 'CreatureAttacksAlly' && messageType(message, 'attack-roll')) {
+                var t = filterByDistance(("character" == message.actor?.type ? npcWithReaction() : characterWithReaction())
+                    .filter(a=>a.actorId != message?.target?.actor._id), tr, message);
+                res = res.concat(t);
+            }
+            if (tr.name == 'ActorFailsSkillCheck' && messageType(message, 'skill-check') && anyFailureMessageOutcome(message)) {
+                var t = filterByDistance([message?.token?.combatant], tr, message);
+                res = res.concat(t);
+            }
         });
 
         res = [...new Map(res.map(item =>[item['actorId'], item])).values()];
@@ -909,7 +1088,7 @@ export default function reactionHooks() {
                     var tt = hr.triggers.filter(a=> a.name != "None");
                     if (tt.some(a=>handleHomebrewTrigger(a, message))) {
                         combatantsForTriggers(tt, message)
-                            .filter(a=>actorFeat(a.actor, hr.slug))
+                            .filter(a=>actorFeat(a.actor, hr.slug) || actorAction(a.actor, hr.slug))
                             .forEach(cc => {
                                 postInChatTemplate(_uuid(hr), cc);
                             })
@@ -930,6 +1109,11 @@ export default function reactionHooks() {
                     var as = actorFeat(token.actor, "airy-step");
                     if (as) {
                         var text = game.i18n.format("pf2e-reaction.notify", {uuid:as.name, name:token.name});
+                        ui.notifications.info(`${_user.name} targets ${token.name}. ${text}`);
+                    }
+                    var ff = actorFeat(token.actor, "farabellus-flip");
+                    if (ff) {
+                        var text = game.i18n.format("pf2e-reaction.notify", {uuid:ff.name, name:token.name});
                         ui.notifications.info(`${_user.name} targets ${token.name}. ${text}`);
                     }
                     var pir = actorFeat(token.actor, "pirouette");

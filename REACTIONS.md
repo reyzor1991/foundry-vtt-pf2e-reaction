@@ -39,3 +39,12 @@
 38. Storm Retribution
 39. Verdant Presence
 40. Dueling Riposte
+41. Farabellus Flip
+42. Guardian's Deflection
+43. Knight's Retaliation
+44. Mirror Shield
+45. Reactive Shield
+46. Twin Riposte
+47. Cheat Death
+48. Spell Relay
+49. Ruby Resurrection

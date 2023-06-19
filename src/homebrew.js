@@ -5,7 +5,18 @@ const Trigger = {
   EnemyUseManipulateAction: "pf2e-reaction.SETTINGS.trigger.EnemyUseManipulateAction",
   EnemyUseMoveAction: "pf2e-reaction.SETTINGS.trigger.EnemyUseMoveAction",
   EnemyUseRangedAttack: "pf2e-reaction.SETTINGS.trigger.EnemyUseRangedAttack",
-  AllyTakeDamage: "pf2e-reaction.SETTINGS.trigger.AllyTakeDamage"
+  AllyTakeDamage: "pf2e-reaction.SETTINGS.trigger.AllyTakeDamage",
+  ActorTakeDamage: "pf2e-reaction.SETTINGS.trigger.ActorTakeDamage",
+  CreatureAttacksAlly: "pf2e-reaction.SETTINGS.trigger.CreatureAttacksAlly",
+  YouHPZero: "pf2e-reaction.SETTINGS.trigger.YouHPZero",
+  AllyHPZero: "pf2e-reaction.SETTINGS.trigger.AllyHPZero",
+  EnemyUsesTrait: "pf2e-reaction.SETTINGS.trigger.EnemyUsesTrait",
+  EnemyCastSpell: "pf2e-reaction.SETTINGS.trigger.EnemyCastSpell",
+  EnemyHitsActor: "pf2e-reaction.SETTINGS.trigger.EnemyHitsActor",
+  EnemyCriticallyFailHitsActor: "pf2e-reaction.SETTINGS.trigger.EnemyCriticallyFailHitsActor",
+  EnemyFailHitsActor: "pf2e-reaction.SETTINGS.trigger.EnemyFailHitsActor",
+  ActorFailsHit: "pf2e-reaction.SETTINGS.trigger.ActorFailsHit",
+  ActorFailsSkillCheck: "pf2e-reaction.SETTINGS.trigger.ActorFailsSkillCheck",
 }
 
 class HomebrewReactionTrigger {
@@ -15,6 +26,7 @@ class HomebrewReactionTrigger {
     this.reachValue = 0;
     this.reach = false;
     this.adjacent = false;
+    this.trait = "";
     this.choices = Trigger
   }
 
@@ -64,7 +76,7 @@ export default class ReactionHomebrewSettings extends FormApplication {
             id: `${this.namespace}-settings`,
             classes: ['settings-menu'],
             template: `modules/pf2e-reaction/templates/homebrew.hbs`,
-            width: 750,
+            width: 1050,
             height: "auto",
             closeOnSubmit: true,
             resizable: true,
@@ -180,7 +192,7 @@ export default class ReactionHomebrewSettings extends FormApplication {
                     slug: this.homebrewReactions[i].slug,
                     uuid: this.homebrewReactions[i].uuid,
                     triggers: this.homebrewReactions[i].triggers.map(a=>{
-                        return {"name":a.name,"reachValue":a.reachValue,"reach":a.reach,"adjacent":a.adjacent};
+                        return {"name":a.name,"reachValue":a.reachValue,"reach":a.reach,"adjacent":a.adjacent,"trait":a.trait};
                     })
                 }
             );
@@ -222,6 +234,14 @@ export default class ReactionHomebrewSettings extends FormApplication {
 
             var i = $(event.currentTarget).data().idx;
             this.homebrewReactions[i].triggers.push(new HomebrewReactionTrigger(this.homebrewReactions[i].triggers.length));
+            super.render()
+        });
+        html.find('.homebrew-reaction-trigger').change(async (event) => {
+            this.updateForm(event);
+            this.homebrewReactions[$(event.currentTarget).data().parent].triggers[$(event.currentTarget).data().idx].name = $(event.currentTarget).val();
+            if ("EnemyUsesTrait" != $(event.currentTarget).val()) {
+                this.homebrewReactions[$(event.currentTarget).data().parent].triggers[$(event.currentTarget).data().idx].trait = "";
+            }
             super.render()
         });
     }
