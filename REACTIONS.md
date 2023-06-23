@@ -48,3 +48,5 @@
 47. Cheat Death
 48. Spell Relay
 49. Ruby Resurrection
+50. Scapegoat Parallel Self(only first trigger)
+51. Convincing Illusion

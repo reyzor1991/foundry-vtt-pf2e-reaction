@@ -57,7 +57,6 @@
 - Stand Still
 -
 - Divine Aegis
-- Scapegoat Parallel Self
 -
 - All in your Head
 - Counter Thought
@@ -94,8 +93,6 @@
 -
 - Turn Away Misfortune
 - Trespass Teleportation
--
-- Convincing Illusion
 
 
 

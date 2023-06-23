@@ -1,5 +1,7 @@
 import Settings from "./settings.js";
 
+const convincing_illusion = "@UUID[Compendium.pf2e.feats-srd.Item.bSXcyu7ExWq9qUzG]"
+const scapegoat_parallel_self = "@UUID[Compendium.pf2e.feats-srd.Item.tBWSxVxrojRcEzJt]"
 const ruby_resurrection = "@UUID[Compendium.pf2e.feats-srd.Item.9Slu8lSOYnDtKsIb]"
 const spell_relay = "@UUID[Compendium.pf2e.feats-srd.Item.zwEaXGKqnlBTllfE]"
 const cheat_death = "@UUID[Compendium.pf2e.feats-srd.Item.D2KSVHPRlBEibrV8]"
@@ -263,6 +265,9 @@ function adjacentEnemy(attackerToken, defendToken) {
 }
 
 async function postInChatTemplate(uuid, combatant, actionName=undefined) {
+    if(combatant?.actor?.system?.attributes?.hp?.value <= 0 || hasCondition(combatant?.actor, "unconscious") || hasCondition(combatant?.actor, "dying")) {
+        return
+    }
     var text = game.i18n.format("pf2e-reaction.ask", {uuid:uuid, name:combatant.token.name});
     var content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text:text});
     var check = {
@@ -455,6 +460,9 @@ export default function reactionHooks() {
         if (combat.round == 1) {
             checkRingmasterIntroduction(combat.nextCombatant)
         }
+        if (actorFeat(combat.nextCombatant?.actor, "scapegoat-parallel-self")) {
+            postInChatTemplate(scapegoat_parallel_self, combat.nextCombatant);
+        }
     });
 
     Hooks.on('combatRound', async (combat, updateData, updateOptions) => {
@@ -468,6 +476,9 @@ export default function reactionHooks() {
                         postInChatTemplate(_uuid(pg), cc);
                     }
                 })
+        }
+        if (actorFeat(combat.nextCombatant?.actor, "scapegoat-parallel-self")) {
+            postInChatTemplate(scapegoat_parallel_self, combat.nextCombatant);
         }
     });
 
@@ -813,6 +824,16 @@ export default function reactionHooks() {
                         }
                     }
                 }
+                if (message?.flags?.pf2e?.origin?.uuid) {
+                    var origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
+                    if (hasReaction(origin?.actor?.combatant)) {
+                        if (successMessageOutcome(message)) {
+                            if (actorFeat(origin?.actor, "convincing-illusion") && origin?.traits?.has("illusion")) {
+                                postInChatTemplate(convincing_illusion, origin?.actor?.combatant);
+                            }
+                        }
+                    }
+                }
             } else if (messageType(message, 'skill-check')) {
                 if (isTargetCharacter(message) && anySuccessMessageOutcome(message)) {
                     characterWithReaction()
@@ -910,6 +931,13 @@ export default function reactionHooks() {
                     if (anyFailureMessageOutcome(message)) {
                         if (actorFeat(message.actor, "premonition-of-clarity") && origin?.traits?.has("mental")) {
                             postInChatTemplate(premonition_of_clarity, message.token.combatant);
+                        }
+                    }
+                }
+                if (hasReaction(origin?.actor?.combatant)) {
+                    if (successMessageOutcome(message)) {
+                        if (actorFeat(origin?.actor, "convincing-illusion") && origin?.traits?.has("illusion")) {
+                            postInChatTemplate(convincing_illusion, origin?.actor?.combatant);
                         }
                     }
                 }

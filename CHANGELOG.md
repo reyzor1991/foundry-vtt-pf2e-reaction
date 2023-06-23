@@ -1,5 +1,14 @@
 # Changelog
 
+## Version 0.2.3
+
+### New feature
+-   Add Scapegoat Parallel Self reaction check
+-   Add Convincing Illusion reaction check
+
+### Bug fixes
+-   Add check of unconscious/dead condition
+
 ## Version 0.2.2
 
 ### New feature
