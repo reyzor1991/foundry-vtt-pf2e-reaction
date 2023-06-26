@@ -1,5 +1,6 @@
 import Settings from "./settings.js";
 
+const amulets_abeyance = "@UUID[Compendium.pf2e.actionspf2e.Item.Or6RLXeoZkN8CLdi]"
 const convincing_illusion = "@UUID[Compendium.pf2e.feats-srd.Item.bSXcyu7ExWq9qUzG]"
 const scapegoat_parallel_self = "@UUID[Compendium.pf2e.feats-srd.Item.tBWSxVxrojRcEzJt]"
 const ruby_resurrection = "@UUID[Compendium.pf2e.feats-srd.Item.9Slu8lSOYnDtKsIb]"
@@ -886,6 +887,9 @@ export default function reactionHooks() {
                     if (actorFeat(message?.target?.actor, "verdant-presence")) {
                         postInChatTemplate(verdant_presence, message.target.token.combatant);
                     }
+                    if (actorAction(message?.target?.actor, "amulets-abeyance") && hasEffect(message.actor, "effect-exploit-vulnerability")) {
+                        postInChatTemplate(amulets_abeyance, message?.target?.token?.combatant);
+                    }
 
                     if (message?.item?.system?.damageRolls) {
                         var dTypes = Object.values(message?.item?.system?.damageRolls).map(a=>a.damageType);
@@ -941,6 +945,11 @@ export default function reactionHooks() {
                         }
                         if (actorAction(cc.actor, "retributive-strike")) {
                             postInChatTemplate(retributive_strike, cc);
+                        }
+                    }
+                    if (getEnemyDistance(message.target.token, cc.token) <= 15 && hasEffect(message.actor, "effect-exploit-vulnerability")) {
+                        if (actorAction(cc.actor, "amulets-abeyance")) {
+                            postInChatTemplate(amulets_abeyance, cc);
                         }
                     }
                     if (getEnemyDistance(message.target.token, cc.token) <= 30) {

@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.2.5
+
+### New feature
+-   Add Reaction Effects pack
+-   Add Amulet's Abeyance reaction check
+
 ## Version 0.2.4
 
 ### New feature

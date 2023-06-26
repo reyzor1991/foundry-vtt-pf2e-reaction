@@ -51,3 +51,4 @@
 50. Scapegoat Parallel Self(only first trigger)
 51. Convincing Illusion
 52. Charmed Life
+53. Amulet's Abeyance
