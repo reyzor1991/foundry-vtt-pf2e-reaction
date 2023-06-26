@@ -89,8 +89,6 @@
 - Protective Bond
 - Summoner's Call
 -
-- Charmed Life
--
 - Turn Away Misfortune
 - Trespass Teleportation
 

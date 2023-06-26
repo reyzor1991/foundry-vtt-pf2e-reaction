@@ -50,6 +50,7 @@ const liberating_step = "@UUID[Compendium.pf2e.actionspf2e.IX1VlVCL5sFTptEE]"
 const knights_retaliation = "@UUID[Compendium.pf2e.feats-srd.Item.jZy91ekcS9ZqmdEH]"
 const mirror_shield = "@UUID[Compendium.pf2e.feats-srd.Item.kQEIPYoKTt69yXxV]"
 const reactive_shield = "@UUID[Compendium.pf2e.feats-srd.Item.w8Ycgeq2zfyshtoS]"
+const charmed_life = "@UUID[Compendium.pf2e.feats-srd.Item.DkoxNw9tsFFXrfJY]"
 
 const identifySkills = new Map([
     ["aberration", ["occultism"]],
@@ -262,6 +263,29 @@ function canReachEnemy(attackerToken, defendToken, defendActor) {
 
 function adjacentEnemy(attackerToken, defendToken) {
     return getEnemyDistance(attackerToken, defendToken) <= 5
+}
+
+async function reactionWasUsedChat(uuid, combatant) {
+    var content = await renderTemplate("./modules/pf2e-reaction/templates/used.hbs", {uuid:uuid,combatant:combatant});
+
+    var whispers = ChatMessage.getWhisperRecipients("GM").map((u) => u.id);
+    if (combatant.players) {
+        whispers = whispers.concat(combatant.players.map((u) => u.id));
+    }
+
+    ChatMessage.create({
+        flavor: '',
+        user: null,
+        speaker: {
+            scene: null,
+            actor: null,
+            token: null,
+            alias: "System"
+        },
+        type: CONST.CHAT_MESSAGE_TYPES.OOC,
+        content: content,
+        whisper: whispers
+    });
 }
 
 async function postInChatTemplate(uuid, combatant, actionName=undefined) {
@@ -931,6 +955,14 @@ export default function reactionHooks() {
                     if (anyFailureMessageOutcome(message)) {
                         if (actorFeat(message.actor, "premonition-of-clarity") && origin?.traits?.has("mental")) {
                             postInChatTemplate(premonition_of_clarity, message.token.combatant);
+                        }
+                        if (actorFeat(message.actor, "charmed-life")) {
+                            if (message?.flags?.pf2e?.modifiers?.find(a=>a.slug=="charmed-life" && a.enabled)) {
+                                updateCombatantReactionState(message.token.combatant, false);
+                                reactionWasUsedChat(charmed_life, message.token.combatant);
+                            } else {
+                                postInChatTemplate(charmed_life, message.token.combatant);
+                            }
                         }
                     }
                 }

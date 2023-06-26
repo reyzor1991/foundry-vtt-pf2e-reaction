@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.4
+
+### New feature
+-   Add Charmed Life reaction check
+
 ## Version 0.2.3
 
 ### New feature

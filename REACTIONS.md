@@ -50,3 +50,4 @@
 49. Ruby Resurrection
 50. Scapegoat Parallel Self(only first trigger)
 51. Convincing Illusion
+52. Charmed Life

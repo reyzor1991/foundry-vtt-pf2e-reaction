@@ -6,4 +6,4 @@ Only the latest version.
 
 ## Reporting a Vulnerability
 
-Create an issue on [Github](https://github.com/xdy/xdy-pf2e-workbench/issues) explaining the problem.
+Create an issue on [Github](https://github.com/reyzor1991/foundry-vtt-pf2e-reaction/issues) explaining the problem.
