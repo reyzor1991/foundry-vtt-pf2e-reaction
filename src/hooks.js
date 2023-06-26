@@ -51,6 +51,7 @@ const knights_retaliation = "@UUID[Compendium.pf2e.feats-srd.Item.jZy91ekcS9Zqmd
 const mirror_shield = "@UUID[Compendium.pf2e.feats-srd.Item.kQEIPYoKTt69yXxV]"
 const reactive_shield = "@UUID[Compendium.pf2e.feats-srd.Item.w8Ycgeq2zfyshtoS]"
 const charmed_life = "@UUID[Compendium.pf2e.feats-srd.Item.DkoxNw9tsFFXrfJY]"
+const amulet = "@UUID[Compendium.pf2e.classfeatures.Item.PoclGJ7BCEyIuqJe]"
 
 const identifySkills = new Map([
     ["aberration", ["occultism"]],
@@ -941,6 +942,9 @@ export default function reactionHooks() {
                         }
                         if (actorAction(cc.actor, "retributive-strike")) {
                             postInChatTemplate(retributive_strike, cc);
+                        }
+			if (actorAction(cc.actor, "amulet")) {
+                            postInChatTemplate(amulet, cc);
                         }
                     }
                     if (getEnemyDistance(message.target.token, cc.token) <= 30) {
