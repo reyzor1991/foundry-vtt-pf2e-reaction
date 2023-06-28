@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 0.2.6
+
+### New feature
+-   Extend homebrew triggers
+-   Add Ring Bell reaction check
+-   Add Implement's Interruption reaction check
+-   Add Clever Gambit reaction check
+
 ## Version 0.2.5
 
 ### New feature

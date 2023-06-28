@@ -67,7 +67,6 @@
 - Relentless Stalker
 - Roll with It (Ranger)
 -
-- Clever Gambit
 - Cognitive Loophole
 - Delay Trap
 - Hidden Paragon

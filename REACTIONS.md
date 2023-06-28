@@ -52,3 +52,6 @@
 51. Convincing Illusion
 52. Charmed Life
 53. Amulet's Abeyance
+54. Ring Bell
+55. Implement's Interruption
+56. Clever Gambit

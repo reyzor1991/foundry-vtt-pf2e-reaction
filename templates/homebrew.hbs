@@ -22,9 +22,10 @@
                 <input type="text" name="homebrewReaction.{{homebrewReaction.idx}}.uuid" value="{{homebrewReaction.uuid}}"/>
             </div>
             <button type="button" class="add-reaction-trigger" data-idx={{homebrewReaction.idx}}><i class="fas fa-add"></i>{{localize "pf2e-reaction.SETTINGS.addTrigger"}}</button>
+            <button type="button" class="add-reaction-requirement" data-idx={{homebrewReaction.idx}}><i class="fas fa-add"></i>{{localize "pf2e-reaction.SETTINGS.addRequirement"}}</button>
             {{#each homebrewReaction.triggers as |t|}}
-                <div class="form-group">
-                    <label>Triggers</label>
+                <div class="form-group" style="border:1px solid black">
+                    <label>Trigger</label>
                     <select name="homebrewReaction.{{homebrewReaction.idx}}.triggers.{{t.idx}}.name" class="homebrew-reaction-trigger" data-idx={{t.idx}} data-parent={{homebrewReaction.idx}}>
                         {{#each t.choices as |v k|}}
                             <option value="{{k}}" {{#if (eq k t.name)}} selected {{/if}}>{{localize v}}</option>
@@ -41,7 +42,19 @@
                     <button type="button" class="trigger-reaction-delete" data-parent={{homebrewReaction.idx}} data-idx={{t.idx}}><i class="fas fa-trash"></i></button>
                 </div>
             {{/each}}
-
+            {{#each homebrewReaction.requirements as |r|}}
+                <div class="form-group" style="border:1px solid black">
+                    <label>Requirement</label>
+                    <select name="homebrewReaction.{{homebrewReaction.idx}}.requirements.{{r.idx}}.name" class="homebrew-reaction-requirement" data-idx={{r.idx}} data-parent={{homebrewReaction.idx}}>
+                        {{#each r.choices as |v k|}}
+                            <option value="{{k}}" {{#if (eq k r.name)}} selected {{/if}}>{{localize v}}</option>
+                        {{/each}}
+                    </select>
+                    <label>Effect</label>
+                    <input type="text" name="homebrewReaction.{{homebrewReaction.idx}}.requirements.{{r.idx}}.effect" value="{{r.effect}}"/>
+                    <button type="button" class="requirement-reaction-delete" data-parent={{homebrewReaction.idx}} data-idx={{r.idx}}><i class="fas fa-trash"></i></button>
+                </div>
+            {{/each}}
         </fieldset>
     {{/each}}
 

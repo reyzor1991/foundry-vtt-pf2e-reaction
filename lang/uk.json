@@ -1,6 +1,10 @@
 {
 	"I18N.LANGUAGE": "Українська",
 
+   "pf2e-reaction.SETTINGS.requirement.None":  "Немає",
+   "pf2e-reaction.SETTINGS.requirement.ActorHasEffect":  "Актор під ефектом",
+   "pf2e-reaction.SETTINGS.requirement.TargetHasEffect":  "Ціль під ефектом",
+
    "pf2e-reaction.SETTINGS.trigger.None":  "Немає",
    "pf2e-reaction.SETTINGS.trigger.FailSavingThrow":  "Провалити Рятувальний кидок",
    "pf2e-reaction.SETTINGS.trigger.CriticallyHitCreature":  "Критично вдарити по істоті",
@@ -22,6 +26,7 @@
 
 	"pf2e-reaction.SETTINGS.addReaction": "Додати Homebrew реакцію",
 	"pf2e-reaction.SETTINGS.addTrigger": "Додати трігер",
+	"pf2e-reaction.SETTINGS.addRequirement": "Додати Вимогу",
 
 	"pf2e-reaction.SETTINGS.useHomebrew.name": "Використовуйте Homebrew реакції",
 	"pf2e-reaction.SETTINGS.homebrewReactions.name": "Homebrew реакції",

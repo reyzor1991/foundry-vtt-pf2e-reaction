@@ -1,6 +1,10 @@
 {
 	"I18N.LANGUAGE": "English",
 
+   "pf2e-reaction.SETTINGS.requirement.None":  "None",
+   "pf2e-reaction.SETTINGS.requirement.ActorHasEffect":  "Actor under Effect",
+   "pf2e-reaction.SETTINGS.requirement.TargetHasEffect":  "Target under effect",
+
    "pf2e-reaction.SETTINGS.trigger.None":  "None",
    "pf2e-reaction.SETTINGS.trigger.FailSavingThrow":  "Fail Saving Throw",
    "pf2e-reaction.SETTINGS.trigger.CriticallyHitCreature":  "Critically hit a creature",
@@ -22,6 +26,7 @@
 
 	"pf2e-reaction.SETTINGS.addReaction": "Add Homebrew Reaction",
 	"pf2e-reaction.SETTINGS.addTrigger": "Add Reaction Trigger",
+	"pf2e-reaction.SETTINGS.addRequirement": "Add Reaction Requirement",
 
 	"pf2e-reaction.SETTINGS.useHomebrew.name": "Use homebrew reactions",
 	"pf2e-reaction.SETTINGS.homebrewReactions.name": "Homebrew reactions",

@@ -1,3 +1,8 @@
+const Requirement = {
+  None: "pf2e-reaction.SETTINGS.requirement.None",
+  ActorHasEffect: "pf2e-reaction.SETTINGS.requirement.ActorHasEffect",
+  TargetHasEffect: "pf2e-reaction.SETTINGS.requirement.TargetHasEffect",
+}
 const Trigger = {
   None: "pf2e-reaction.SETTINGS.trigger.None",
   FailSavingThrow: "pf2e-reaction.SETTINGS.trigger.FailSavingThrow",
@@ -17,6 +22,22 @@ const Trigger = {
   EnemyFailHitsActor: "pf2e-reaction.SETTINGS.trigger.EnemyFailHitsActor",
   ActorFailsHit: "pf2e-reaction.SETTINGS.trigger.ActorFailsHit",
   ActorFailsSkillCheck: "pf2e-reaction.SETTINGS.trigger.ActorFailsSkillCheck",
+}
+
+class HomebrewReactionRequirement {
+  constructor(idx) {
+    this.idx = idx;
+    this.name = Requirement.None;
+    this.effect = "";
+    this.choices = Requirement
+  }
+
+  static fromObj(obj) {
+    var h = new HomebrewReactionRequirement();
+    Object.assign(h, obj);
+    h.choices = Requirement;
+    return h;
+  }
 }
 
 class HomebrewReactionTrigger {
@@ -44,12 +65,14 @@ class HomebrewReaction {
     this.slug = "";
     this.uuid = "";
     this.triggers = [new HomebrewReactionTrigger(0)]
+    this.requirements = []
   }
 
   static fromObj(obj) {
     var h = new HomebrewReaction();
     Object.assign(h, obj);
     h.triggers = h.triggers.map(a=>HomebrewReactionTrigger.fromObj(a));
+    h.requirements = h.requirements.map(a=>HomebrewReactionRequirement.fromObj(a));
     return h;
   }
 }
@@ -147,7 +170,7 @@ export default class ReactionHomebrewSettings extends FormApplication {
         var hIdx = hr_key_parts[0];
         var keyPart = hr_key_parts[1];
 
-        if (keyPart == "triggers") {
+        if (keyPart == "triggers" || keyPart == "requirements") {
             var trigIdx = hr_key_parts[2];
             var trigField = hr_key_parts[3];
 
@@ -181,6 +204,9 @@ export default class ReactionHomebrewSettings extends FormApplication {
             for (var j=0; j < this.homebrewReactions[i].triggers.length; j++) {
                 this.homebrewReactions[i].triggers[j].idx = j;
             }
+            for (var l=0; l < this.homebrewReactions[i].requirements.length; l++) {
+                this.homebrewReactions[i].requirements[l].idx = l;
+            }
         }
     }
 
@@ -193,7 +219,10 @@ export default class ReactionHomebrewSettings extends FormApplication {
                     uuid: this.homebrewReactions[i].uuid,
                     triggers: this.homebrewReactions[i].triggers.map(a=>{
                         return {"name":a.name,"reachValue":a.reachValue,"reach":a.reach,"adjacent":a.adjacent,"trait":a.trait};
-                    })
+                    }),
+                    requirements: this.homebrewReactions[i].requirements.map(a=>{
+                        return {"name":a.name,"effect":a.effect};
+                    }),
                 }
             );
         }
@@ -229,11 +258,25 @@ export default class ReactionHomebrewSettings extends FormApplication {
             this.updateIndexes();
             super.render()
         });
+        html.find('.requirement-reaction-delete').click(async (event) => {
+            this.updateForm(event);
+
+            this.homebrewReactions[$(event.currentTarget).data().parent].requirements.splice($(event.currentTarget).data().idx, 1);
+            this.updateIndexes();
+            super.render()
+        });
         html.find('.add-reaction-trigger').click(async (event) => {
             this.updateForm(event);
 
             var i = $(event.currentTarget).data().idx;
             this.homebrewReactions[i].triggers.push(new HomebrewReactionTrigger(this.homebrewReactions[i].triggers.length));
+            super.render()
+        });
+        html.find('.add-reaction-requirement').click(async (event) => {
+            this.updateForm(event);
+
+            var i = $(event.currentTarget).data().idx;
+            this.homebrewReactions[i].requirements.push(new HomebrewReactionRequirement(this.homebrewReactions[i].requirements.length));
             super.render()
         });
         html.find('.homebrew-reaction-trigger').change(async (event) => {
@@ -242,6 +285,11 @@ export default class ReactionHomebrewSettings extends FormApplication {
             if ("EnemyUsesTrait" != $(event.currentTarget).val()) {
                 this.homebrewReactions[$(event.currentTarget).data().parent].triggers[$(event.currentTarget).data().idx].trait = "";
             }
+            super.render()
+        });
+        html.find('.homebrew-reaction-requirement').change(async (event) => {
+            this.updateForm(event);
+            this.homebrewReactions[$(event.currentTarget).data().parent].requirements[$(event.currentTarget).data().idx].name = $(event.currentTarget).val();
             super.render()
         });
     }

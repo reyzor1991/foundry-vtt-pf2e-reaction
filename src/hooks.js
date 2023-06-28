@@ -1,5 +1,8 @@
 import Settings from "./settings.js";
 
+const clever_gambit = "@UUID[Compendium.pf2e.feats-srd.Item.D1o7GUraoFFzjaub]"
+const implements_interruption = "@UUID[Compendium.pf2e.actionspf2e.Item.dnaPJfA0CDLNrWcW]"
+const ring_bell = "@UUID[Compendium.pf2e.actionspf2e.Item.ublVm5gmCIm3eRdQ]"
 const amulets_abeyance = "@UUID[Compendium.pf2e.actionspf2e.Item.Or6RLXeoZkN8CLdi]"
 const convincing_illusion = "@UUID[Compendium.pf2e.feats-srd.Item.bSXcyu7ExWq9qUzG]"
 const scapegoat_parallel_self = "@UUID[Compendium.pf2e.feats-srd.Item.tBWSxVxrojRcEzJt]"
@@ -19,29 +22,29 @@ const courageous_opportunity = "@UUID[Compendium.pf2e.feats-srd.Item.nEmaHLsZEBr
 const premonition_of_clarity = "@UUID[Compendium.pf2e.feats-srd.Item.2h8a6pKhXTXwpJjP]"
 const rapid_response = "@UUID[Compendium.pf2e.feats-srd.Item.OcBaEnGdDm6CuSnr]"
 const denier_of_destruction = "@UUID[Compendium.pf2e.feats-srd.Item.siegOEdEpevAJNFw]"
-const shield_wall = "@UUID[Compendium.pf2e.feats-srd.QpRzvfWdj6YH9TyE]"
-const sacrifice_armor = "@UUID[Compendium.pf2e.feats-srd.bYijGvCvCmJnW6aA]"
-const ringmasters_introduction = "@UUID[Compendium.pf2e.feats-srd.OliKxFIqzky2o6vk]"
-const pirouette = "@UUID[Compendium.pf2e.feats-srd.RlKGaxQWWLa7xJSc]"
-const accompany = "@UUID[Compendium.pf2e.feats-srd.oTTddwzF9TPNkMyd]"
-const spiritual_guides = "@UUID[Compendium.pf2e.feats-srd.cEu8BUS41dlPyPGW]"
-const tangle_of_battle = "@UUID[Compendium.pf2e.feats-srd.GLbl3qoWCvvjJr4S]"
-const mage_hunter = "@UUID[Compendium.pf2e.feats-srd.mqLPCNdCSNyY7gyI]"
-const furious_vengeance = "@UUID[Compendium.pf2e.feats-srd.Oyml3OGNy468z3XI]"
-const embrace_the_pain = "@UUID[Compendium.pf2e.feats-srd.j20djiiuVwUf8MqL]"
+const shield_wall = "@UUID[Compendium.pf2e.feats-srd.Item.QpRzvfWdj6YH9TyE]"
+const sacrifice_armor = "@UUID[Compendium.pf2e.feats-srd.Item.bYijGvCvCmJnW6aA]"
+const ringmasters_introduction = "@UUID[Compendium.pf2e.feats-srd.Item.OliKxFIqzky2o6vk]"
+const pirouette = "@UUID[Compendium.pf2e.feats-srd.Item.RlKGaxQWWLa7xJSc]"
+const accompany = "@UUID[Compendium.pf2e.feats-srd.Item.oTTddwzF9TPNkMyd]"
+const spiritual_guides = "@UUID[Compendium.pf2e.feats-srd.Item.cEu8BUS41dlPyPGW]"
+const tangle_of_battle = "@UUID[Compendium.pf2e.feats-srd.Item.GLbl3qoWCvvjJr4S]"
+const mage_hunter = "@UUID[Compendium.pf2e.feats-srd.Item.mqLPCNdCSNyY7gyI]"
+const furious_vengeance = "@UUID[Compendium.pf2e.feats-srd.Item.Oyml3OGNy468z3XI]"
+const embrace_the_pain = "@UUID[Compendium.pf2e.feats-srd.Item.j20djiiuVwUf8MqL]"
 const opportune_riposte = "@UUID[Compendium.pf2e.actionspf2e.EfjoIuDmtUn4yiow]"
-const perfect_clarity = "@UUID[Compendium.pf2e.feats-srd.JkQjKyzfhMWLr9Gs]"
+const perfect_clarity = "@UUID[Compendium.pf2e.feats-srd.Item.JkQjKyzfhMWLr9Gs]"
 const opportune_riposte_action = "@UUID[Compendium.pf2e.actionspf2e.EfjoIuDmtUn4yiow]"
 const airy_step_action = "@UUID[Compendium.pf2e.actionspf2e.akmQzZoNhyfCKFpL]"
-const retaliatory_cleansing = "@UUID[Compendium.pf2e.feats-srd.y7SYHv0DWkkwjT95]"
-const airy_step_feat = "@UUID[Compendium.pf2e.feats-srd.hOD9de1ftfYRSEKn]"
+const retaliatory_cleansing = "@UUID[Compendium.pf2e.feats-srd.Item.y7SYHv0DWkkwjT95]"
+const airy_step_feat = "@UUID[Compendium.pf2e.feats-srd.Item.hOD9de1ftfYRSEKn]"
 const nimble_dodge_action = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.wCnsRCHvtZkZTmO0]"
-const nimble_dodge_feat = "@UUID[Compendium.pf2e.feats-srd.dNH8OHEvx3vI9NBQ]"
+const nimble_dodge_feat = "@UUID[Compendium.pf2e.feats-srd.Item.dNH8OHEvx3vI9NBQ]"
 const fast_swallow = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.IQtb58p4EaeUzTN1]"
 const retributive_strike = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.IQtb58p4EaeUzTN1]"
 const ferocity = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.N1kstYbHScxgUQtN]"
 const attack_of_opportunity = "@UUID[Compendium.pf2e.actionspf2e.KAVf7AmRnbCAHrkT]"
-const no_escape = "@UUID[Compendium.pf2e.feats-srd.lT8XlX1Ig900BblS]"
+const no_escape = "@UUID[Compendium.pf2e.feats-srd.Item.lT8XlX1Ig900BblS]"
 const glimpse_of_redemption = "@UUID[Compendium.pf2e.actionspf2e.tuZnRWHixLArvaIf]"
 const wicked_thorns = "@UUID[Compendium.pf2e.actionspf2e.ncdryKskPwHMgHFh]"
 const iron_command = "@UUID[Compendium.pf2e.actionspf2e.M8RCbthRhB4bxO9t]"
@@ -431,6 +434,25 @@ function checkCourageousOpportunity(message) {
         });
 }
 
+function messageWithTrait(message, trait) {
+    return message?.item?.system?.traits?.value?.includes(trait) || message?.item?.castingTraits?.includes(trait)
+}
+
+function messageWithAnyTrait(message, traits) {
+    return traits.some(a=>messageWithTrait(message, a))
+}
+
+function checkImplementsInterruption(message) {
+    if ("npc" == message.actor?.type && hasEffect(message.actor, "effect-exploit-vulnerability")) {
+        characterWithReaction()
+        .filter(a=>actorAction(a.actor, "implements-interruption"))
+        .filter(cc=>canReachEnemy(message.token, cc.token, cc.actor))
+        .forEach(cc => {
+            postInChatTemplate(implements_interruption, cc);
+        });
+    }
+}
+
 export default function reactionHooks() {
     $(document).on('click', '.reaction-check', async function () {
         var mid = $(this).parent().parent().parent().data('message-id');
@@ -590,6 +612,7 @@ export default function reactionHooks() {
             }
 
             checkCourageousOpportunity({"actor" : tokenDoc.actor, "token": tokenDoc})
+            checkImplementsInterruption({"actor" : tokenDoc.actor, "token": tokenDoc})
 
             handleHomebrewMessages({
                 'token': tokenDoc,
@@ -636,20 +659,28 @@ export default function reactionHooks() {
                 }
             }
 
-            if (message?.item?.system?.traits?.value?.includes("auditory")) {
+            if (messageWithTrait(message, "auditory")) {
                 checkCourageousOpportunity(message);
+            }
+            if (messageWithAnyTrait(message, ["concentrate", "manipulate"])) {
+                checkImplementsInterruption(message);
             }
 
             if (
                 (messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll"))
-                || (message?.item?.type == 'action' && (message?.item?.system?.traits?.value.includes("manipulate") || message?.item?.system?.traits?.value.includes("move")))
+                || (message?.item?.type == 'action' && messageWithAnyTrait(message, ["manipulate","move"]))
             ) {
                 checkCombatantTriggerAttackOfOpportunity(message.actor?.type, message.actor._id, message.token);
                 checkCourageousOpportunity(message);
+
+                if (message?.item?.type == 'action' && messageWithAnyTrait(message, ["manipulate","move"])) {
+                    checkImplementsInterruption(message);
+                }
             } else if (user?.flags?.pf2e?.origin?.type == 'action') {
                 var actId = user.flags?.pf2e?.origin?.uuid.split('.').slice(-1)[0]
                 if (game?.packs?.get("pf2e.actionspf2e")._source.find(a=>a._id==actId)?.system?.traits?.value.includes("manipulate")) {
                     checkCombatantTriggerAttackOfOpportunity(message.actor?.type, message.actor._id, message.token);
+                    checkImplementsInterruption(message);
                 }
             }
 
@@ -698,6 +729,22 @@ export default function reactionHooks() {
                             postInChatTemplate(mirror_shield, message?.target?.token?.combatant);
                         }
                     }
+                    if (actorAction(message?.target?.actor, "ring-bell")
+                            && getEnemyDistance(message.token, message.target.token)<=30
+                            && hasEffect(message.actor, "effect-exploit-vulnerability")) {
+                            postInChatTemplate(ring_bell, message.target.token.combatant);
+                    }
+                }
+                if (isTargetCharacter(message)) {
+                    characterWithReaction()
+                    .filter(a=>a.actorId != message?.target?.actor._id)
+                    .forEach(cc => {
+                        if (actorAction(cc?.actor, "ring-bell")
+                            && getEnemyDistance(cc?.token, message.token)<=30
+                            && hasEffect(message.actor, "effect-exploit-vulnerability")) {
+                            postInChatTemplate(ring_bell, cc);
+                        }
+                    })
                 }
             } else if (messageType(message, 'attack-roll')) {
                 if (hasReaction(message?.target?.token?.combatant)) {
@@ -726,6 +773,11 @@ export default function reactionHooks() {
                             && criticalFailureMessageOutcome(message)
                         ) {
                             postInChatTemplate(knights_retaliation, message.target.token.combatant);
+                        }
+                        if (actorAction(message?.target?.actor, "ring-bell")
+                            && getEnemyDistance(message.token, message.target.token)<=30
+                            && hasEffect(message.actor, "effect-exploit-vulnerability")) {
+                            postInChatTemplate(ring_bell, message.target.token.combatant);
                         }
                     } else {
                         if (actorAction(message?.target?.actor, "nimble-dodge") && !hasCondition(message?.target?.actor,"encumbered")) {
@@ -773,6 +825,16 @@ export default function reactionHooks() {
                             if (ab) {
                                 postInChatTemplate(_uuid(ab), cc?.token?.combatant);
                             }
+                        }
+                    })
+                } else {
+                    characterWithReaction()
+                    .filter(a=>a.actorId != message?.target?.actor._id)
+                    .forEach(cc => {
+                        if (actorAction(cc?.actor, "ring-bell")
+                            && getEnemyDistance(cc?.token, message.token)<=30
+                            && hasEffect(message.actor, "effect-exploit-vulnerability")) {
+                            postInChatTemplate(ring_bell, cc);
                         }
                     })
                 }
@@ -838,6 +900,9 @@ export default function reactionHooks() {
                     if (hasReaction(message?.token?.combatant)) {
                         if (actorFeat(message?.actor, "tangle-of-battle") && adjacentEnemy(message.target.token, message?.token)) {
                             postInChatTemplate(tangle_of_battle, message.token.combatant);
+                        }
+                        if (actorFeat(message?.actor, "clever-gambit") && hasEffect(message?.target?.actor, "effect-recall-knowledge-identified")) {
+                            postInChatTemplate(clever_gambit, message.token.combatant);
                         }
                     }
                 }
@@ -974,6 +1039,24 @@ export default function reactionHooks() {
                             }
                         }
                     }
+
+                    if (actorAction(message?.actor, "ring-bell")
+                            && getEnemyDistance(message.token, origin?.actor?.token)<=30
+                            && hasEffect(origin?.actor, "effect-exploit-vulnerability")) {
+                            postInChatTemplate(ring_bell, message?.actor?.combatant);
+                    }
+
+                }
+                if ("character" == message?.actor?.type) {
+                    characterWithReaction()
+                    .filter(a=>a.actorId != message?.actor._id)
+                    .forEach(cc => {
+                        if (actorAction(cc?.actor, "ring-bell")
+                            && getEnemyDistance(cc?.token, origin?.actor?.token)<=30
+                            && hasEffect(origin?.actor, "effect-exploit-vulnerability")) {
+                            postInChatTemplate(ring_bell, cc);
+                        }
+                    })
                 }
                 if (hasReaction(origin?.actor?.combatant)) {
                     if (successMessageOutcome(message)) {
@@ -1055,6 +1138,19 @@ export default function reactionHooks() {
         }
         return r;
     }
+
+    function messageRequirements(message, requirements) {
+        return requirements.every(a=>{
+            if (a.name == 'TargetHasEffect' && hasEffect(message?.target?.actor, a.effect)) {
+                return true;
+            }
+            if (a.name == 'ActorHasEffect' && hasEffect(message?.actor, a.effect)) {
+                return true;
+            }
+            return false;
+        })
+    }
+
 
     function combatantsForTriggers(tt, message) {
         var res = [];
@@ -1155,6 +1251,10 @@ export default function reactionHooks() {
                 .filter(a=>a.triggers.filter(a=> a.name != "None").length > 0)
                 .forEach(hr => {
                     var tt = hr.triggers.filter(a=> a.name != "None");
+                    var requirements = hr.requirements.filter(a=> a.name != "None");
+                    if (!messageRequirements(message, requirements)) {
+                        return;
+                    }
                     if (tt.some(a=>handleHomebrewTrigger(a, message))) {
                         combatantsForTriggers(tt, message)
                             .filter(a=>actorFeat(a.actor, hr.slug) || actorAction(a.actor, hr.slug))
