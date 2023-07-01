@@ -1,5 +1,6 @@
 import Settings from "./settings.js";
 
+const schadenfreude = "@UUID[Compendium.pf2e.spells-srd.Item.8E97SA9KAWCNdXfO]"
 const clever_gambit = "@UUID[Compendium.pf2e.feats-srd.Item.D1o7GUraoFFzjaub]"
 const implements_interruption = "@UUID[Compendium.pf2e.actionspf2e.Item.dnaPJfA0CDLNrWcW]"
 const ring_bell = "@UUID[Compendium.pf2e.actionspf2e.Item.ublVm5gmCIm3eRdQ]"
@@ -256,6 +257,10 @@ function actorAction(actor, action) {
     return actor?.itemTypes?.action?.find((c => action === c.slug))
 }
 
+function actorSpell(actor, spell) {
+    return actor?.itemTypes?.spell?.find((c => spell === c.slug))
+}
+
 function actorFeat(actor, feat) {
     return actor?.itemTypes?.feat?.find((c => feat === c.slug))
 }
@@ -292,8 +297,8 @@ async function reactionWasUsedChat(uuid, combatant) {
     });
 }
 
-async function postInChatTemplate(uuid, combatant, actionName=undefined) {
-    if(combatant?.actor?.system?.attributes?.hp?.value <= 0 || hasCondition(combatant?.actor, "unconscious") || hasCondition(combatant?.actor, "dying")) {
+async function postInChatTemplate(uuid, combatant, actionName=undefined, skipDeath=false) {
+    if((combatant?.actor?.system?.attributes?.hp?.value <= 0 || hasCondition(combatant?.actor, "unconscious") || hasCondition(combatant?.actor, "dying")) && !skipDeath) {
         return
     }
     var text = game.i18n.format("pf2e-reaction.ask", {uuid:uuid, name:combatant.token.name});
@@ -637,13 +642,13 @@ export default function reactionHooks() {
                 if (message.actor.system?.attributes?.hp?.value == 0) {
                     if (hasReaction(message?.token?.combatant)) {
                         if (actorAction(message?.actor, "ferocity")) {
-                            postInChatTemplate(ferocity, message?.token?.combatant);
+                            postInChatTemplate(ferocity, message?.token?.combatant, undefined, true);
                         }
                         if (actorFeat(message?.actor, "cheat-death")) {
-                            postInChatTemplate(cheat_death, message?.token?.combatant);
+                            postInChatTemplate(cheat_death, message?.token?.combatant, undefined, true);
                         }
                         if (actorFeat(message?.actor, "ruby-resurrection")) {
-                            postInChatTemplate(ruby_resurrection, message?.token?.combatant);
+                            postInChatTemplate(ruby_resurrection, message?.token?.combatant, undefined, true);
                         }
                     }
                     // ally
@@ -1039,6 +1044,11 @@ export default function reactionHooks() {
                             }
                         }
                     }
+                    if (criticalFailureMessageOutcome(message)) {
+                        if (actorSpell(message.actor, "schadenfreude")) {
+                            postInChatTemplate(schadenfreude, message.token.combatant)
+                        }
+                    }
 
                     if (actorAction(message?.actor, "ring-bell")
                             && getEnemyDistance(message.token, origin?.actor?.token)<=30
@@ -1081,10 +1091,13 @@ export default function reactionHooks() {
         if (tr.name == 'EnemyUseMoveAction' && message?.item?.type == 'action' && message?.item?.system?.traits?.value.includes("move")) {
             return true;
         }
-        if (tr.name == 'FailSavingThrow' && messageType(message, 'saving-throw')) {
+        if (tr.name == 'FailSavingThrow' && messageType(message, 'saving-throw') && anyFailureMessageOutcome(message)) {
             return true;
         }
-        if (tr.name == 'CriticallyHitCreature' && messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
+        if (tr.name == 'CriticalFailSavingThrow' && messageType(message, 'saving-throw') && criticalFailureMessageOutcome(message)) {
+            return true;
+        }
+        if (tr.name == 'CriticalHitCreature' && messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
             return true;
         }
         if (tr.name == 'AllyTakeDamage' && messageType(message, 'damage-roll')) {
@@ -1109,7 +1122,10 @@ export default function reactionHooks() {
         if (tr.name == 'EnemyHitsActor' && messageType(message, 'attack-roll')) {
             return true;
         }
-        if (tr.name == 'EnemyCriticallyFailHitsActor' && messageType(message, 'attack-roll') && criticalFailureMessageOutcome(message)) {
+        if (tr.name == 'EnemyCriticalFailHitsActor' && messageType(message, 'attack-roll') && criticalFailureMessageOutcome(message)) {
+            return true;
+        }
+        if (tr.name == 'EnemyCriticalHitsActor' && messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
             return true;
         }
         if (tr.name == 'EnemyFailHitsActor' && messageType(message, 'attack-roll') && anyFailureMessageOutcome(message)) {
@@ -1168,11 +1184,15 @@ export default function reactionHooks() {
                 var t = filterByDistance(("character" == message?.actor?.type ? npcWithReaction() : characterWithReaction()), tr, message);
                 res = res.concat(t);
             }
-            if (tr.name == 'FailSavingThrow' && messageType(message, 'saving-throw')) {
+            if (tr.name == 'FailSavingThrow' && messageType(message, 'saving-throw') && anyFailureMessageOutcome(message)) {
                 var t = filterByDistance([message?.token?.combatant], tr, message);
                 res = res.concat(t);
             }
-            if (tr.name == 'CriticallyHitCreature' && messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
+            if (tr.name == 'CriticalFailSavingThrow' && messageType(message, 'saving-throw') && criticalFailureMessageOutcome(message)) {
+                var t = filterByDistance([message?.token?.combatant], tr, message);
+                res = res.concat(t);
+            }
+            if (tr.name == 'CriticalHitCreature' && messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
                 var t = filterByDistance([message?.token?.combatant], tr, message);
                 res = res.concat(t);
             }
@@ -1216,7 +1236,11 @@ export default function reactionHooks() {
                 var t = filterByDistance([message?.target?.token?.combatant], tr, message);
                 res = res.concat(t);
             }
-            if (tr.name == 'EnemyCriticallyFailHitsActor' && messageType(message, 'attack-roll') && criticalFailureMessageOutcome(message)) {
+            if (tr.name == 'EnemyCriticalFailHitsActor' && messageType(message, 'attack-roll') && criticalFailureMessageOutcome(message)) {
+                var t = filterByDistance([message?.target?.token?.combatant], tr, message);
+                res = res.concat(t);
+            }
+            if (tr.name == 'EnemyCriticalHitsActor' && messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
                 var t = filterByDistance([message?.target?.token?.combatant], tr, message);
                 res = res.concat(t);
             }
@@ -1257,9 +1281,9 @@ export default function reactionHooks() {
                     }
                     if (tt.some(a=>handleHomebrewTrigger(a, message))) {
                         combatantsForTriggers(tt, message)
-                            .filter(a=>actorFeat(a.actor, hr.slug) || actorAction(a.actor, hr.slug))
+                            .filter(a=>actorFeat(a.actor, hr.slug) || actorAction(a.actor, hr.slug) || actorSpell(a.actor, hr.slug))
                             .forEach(cc => {
-                                postInChatTemplate(_uuid(hr), cc);
+                                postInChatTemplate(_uuid(hr), cc, undefined, tt.find(a=>a.name=="YouHPZero") != undefined);
                             })
                     }
                 })

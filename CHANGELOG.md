@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.2.7
+
+### New feature
+-   Extend homebrew triggers
+-   Add Schadenfreude reaction check
+
 ## Version 0.2.6
 
 ### New feature

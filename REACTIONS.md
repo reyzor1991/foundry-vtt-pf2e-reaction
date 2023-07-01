@@ -55,3 +55,4 @@
 54. Ring Bell
 55. Implement's Interruption
 56. Clever Gambit
+57. Schadenfreude

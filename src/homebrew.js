@@ -5,8 +5,9 @@ const Requirement = {
 }
 const Trigger = {
   None: "pf2e-reaction.SETTINGS.trigger.None",
+  CriticalFailSavingThrow: "pf2e-reaction.SETTINGS.trigger.CriticalFailSavingThrow",
   FailSavingThrow: "pf2e-reaction.SETTINGS.trigger.FailSavingThrow",
-  CriticallyHitCreature: "pf2e-reaction.SETTINGS.trigger.CriticallyHitCreature",
+  CriticalHitCreature: "pf2e-reaction.SETTINGS.trigger.CriticalHitCreature",
   EnemyUseManipulateAction: "pf2e-reaction.SETTINGS.trigger.EnemyUseManipulateAction",
   EnemyUseMoveAction: "pf2e-reaction.SETTINGS.trigger.EnemyUseMoveAction",
   EnemyUseRangedAttack: "pf2e-reaction.SETTINGS.trigger.EnemyUseRangedAttack",
@@ -18,7 +19,8 @@ const Trigger = {
   EnemyUsesTrait: "pf2e-reaction.SETTINGS.trigger.EnemyUsesTrait",
   EnemyCastSpell: "pf2e-reaction.SETTINGS.trigger.EnemyCastSpell",
   EnemyHitsActor: "pf2e-reaction.SETTINGS.trigger.EnemyHitsActor",
-  EnemyCriticallyFailHitsActor: "pf2e-reaction.SETTINGS.trigger.EnemyCriticallyFailHitsActor",
+  EnemyCriticalFailHitsActor: "pf2e-reaction.SETTINGS.trigger.EnemyCriticalFailHitsActor",
+  EnemyCriticalHitsActor: "pf2e-reaction.SETTINGS.trigger.EnemyCriticalHitsActor",
   EnemyFailHitsActor: "pf2e-reaction.SETTINGS.trigger.EnemyFailHitsActor",
   ActorFailsHit: "pf2e-reaction.SETTINGS.trigger.ActorFailsHit",
   ActorFailsSkillCheck: "pf2e-reaction.SETTINGS.trigger.ActorFailsSkillCheck",
