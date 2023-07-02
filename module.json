@@ -2,7 +2,7 @@
   "id": "pf2e-reaction",
   "title": "PF2e Reaction Checker",
   "description": "Check reaction of combatant",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "authors": [
     {
       "name": "Reyzor",
@@ -33,7 +33,7 @@
   "packs": [
     {
       "label": "Reaction Effects",
-      "name": "Reaction-Effects",
+      "name": "reaction-effects",
       "path": "packs/reaction-effects.db",
       "system": "pf2e",
       "private": false,

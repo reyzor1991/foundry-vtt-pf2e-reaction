@@ -37,6 +37,8 @@
 	"pf2e-reaction.SETTINGS.homebrewSettings.label": "Керуйте налаштуваннями Homebrew реакції",
 	"pf2e-reaction.SETTINGS.homebrewSettings.hint": "Увімкніть і налаштуйте Homebrew реакції",
 
+	"pf2e-reaction.addReactionEffect.name": "Додайте ефект реакції",
+	"pf2e-reaction.addReactionEffect.hint": "Додайте ефект реакції, коли актор використав усі можливі реакції",
 	"pf2e-reaction.show-to-players.name": "Показувати повідомлення реакцій гравцям",
 	"pf2e-reaction.show-notification.name": "Показувати сповіщення",
 	"pf2e-reaction.recall-knowledge.name": "Згадати знання",

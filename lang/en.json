@@ -37,6 +37,8 @@
 	"pf2e-reaction.SETTINGS.homebrewSettings.label": "Manage Homebrew reactions Settings",
 	"pf2e-reaction.SETTINGS.homebrewSettings.hint": "Enable and configure Homebrew reactions",
 
+	"pf2e-reaction.addReactionEffect.name": "Add Reaction effect",
+	"pf2e-reaction.addReactionEffect.hint": "Add Reaction effect when An actor used all possible reactions",
 	"pf2e-reaction.show-to-players.name": "Show reaction message to players",
 	"pf2e-reaction.show-notification.name": "Show notification",
 	"pf2e-reaction.recall-knowledge.name": "Recall Knowledge",

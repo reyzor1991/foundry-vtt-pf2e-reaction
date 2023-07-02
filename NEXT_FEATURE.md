@@ -2,7 +2,6 @@
 
 - Chemical Contagion
 -
-- Cleave
 - Corpse-Killer's Defiance
 - Wounded Rage
 -

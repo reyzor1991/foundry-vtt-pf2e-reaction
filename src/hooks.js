@@ -1,5 +1,6 @@
 import Settings from "./settings.js";
 
+const cleave = "@UUID[Compendium.pf2e.feats-srd.Item.GE96a0UGPYM74qjI]"
 const shield_block = "@UUID[Compendium.pf2e.feats-srd.Item.jM72TjJ965jocBV8]"
 const schadenfreude = "@UUID[Compendium.pf2e.spells-srd.Item.8E97SA9KAWCNdXfO]"
 const clever_gambit = "@UUID[Compendium.pf2e.feats-srd.Item.D1o7GUraoFFzjaub]"
@@ -57,6 +58,8 @@ const knights_retaliation = "@UUID[Compendium.pf2e.feats-srd.Item.jZy91ekcS9Zqmd
 const mirror_shield = "@UUID[Compendium.pf2e.feats-srd.Item.kQEIPYoKTt69yXxV]"
 const reactive_shield = "@UUID[Compendium.pf2e.feats-srd.Item.w8Ycgeq2zfyshtoS]"
 const charmed_life = "@UUID[Compendium.pf2e.feats-srd.Item.DkoxNw9tsFFXrfJY]"
+
+const reactionWasUsedEffect = "Compendium.pf2e-reaction.reaction-effects.Item.Dvi4ewimR9t5723U"
 
 const identifySkills = new Map([
     ["aberration", ["occultism"]],
@@ -222,6 +225,24 @@ function isTargetCharacter(message) {
 
 function _uuid(obj) {
     return "@UUID["+obj.uuid+"]";
+}
+
+function countAllReaction(combatant) {
+    var count = 0;
+    if (combatant) {
+        if (combatant?.flags?.["reaction-check"]?.state) {
+            count += 1;
+        }
+
+        count += combatant?.flags?.['reaction-check']?.['triple-opportunity'] ?? 0;
+        count += combatant?.flags?.['reaction-check']?.['combat-reflexes'] ?? 0;
+        count += combatant?.flags?.['reaction-check']?.['inexhaustible-countermoves'] ?? 0;
+
+        count += combatant?.flags?.['reaction-check']?.['reflexive-riposte'] ?? 0;
+
+        count += combatant?.flags?.['reaction-check']?.['quick-shield-block'] ?? 0;
+    }
+    return count;
 }
 
 function countReaction(combatant, actionName=undefined) {
@@ -473,6 +494,13 @@ function checkImplementsInterruption(message) {
     }
 }
 
+async function setEffectToActor(actor, eff) {
+    const source = (await fromUuid(eff)).toObject();
+    source.flags = mergeObject(source.flags ?? {}, { core: { sourceId: eff } });
+
+    await actor.createEmbeddedDocuments("Item", [source]);
+}
+
 export default function reactionHooks() {
     $(document).on('click', '.reaction-check', async function () {
         var mid = $(this).parent().parent().parent().data('message-id');
@@ -486,6 +514,9 @@ export default function reactionHooks() {
                 var combatant = game.combat.turns.find(a=>a._id === t);
                 if (combatant) {
                     updateCombatantReactionState(combatant, false, mes?.flags['reaction-check']?.actionName);
+                    if (Settings.addReactionEffect && countAllReaction(combatant) <= 1) {
+                        setEffectToActor(combatant.actor, reactionWasUsedEffect);
+                    }
                     if (reactions > 1 && count > 1) {
                         var text = game.i18n.format("pf2e-reaction.ask", {uuid:uuid, name:combatant.token.name});
                         if (count-1 > 1) {
@@ -533,19 +564,20 @@ export default function reactionHooks() {
     });
 
     Hooks.on('combatRound', async (combat, updateData, updateOptions) => {
-        updateCombatantReactionState(combat.nextCombatant, true);
-        updateInexhaustibleCountermoves(combat.nextCombatant);
-        if (combat.nextCombatant?.actor?.type == "character") {
+        let _combatant = combat.turns[0];
+        updateCombatantReactionState(_combatant, true);
+        updateInexhaustibleCountermoves(_combatant);
+        if (_combatant?.actor?.type == "character") {
             npcWithReaction()
                 .forEach(cc => {
                     var pg = actorAction(cc.actor, "petrifying-glance")
-                    if (pg && getEnemyDistance(combat.nextCombatant.token, cc.token <= 30)) {
+                    if (pg && getEnemyDistance(_combatant.token, cc.token <= 30)) {
                         postInChatTemplate(_uuid(pg), cc);
                     }
                 })
         }
-        if (actorFeat(combat.nextCombatant?.actor, "scapegoat-parallel-self")) {
-            postInChatTemplate(scapegoat_parallel_self, combat.nextCombatant);
+        if (actorFeat(_combatant?.actor, "scapegoat-parallel-self")) {
+            postInChatTemplate(scapegoat_parallel_self, _combatant);
         }
     });
 
@@ -778,7 +810,7 @@ export default function reactionHooks() {
                         if (actorFeat(message?.target?.actor, "farabellus-flip")) {
                             postInChatTemplate(farabellus_flip, message.target.token.combatant);
                         }
-                        if (actorFeat(message?.target?.actor, "reactive-shield") && hasEffect(message?.target?.actor, "effect-raise-a-shield") && message?.item?.isMelee) {
+                        if (actorFeat(message?.target?.actor, "reactive-shield") && !hasEffect(message?.target?.actor, "effect-raise-a-shield") && message?.item?.isMelee) {
                             postInChatTemplate(reactive_shield, message.target.token.combatant);
                         }
                         if (actorFeat(message?.target?.actor, "pirouette") && hasEffect(message?.target?.actor, "stance-masquerade-of-seasons-stance")) {
@@ -967,7 +999,22 @@ export default function reactionHooks() {
                 }
 
             } else if (messageType(message, 'damage-roll')) {
-                //15 ft damage you
+                if (hasReaction(message.actor.combatant)) {
+                    if (actorFeat(message.actor, "cleave") && message?.item?.isMelee) {
+                        if (message.target.actor.system.attributes.hp.value <= parseInt(message.content)) {
+
+                            var adjEnemies = game.combat.turns.filter(a => a.actor.type == "npc")
+                            .filter(a=>a.actorId != message?.target?.actor._id)
+                            .filter(a=>adjacentEnemy(message.target.token, a.token))
+                            .filter(a=>a.actor.system.attributes.hp.value>0);
+
+                            if (adjEnemies.length > 0) {
+                                postInChatTemplate(cleave, message.actor.combatant);
+                            }
+                        }
+                    }
+                }
+
                 if(hasReaction(message?.target?.token?.combatant, "shield-block")) {
                     if (message?.item?.system?.damageRolls) {
                         var dTypes = Object.values(message?.item?.system?.damageRolls).map(a=>a.damageType);
@@ -1015,6 +1062,7 @@ export default function reactionHooks() {
                                 postInChatTemplate(retaliatory_cleansing, message.target.token.combatant);
                             }
                         }
+                    //15 ft damage you
                     } else if (getEnemyDistance(message?.target.token, message.token) <= 15) {
                         if (actorAction(message?.target?.actor, "iron-command")) {
                             postInChatTemplate(iron_command, message.target.token.combatant);

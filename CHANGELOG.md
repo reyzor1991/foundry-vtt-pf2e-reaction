@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.2.9
+
+### New feature
+-   Add Add Reaction was Used Effect
+-   Add Cleave reaction check
+
 ## Version 0.2.8
 
 ### New feature

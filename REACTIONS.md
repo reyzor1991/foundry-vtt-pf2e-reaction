@@ -57,3 +57,4 @@
 56. Clever Gambit
 57. Schadenfreude
 58. Shield Block
+59. Cleave

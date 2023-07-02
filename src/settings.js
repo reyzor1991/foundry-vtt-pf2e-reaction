@@ -19,6 +19,9 @@ export default class Settings {
     static get useHomebrew() {
         return game.settings.get("pf2e-reaction", "useHomebrew");
     }
+    static get addReactionEffect() {
+        return game.settings.get("pf2e-reaction", "addReactionEffect");
+    }
     static get homebrewReactions() {
         return game.settings.get("pf2e-reaction", "homebrewReactions");
     }
@@ -59,6 +62,14 @@ export default class Settings {
         });
         game.settings.register("pf2e-reaction", "show-to-players", {
             name: game.i18n.localize("pf2e-reaction.show-to-players.name"),
+            scope: "world",
+            config: true,
+            default: false,
+            type: Boolean,
+        });
+        game.settings.register("pf2e-reaction", "addReactionEffect", {
+            name: game.i18n.localize("pf2e-reaction.addReactionEffect.name"),
+            hint: game.i18n.localize("pf2e-reaction.addReactionEffect.hint"),
             scope: "world",
             config: true,
             default: false,
