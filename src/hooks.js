@@ -1,5 +1,6 @@
 import Settings from "./settings.js";
 
+const shield_block = "@UUID[Compendium.pf2e.feats-srd.Item.jM72TjJ965jocBV8]"
 const schadenfreude = "@UUID[Compendium.pf2e.spells-srd.Item.8E97SA9KAWCNdXfO]"
 const clever_gambit = "@UUID[Compendium.pf2e.feats-srd.Item.D1o7GUraoFFzjaub]"
 const implements_interruption = "@UUID[Compendium.pf2e.actionspf2e.Item.dnaPJfA0CDLNrWcW]"
@@ -154,6 +155,13 @@ function updateCombatantReactionState(combatant, newState, actionName=undefined)
                 });
                 return;
             }
+        } else if (actionName == "shield-block") {
+            if (combatant?.flags?.['reaction-check']?.['quick-shield-block']) {
+                combatant.update({
+                    "flags.reaction-check.quick-shield-block": combatant['flags']['reaction-check']['quick-shield-block'] - 1
+                });
+                return;
+            }
         }
         combatant.update({
             "flags.reaction-check.state": false
@@ -174,6 +182,11 @@ function updateCombatantReactionState(combatant, newState, actionName=undefined)
             if (actorFeat(combatant.actor, "reflexive-riposte")) {
                 combatant.update({
                     "flags.reaction-check.reflexive-riposte": 1
+                });
+            }
+            if (actorFeat(combatant.actor, "quick-shield-block")) {
+                combatant.update({
+                    "flags.reaction-check.quick-shield-block": 1
                 });
             }
         }
@@ -224,6 +237,8 @@ function countReaction(combatant, actionName=undefined) {
         } else if (actionName == "opportune-riposte") {
             count += combatant?.flags?.['reaction-check']?.['reflexive-riposte'] ?? 0;
             count += combatant?.flags?.['reaction-check']?.['inexhaustible-countermoves'] ?? 0;
+        } else if (actionName == "shield-block") {
+            count += combatant?.flags?.['reaction-check']?.['quick-shield-block'] ?? 0;
         }
     }
     return count;
@@ -763,7 +778,7 @@ export default function reactionHooks() {
                         if (actorFeat(message?.target?.actor, "farabellus-flip")) {
                             postInChatTemplate(farabellus_flip, message.target.token.combatant);
                         }
-                        if (actorFeat(message?.target?.actor, "reactive-shield") && anySuccessMessageOutcome(message) && message?.item?.isMelee) {
+                        if (actorFeat(message?.target?.actor, "reactive-shield") && hasEffect(message?.target?.actor, "effect-raise-a-shield") && message?.item?.isMelee) {
                             postInChatTemplate(reactive_shield, message.target.token.combatant);
                         }
                         if (actorFeat(message?.target?.actor, "pirouette") && hasEffect(message?.target?.actor, "stance-masquerade-of-seasons-stance")) {
@@ -953,6 +968,16 @@ export default function reactionHooks() {
 
             } else if (messageType(message, 'damage-roll')) {
                 //15 ft damage you
+                if(hasReaction(message?.target?.token?.combatant, "shield-block")) {
+                    if (message?.item?.system?.damageRolls) {
+                        var dTypes = Object.values(message?.item?.system?.damageRolls).map(a=>a.damageType);
+                        if (dTypes.filter(a=> a== "bludgeoning" || a == "piercing" || a== "slashing").length > 0) {
+                            if (actorFeat(message?.target?.actor, "shield-block") && hasEffect(message.target.actor, "effect-raise-a-shield")) {
+                                postInChatTemplate(shield_block, message.target.token.combatant, "shield-block");
+                            }
+                        }
+                    }
+                }
                 if(hasReaction(message?.target?.token?.combatant)) {
                     if (actorFeat(message?.target?.actor, "verdant-presence")) {
                         postInChatTemplate(verdant_presence, message.target.token.combatant);
@@ -1312,6 +1337,11 @@ export default function reactionHooks() {
                     var pir = actorFeat(token.actor, "pirouette");
                     if (pir && hasEffect(token.actor, "stance-masquerade-of-seasons-stance")) {
                         var text = game.i18n.format("pf2e-reaction.notify", {uuid:pir.name, name:token.name});
+                        ui.notifications.info(`${_user.name} targets ${token.name}. ${text}`);
+                    }
+                    var rs = actorFeat(token.actor, "reactive-shield");
+                    if (rs && !hasEffect(token.actor, "effect-raise-a-shield")) {
+                        var text = game.i18n.format("pf2e-reaction.notify", {uuid:rs.name, name:token.name});
                         ui.notifications.info(`${_user.name} targets ${token.name}. ${text}`);
                     }
                 } else {

@@ -91,11 +91,171 @@
 - Turn Away Misfortune
 - Trespass Teleportation
 
-
-
-### 
-
-- Quick Shield Block
+###
 - Divine Reflexes
 - Improved Twin Riposte
 - Improved Dueling Riposte
+
+### 
+- Avenge in Glory
+- Chance Death
+- Collapse
+- Community Knowledge
+- Cringe
+- Deliberate Death
+- Empathetic Plea
+- Goblin Scuttle
+- Hunter's Defense
+- Keep Up Appearances
+- Know Oneself
+- Leshy Superstition
+- Life-Giving Magic
+- Maiden's Mending
+- Nanite Surge
+- Orc Ferocity
+- Orc Superstition
+- Reassuring Presence
+- Recognize Spell
+- Shadow Blending
+- Squawk!
+- Sudden Mindfulness
+- Unexpected Shift
+- Willing Death
+- Consume Energy
+- Eerie Flicker
+- We're on the List
+- Disengaging Twist
+- Distracting Flattery
+- Kreighton's Cognitive Crossover
+- Lucky Escape
+- Never Tire
+- Play to the Crowd
+- Reflexive Catch
+- Soul Flare
+- Spot Translate
+- That's Not Natural!
+- Turn Back the Clock
+- Watch and Learn
+- You're an Embarrassment!
+- Ally's Shelter
+- Ankle Bite
+- Demonblood Frenzy
+- Eat Fortune
+- Elemental Bulwark
+- Feed on Pain
+- Gaping Flesh
+- Healer's Halo
+- Heatwave
+- Histrionic Injury
+- Mask of Rejection
+- Mistaken Identity
+- Ragdya's Revelry
+- Shed Tail
+- Step Lively
+- Strix Vengeance
+- Victorious Vigor
+- Aldori Riposte
+- Clinch Strike
+- Defend Mount
+- Disarming Smile
+- Dodge Away
+- Exploit Opening
+- Keep Pace
+- Poison Coat
+- Repulse the Wicken
+- Say that Again!
+- Share Burden
+- Swift Intervention
+- Urgent Upwelling
+- Vacate Vision
+- Watch This!
+- Grudging Compliment
+- Muscle Mimicry
+- Skeptic's Defense
+- Acquired Tolerance
+- Armored Rebuff
+- Bravo's Determination
+- Counter Curse
+- Countercharm
+- Drive Back
+- Equitable Defense
+- Gardener's Resolve
+- Guardian Ghosts
+- Interrupt Charge
+- Living for the Applause
+- Metabolize Element
+- Minor Omen
+- Opportunistic Grapple
+- Reminder of the Greater Fear
+- Rule of Three
+- Scholar's Hunch
+- Shoving Sweep
+- Stalwart Mind
+- Unkillable
+- Absorb Toxin
+- Mask of Pain
+- Mother's Mindfulness
+- Predator's Growl
+- Preemptive Reconfiguration
+- Pride in Arms
+- Ragdya's Dance
+- Riptide
+- Roll with It (Goblin)
+- Snare Commando
+- Stone Bones
+- Telekinetic Slip
+- Emphatic Emissary
+- Endure Death's Touch
+- Ensnaring Wrappings
+- Everyone Duck!
+- Fading
+- Impressive Landing
+- Mockingbird's Disarm
+- Reactive Charm
+- Saving Slash
+- Shattering Strike (Weapon Improviser)
+- Silent Sting
+- Tag Team
+- Tempest-Sun Shielding
+- Topple Foe
+- Ward Casting
+- Blessed Denial
+- Cartwheel Dodge
+- Collapse Wall
+- Forewarn
+- Interfering Surge
+- Redirect Elements
+- Self-Destruct
+- Shoulder Catastrophe
+- Too Angry to Die
+- Alter Resistance
+- Black Cat Curse
+- Can't Fall Here
+- Caterwaul
+- Crafter's Instinct
+- Disruptive Stare
+- Harbinger's Caw
+- Impose Order (Aphorite)
+- Inspirit Hazard
+- Instinctive Obfuscation
+- Planar Sidestep
+- Squirm Free
+- Absorb Spell
+- Death's Door
+- Keep up the Good Fight
+- Night's Warning
+- Spellmaster's Tenacity
+- Target of Opportunity
+- Thwart Evil
+- Vengeful Strike
+- Converge
+- Deflecting Cloud
+- Focus Ally
+- Master's Counterspell
+- Opportune Throw
+- Ward Mind
+- Blazing Aura
+- Cantorian Restoration
+- Elude Trouble
+- Hurricane Swing
+- Reflecting Riposte

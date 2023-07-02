@@ -30,6 +30,7 @@ See [REACTIONS.md](./REACTIONS.md)
 - Combat Reflexes
 - Reflexive Riposte
 - Inexhaustible Countermoves
+- Quick Shield Block
 
 ### Notification:
 #### Need to turn on in settings
@@ -72,7 +73,7 @@ Open Game License:
 
 [Foundry URL]: https://foundryvtt.com
 
-[Version]: https://img.shields.io/badge/Version-0.2.7-yellow?style=flat-square
+[Version]: https://img.shields.io/badge/Version-0.2.8-yellow?style=flat-square
 [Version URL]: https://github.com/reyzor1991/foundry-vtt-pf2e-reaction
 
 [GitHub Release Date]: https://img.shields.io/github/release-date/reyzor1991/foundry-vtt-pf2e-reaction

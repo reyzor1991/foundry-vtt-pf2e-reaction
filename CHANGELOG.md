@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.2.8
+
+### New feature
+-   Add Shield Block reaction check
+-   Quick Shield Block
+
 ## Version 0.2.7
 
 ### New feature
