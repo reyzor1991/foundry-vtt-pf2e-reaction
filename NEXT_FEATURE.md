@@ -1,49 +1,32 @@
 ### Next Feature
 
 - Chemical Contagion
--
 - Corpse-Killer's Defiance
-- Wounded Rage
--
-- All in my Head
 - Educate Allies
 - Inspiring Resilience
-- Resounding Finale
-- Reverberate
--
 - Divine Grace
-- Everdistant Defense
 - Inspiring Resilience
-- Miraculous Intervention
-- Shield of Reckoning
--
 - Premonition of Avoidance
-- Swift Banishment
--
-- Cut from the Air
-- Desperate Finisher
--
-- Hit the Dirt!
+- Shield of Reckoning
 - Fake Out
-- Instant Backup
-- Grit and Tenacity
 - Deflecting Shot
 - Redirecting Shot
-- Instant Return
--
-- Distracting Explosion
-- Negate Damage
 - No! No! I Created You!
-- You Failed to Account for… This!
--
-- Foresee Danger
-- Sense the Unseen
-- Suspect of Opportunity
 - Trickster's Ace
 -
+-
+-
+- Miraculous Intervention
+- Swift Banishment
+- Cut from the Air
+- Desperate Finisher
+- Instant Backup
+- Instant Return
+- Sense the Unseen
 - Capture Magic
-- Emergency Targe
 - Preternatural Parry
+-
+-
 -
 - Align Ki
 - Crane Flutter

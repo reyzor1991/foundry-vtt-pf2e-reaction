@@ -58,3 +58,16 @@
 57. Schadenfreude
 58. Shield Block
 59. Cleave
+60. Wounded Rage
+61. All in my Head
+62. Resounding Finale(Only you take damage)
+63. Reverberate
+64. Everdistant Defense
+65. Hit the Dirt!
+66. Grit and Tenacity
+67. Distracting Explosion
+68. Negate Damage
+69. You Failed to Account for… This!
+70. Foresee Danger
+71. Suspect of Opportunity(only attack)
+72. Emergency Targe(melee spell?)

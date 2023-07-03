@@ -1,5 +1,22 @@
 # Changelog
 
+## Version 0.2.10
+
+### New feature
+-   Add Wounded Rage reaction check
+-   Add All in my Head reaction check
+-   Add Resounding Finale reaction check
+-   Add Reverberate reaction check
+-   Add Everdistant Defense reaction check
+-   Add Hit the Dirt! reaction check
+-   Add Grit and Tenacity reaction check
+-   Add Distracting Explosion reaction check
+-   Add Negate Damage reaction check
+-   Add You Failed to Account for… This! reaction check
+-   Add Foresee Danger reaction check
+-   Add Suspect of Opportunity reaction check
+-   Add Emergency Targe reaction check
+
 ## Version 0.2.9
 
 ### New feature

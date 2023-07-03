@@ -4,16 +4,16 @@
 
 [![Version]][Version URL]
 
-![GitHub Release Date]
+![](https://img.shields.io/github/release-date/reyzor1991/foundry-vtt-pf2e-reaction)
 
-![GitHub Release Download]
-![the latest version zip](https://img.shields.io/github/downloads/reyzor1991/foundry-vtt-pf2e-reaction/latest/pf2e-reaction.zip)
+![](https://img.shields.io/github/downloads/reyzor1991/foundry-vtt-pf2e-reaction/total?label=All%20Downloads)
+![](https://img.shields.io/github/downloads-pre/reyzor1991/foundry-vtt-pf2e-reaction/latest/total?label=Latest%20version)
 [![Forge Installs ULR]][Forge Installs Download]
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/W7W2LF8UA)
 
 
-Small module to notify that actor can use reaction:
+Module to notify that actor can use reaction:
 
 ### Reactions:
 See [REACTIONS.md](./REACTIONS.md)
@@ -71,12 +71,8 @@ Open Game License:
 
 * See [OpenGameLicense.md](OpenGameLicense.md)
 
-[Foundry URL]: https://foundryvtt.com
-
-[Version]: https://img.shields.io/badge/Version-0.2.9-yellow?style=flat-square
+[Version]: https://img.shields.io/badge/Version-0.2.10-yellow?style=flat-square
 [Version URL]: https://github.com/reyzor1991/foundry-vtt-pf2e-reaction
 
-[GitHub Release Date]: https://img.shields.io/github/release-date/reyzor1991/foundry-vtt-pf2e-reaction
-[GitHub Release Download]: https://img.shields.io/github/downloads/reyzor1991/foundry-vtt-pf2e-reaction/total?label=All%20Downloads
 [Forge Installs ULR]: https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fpf2e-reaction&colorB=4aa94a
 [Forge Installs Download]: https://forge-vtt.com/bazaar#package=pf2e-reaction
