@@ -1,5 +1,14 @@
 # Changelog
 
+## Version 0.2.11
+
+### New feature
+-   Add Align Ki reaction check
+-   Add Crane Flutter reaction check
+-   Add Deflect Arrow reaction check
+-   Add Electric Counter reaction check
+-   Add Rippling Spin reaction check
+
 ## Version 0.2.10
 
 ### New feature

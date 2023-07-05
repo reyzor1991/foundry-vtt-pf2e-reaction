@@ -1,5 +1,10 @@
 import Settings from "./settings.js";
 
+const rippling_spin = "@UUID[Compendium.pf2e.feats-srd.Item.9MiK0Lyro5dQgHij]"
+const electric_counter = "@UUID[Compendium.pf2e.feats-srd.Item.zfnZki2CxmZXdNBO]"
+const deflect_arrow = "@UUID[Compendium.pf2e.feats-srd.Item.sgaqlDFTVC7Ryurt]"
+const crane_flutter = "@UUID[Compendium.pf2e.feats-srd.Item.S14S52HjszTgIy4l]"
+const align_ki = "@UUID[Compendium.pf2e.feats-srd.Item.6iDd7CTzxkvMp6lB]"
 const suspect_of_opportunity = "@UUID[Compendium.pf2e.feats-srd.Item.Sc9clbAXe97vlzxM]"
 const foresee_danger = "@UUID[Compendium.pf2e.feats-srd.Item.pVDgiaqu1RbCOhuv]"
 const you_failed_to_account_for_this = "@UUID[Compendium.pf2e.feats-srd.Item.zBS1qFyIpFuCGhWW]"
@@ -314,6 +319,10 @@ function actorFeat(actor, feat) {
     return actor?.itemTypes?.feat?.find((c => feat === c.slug))
 }
 
+function actorFeats(actor, feats) {
+    return actor?.itemTypes?.feat?.filter((c => feats.includes(c.slug)))
+}
+
 function canReachEnemy(attackerToken, defendToken, defendActor) {
     var distance = getEnemyDistance(attackerToken, defendToken);
     return distance <= 5 || (distance <= 10 && hasReachWeapon(defendActor))
@@ -510,6 +519,13 @@ function checkImplementsInterruption(message) {
     }
 }
 
+async function decreaseReaction(combatant, actionName=undefined) {
+    updateCombatantReactionState(combatant, false, actionName);
+    if (Settings.addReactionEffect && countAllReaction(combatant) <= 1) {
+        setEffectToActor(combatant.actor, reactionWasUsedEffect);
+    }
+}
+
 async function setEffectToActor(actor, eff) {
     const source = (await fromUuid(eff)).toObject();
     source.flags = mergeObject(source.flags ?? {}, { core: { sourceId: eff } });
@@ -529,10 +545,7 @@ export default function reactionHooks() {
             if (t) {
                 var combatant = game.combat.turns.find(a=>a._id === t);
                 if (combatant) {
-                    updateCombatantReactionState(combatant, false, mes?.flags['reaction-check']?.actionName);
-                    if (Settings.addReactionEffect && countAllReaction(combatant) <= 1) {
-                        setEffectToActor(combatant.actor, reactionWasUsedEffect);
-                    }
+                    decreaseReaction(combatant, mes?.flags['reaction-check']?.actionName);
                     if (reactions > 1 && count > 1) {
                         var text = game.i18n.format("pf2e-reaction.ask", {uuid:uuid, name:combatant.token.name});
                         if (count-1 > 1) {
@@ -801,8 +814,14 @@ export default function reactionHooks() {
                             })
                     }
 
-                    if (actorFeat(message?.actor, "verdant-presence") && message?.item?.system?.traditions.value.includes("primal")) {
-                        postInChatTemplate(verdant_presence, message?.token?.combatant);
+                    if (hasReaction(message?.token?.combatant)) {
+                        if ( actorFeat(message?.actor, "verdant-presence") && message?.item?.system?.traditions.value.includes("primal")) {
+                            postInChatTemplate(verdant_presence, message?.token?.combatant);
+                        }
+
+                        if (actorFeat(message?.actor, "align-ki") && messageWithTrait(message, "monk")) {
+                            postInChatTemplate(align_ki, message?.token?.combatant);
+                        }
                     }
 
                     let spellRange = message?.item?.system?.range?.value?.match(/\d+/g);
@@ -896,6 +915,14 @@ export default function reactionHooks() {
                         if (message?.target?.actor?.flags?.pf2e?.rollOptions?.ac?.['hit-the-dirt'] && hasOption(message, "ranged")) {
                             postInChatTemplate(hit_the_dirt, message.target.token.combatant);
                         }
+                        if (message?.item?.isMelee && message?.target?.actor?.flags?.pf2e?.rollOptions?.all?.['crane-flutter']) {
+                            decreaseReaction(message.target.token.combatant);
+                            reactionWasUsedChat(crane_flutter, message.target.token.combatant);
+                        }
+                        if (message?.item?.isRanged && message?.target?.actor?.flags?.pf2e?.rollOptions?.ac?.['deflect-arrow']) {
+                            decreaseReaction(message.target.token.combatant);
+                            reactionWasUsedChat(deflect_arrow, message.target.token.combatant);
+                        }
                     } else {
                         if (actorAction(message?.target?.actor, "nimble-dodge") && !hasCondition(message?.target?.actor,"encumbered")) {
                             postInChatTemplate(nimble_dodge_action, message.target.token.combatant);
@@ -974,6 +1001,12 @@ export default function reactionHooks() {
                         }
                         if (actorFeat(message?.target?.actor, "emergency-targe") && message?.item?.isMelee) {
                             postInChatTemplate(emergency_targe, message.target.token.combatant);
+                        }
+                        if (actorFeat(message?.target?.actor, "rippling-spin") && message?.item?.isMelee
+                            && canReachEnemy(message.token, message?.target?.token, message?.target?.actor)
+                            && hasEffect(message?.target?.actor, "stance-reflective-ripple-stance")
+                        ) {
+                            postInChatTemplate(rippling_spin, message.target.token.combatant);
                         }
                     }
 
@@ -1094,6 +1127,9 @@ export default function reactionHooks() {
                     }
                 }
                 if(hasReaction(message?.target?.token?.combatant)) {
+                    if (actorFeat(message?.target?.actor, "electric-counter") && hasEffect(message?.target?.actor, "stance-wild-winds-stance")) {
+                        postInChatTemplate(electric_counter, message?.target?.token?.combatant);
+                    }
                     if (actorFeat(message?.target?.actor, "all-in-my-head") && !message?.item?.traits.has("death")) {
                         postInChatTemplate(all_in_my_head, message.target.token.combatant);
                     }
@@ -1186,10 +1222,7 @@ export default function reactionHooks() {
                 if (hasReaction(message?.token?.combatant)) {
                     if (actorFeat(message.actor, "charmed-life")) {
                         if (message?.flags?.pf2e?.modifiers?.find(a=>a.slug=="charmed-life" && a.enabled)) {
-                            updateCombatantReactionState(message.token.combatant, false);
-                            if (Settings.addReactionEffect && countAllReaction(message.token.combatant) <= 1) {
-                                setEffectToActor(message.actor, reactionWasUsedEffect);
-                            }
+                            decreaseReaction(message.token.combatant)
                             reactionWasUsedChat(charmed_life, message.token.combatant);
                         }
                     }
@@ -1450,50 +1483,42 @@ export default function reactionHooks() {
         }
     }
 
+    function sendNotification(_user, token, feat) {
+        var text = game.i18n.format("pf2e-reaction.notify", {uuid:feat.name, name:token.name});
+        ui.notifications.info(`${_user.name} targets ${token.name}. ${text}`);
+    }
+
+    function checkSendNotification(_user, token, featNames) {
+        actorFeats(token.actor, featNames).forEach(feat => {
+            sendNotification(_user, token, feat);
+        })
+    }
+
     Hooks.on("targetToken", (_user, token, isTargeted, opts) => {
         if (Settings.notification && game?.combats?.active && isTargeted && hasReaction(token?.combatant)) {
             if (game.user.isGM || token.combatant.players.find(a=>a.id==game.user.id)) {
                 if (token?.actor?.type == "character") {
                     var nd = actorFeat(token.actor, "nimble-dodge");
                     if (nd && !hasCondition(token.actor, "encumbered")) {
-                        var text = game.i18n.format("pf2e-reaction.notify", {uuid:nd.name, name:token.name});
-                        ui.notifications.info(`${_user.name} targets ${token.name}. ${text}`);
+                        sendNotification(_user, token, nd);
                     }
-                    var as = actorFeat(token.actor, "airy-step");
-                    if (as) {
-                        var text = game.i18n.format("pf2e-reaction.notify", {uuid:as.name, name:token.name});
-                        ui.notifications.info(`${_user.name} targets ${token.name}. ${text}`);
-                    }
-                    var ff = actorFeat(token.actor, "farabellus-flip");
-                    if (ff) {
-                        var text = game.i18n.format("pf2e-reaction.notify", {uuid:ff.name, name:token.name});
-                        ui.notifications.info(`${_user.name} targets ${token.name}. ${text}`);
-                    }
+                    checkSendNotification(_user, token,
+                    ["airy-step", "farabellus-flip", "hit-the-dirt",
+                     "you-failed-to-account-for-this", "foresee-danger", "deflect-arrow"]);
+
                     var pir = actorFeat(token.actor, "pirouette");
                     if (pir && hasEffect(token.actor, "stance-masquerade-of-seasons-stance")) {
-                        var text = game.i18n.format("pf2e-reaction.notify", {uuid:pir.name, name:token.name});
-                        ui.notifications.info(`${_user.name} targets ${token.name}. ${text}`);
+                        sendNotification(_user, token, pir);
                     }
                     var rs = actorFeat(token.actor, "reactive-shield");
                     if (rs && !hasEffect(token.actor, "effect-raise-a-shield")) {
-                        var text = game.i18n.format("pf2e-reaction.notify", {uuid:rs.name, name:token.name});
-                        ui.notifications.info(`${_user.name} targets ${token.name}. ${text}`);
+                        sendNotification(_user, token, rs);
                     }
-                    var thd = actorFeat(token.actor, "hit-the-dirt");
-                    if (thd) {
-                        var text = game.i18n.format("pf2e-reaction.notify", {uuid:thd.name, name:token.name});
-                        ui.notifications.info(`${_user.name} targets ${token.name}. ${text}`);
+                    var rs = actorFeat(token.actor, "crane-flutter");
+                    if (rs && hasEffect(token.actor, "stance-crane-stance")) {
+                        sendNotification(_user, token, rs);
                     }
-                    var yf = actorFeat(token.actor, "you-failed-to-account-for-this");
-                    if (yf) {
-                        var text = game.i18n.format("pf2e-reaction.notify", {uuid:yf.name, name:token.name});
-                        ui.notifications.info(`${_user.name} targets ${token.name}. ${text}`);
-                    }
-                    var fd = actorFeat(token.actor, "foresee-danger");
-                    if (fd) {
-                        var text = game.i18n.format("pf2e-reaction.notify", {uuid:yf.name, name:token.name});
-                        ui.notifications.info(`${_user.name} targets ${token.name}. ${text}`);
-                    }
+
                     characterWithReaction()
                     .filter(a=>a.tokenId != token.id)
                     .filter(a=>actorFeat(a.actor, "everdistant-defense"))
@@ -1509,13 +1534,11 @@ export default function reactionHooks() {
                 } else {
                     var nd = actorAction(token.actor, "nimble-dodge");
                     if (nd && !hasCondition(token.actor, "encumbered")) {
-                        var text = game.i18n.format("pf2e-reaction.notify", {uuid:nd.name, name:token.name});
-                        ui.notifications.info(`${_user.name} targets ${token.name}. ${text}`);
+                        sendNotification(_user, token, nd);
                     }
                     var as = actorAction(token.actor, "airy-step");
                     if (as) {
-                        var text = game.i18n.format("pf2e-reaction.notify", {uuid:as.name, name:token.name});
-                        ui.notifications.info(`${_user.name} targets ${token.name}. ${text}`);
+                        sendNotification(_user, token, as);
                     }
                 }
             }

@@ -25,17 +25,12 @@
 - Sense the Unseen
 - Capture Magic
 - Preternatural Parry
--
--
--
-- Align Ki
-- Crane Flutter
-- Deflect Arrow
 - Dodging Roll
-- Electric Counter
-- Impossible Technique
 - Prevailing Position
-- Rippling Spin
+-
+-
+- 
+- Impossible Technique
 - Stand Still
 -
 - Divine Aegis

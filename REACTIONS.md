@@ -71,3 +71,8 @@
 70. Foresee Danger
 71. Suspect of Opportunity(only attack)
 72. Emergency Targe(melee spell?)
+73. Align Ki
+74. Crane Flutter
+75. Deflect Arrow
+76. Electric Counter
+77. Rippling Spin
