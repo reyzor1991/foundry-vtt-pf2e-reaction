@@ -2,6 +2,8 @@ const Requirement = {
   None: "pf2e-reaction.SETTINGS.requirement.None",
   ActorHasEffect: "pf2e-reaction.SETTINGS.requirement.ActorHasEffect",
   TargetHasEffect: "pf2e-reaction.SETTINGS.requirement.TargetHasEffect",
+  ActorHoldsItem: "pf2e-reaction.SETTINGS.requirement.ActorHoldsItem",
+  TargetHoldsItem: "pf2e-reaction.SETTINGS.requirement.TargetHoldsItem",
 }
 const Trigger = {
   None: "pf2e-reaction.SETTINGS.trigger.None",
@@ -31,6 +33,8 @@ class HomebrewReactionRequirement {
     this.idx = idx;
     this.name = Requirement.None;
     this.effect = "";
+    this.item = "";
+    this.trait = "";
     this.choices = Requirement
   }
 
@@ -223,7 +227,7 @@ export default class ReactionHomebrewSettings extends FormApplication {
                         return {"name":a.name,"reachValue":a.reachValue,"reach":a.reach,"adjacent":a.adjacent,"trait":a.trait};
                     }),
                     requirements: this.homebrewReactions[i].requirements.map(a=>{
-                        return {"name":a.name,"effect":a.effect};
+                        return {"name":a.name,"effect":a.effect,"item":a.item,"trait":a.trait};
                     }),
                 }
             );
@@ -292,6 +296,13 @@ export default class ReactionHomebrewSettings extends FormApplication {
         html.find('.homebrew-reaction-requirement').change(async (event) => {
             this.updateForm(event);
             this.homebrewReactions[$(event.currentTarget).data().parent].requirements[$(event.currentTarget).data().idx].name = $(event.currentTarget).val();
+            if ("ActorHasEffect" != $(event.currentTarget).val() && "TargetHasEffect" != $(event.currentTarget).val()) {
+                this.homebrewReactions[$(event.currentTarget).data().parent].requirements[$(event.currentTarget).data().idx].effect = "";
+            }
+            if ("ActorHoldsItem" != $(event.currentTarget).val() && "TargetHoldsItem" != $(event.currentTarget).val()) {
+                this.homebrewReactions[$(event.currentTarget).data().parent].requirements[$(event.currentTarget).data().idx].item = "";
+                this.homebrewReactions[$(event.currentTarget).data().parent].requirements[$(event.currentTarget).data().idx].trait = "";
+            }
             super.render()
         });
     }

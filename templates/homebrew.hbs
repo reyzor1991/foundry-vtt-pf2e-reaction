@@ -51,7 +51,11 @@
                         {{/each}}
                     </select>
                     <label>Effect</label>
-                    <input type="text" name="homebrewReaction.{{homebrewReaction.idx}}.requirements.{{r.idx}}.effect" value="{{r.effect}}"/>
+                    <input type="text" name="homebrewReaction.{{homebrewReaction.idx}}.requirements.{{r.idx}}.effect" value="{{r.effect}}" {{#if (eq "TargetHasEffect" r.name)}} {{else}} {{#if (eq "ActorHasEffect" r.name)}} {{else}} disabled {{/if}} {{/if}}  />
+                    <label>Item</label>
+                    <input type="text" name="homebrewReaction.{{homebrewReaction.idx}}.requirements.{{r.idx}}.item" value="{{r.item}}" {{#if (eq "ActorHoldsItem" r.name)}} {{else}} {{#if (eq "TargetHoldsItem" r.name)}} {{else}} disabled {{/if}} {{/if}}/>
+                    <label>Trait</label>
+                    <input type="text" name="homebrewReaction.{{homebrewReaction.idx}}.requirements.{{r.idx}}.trait" value="{{r.trait}}" {{#if (eq "ActorHoldsItem" r.name)}} {{else}} {{#if (eq "TargetHoldsItem" r.name)}} {{else}} disabled {{/if}} {{/if}}/>
                     <button type="button" class="requirement-reaction-delete" data-parent={{homebrewReaction.idx}} data-idx={{r.idx}}><i class="fas fa-trash"></i></button>
                 </div>
             {{/each}}

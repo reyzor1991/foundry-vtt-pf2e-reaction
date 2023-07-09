@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.2.12
+
+### New feature
+-   Add ActorHoldsItem to trigger requirements
+-   Add TargetHoldsItem to trigger requirements
+
 ## Version 0.2.11
 
 ### New feature

@@ -4,6 +4,8 @@
    "pf2e-reaction.SETTINGS.requirement.None":  "Немає",
    "pf2e-reaction.SETTINGS.requirement.ActorHasEffect":  "Актор під ефектом",
    "pf2e-reaction.SETTINGS.requirement.TargetHasEffect":  "Ціль під ефектом",
+   "pf2e-reaction.SETTINGS.requirement.ActorHoldsItem":  "Актор тримає предмет",
+   "pf2e-reaction.SETTINGS.requirement.TargetHoldsItem":  "Ціль тримає предмет",
 
    "pf2e-reaction.SETTINGS.trigger.None":  "Немає",
    "pf2e-reaction.SETTINGS.trigger.CriticalFailSavingThrow":  "Критично провалити Рятувальний кидок",

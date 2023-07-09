@@ -3,7 +3,9 @@
 
    "pf2e-reaction.SETTINGS.requirement.None":  "None",
    "pf2e-reaction.SETTINGS.requirement.ActorHasEffect":  "Actor under Effect",
-   "pf2e-reaction.SETTINGS.requirement.TargetHasEffect":  "Target under effect",
+   "pf2e-reaction.SETTINGS.requirement.TargetHasEffect":  "Target under Effect",
+   "pf2e-reaction.SETTINGS.requirement.ActorHoldsItem":  "Actor holds Item",
+   "pf2e-reaction.SETTINGS.requirement.TargetHoldsItem":  "Target holds Item",
 
    "pf2e-reaction.SETTINGS.trigger.None":  "None",
    "pf2e-reaction.SETTINGS.trigger.CriticalFailSavingThrow":  "Critical Fail Saving Throw",

@@ -323,6 +323,15 @@ function actorFeats(actor, feats) {
     return actor?.itemTypes?.feat?.filter((c => feats.includes(c.slug)))
 }
 
+function heldItems(actor, item, trait=undefined) {
+    if (!actor) return []
+    let items = Object.values(actor?.itemTypes).flat(1).filter(a=>a.handsHeld > 0).filter(a=>a.slug == item || a.category == item);
+    if (trait && items.length>0) {
+        items = items.filter(a=>a.traits.has(trait))
+    }
+    return items;
+}
+
 function canReachEnemy(attackerToken, defendToken, defendActor) {
     var distance = getEnemyDistance(attackerToken, defendToken);
     return distance <= 5 || (distance <= 10 && hasReachWeapon(defendActor))
@@ -1356,6 +1365,12 @@ export default function reactionHooks() {
             if (a.name == 'ActorHasEffect' && hasEffect(message?.actor, a.effect)) {
                 return true;
             }
+            if (a.name == 'ActorHoldsItem' && heldItems(message?.actor, a.item, a.trait).length > 0) {
+                return true;
+            }
+            if (a.name == 'TargetHoldsItem' && heldItems(message?.target?.actor, a.item, a.trait).length > 0) {
+                return true;
+            }
             return false;
         })
     }
@@ -1455,7 +1470,7 @@ export default function reactionHooks() {
                 res = res.concat(t);
             }
         });
-
+        res = res.filter(a=>a!==null)
         res = [...new Map(res.map(item =>[item['actorId'], item])).values()];
 
         return res;
