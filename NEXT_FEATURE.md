@@ -27,15 +27,12 @@
 - Preternatural Parry
 - Dodging Roll
 - Prevailing Position
--
+- Divine Aegis
+- All in your Head
 -
 - 
-- Impossible Technique
-- Stand Still
 -
-- Divine Aegis
--
-- All in your Head
+- 
 - Counter Thought
 - Mental Static
 - No!!!
@@ -74,6 +71,8 @@
 - Improved Dueling Riposte
 
 ### 
+- Find Fault
+- Fight with Fear
 - Avenge in Glory
 - Chance Death
 - Collapse

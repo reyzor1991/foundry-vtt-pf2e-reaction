@@ -1,5 +1,10 @@
 import Settings from "./settings.js";
 
+//const empty = "@UUID[]"
+const final_spite = "@UUID[Compendium.pf2e.actionspf2e.Item.jbmXxq56swDYw8hy]"
+const entitys_resurgence = "@UUID[Compendium.pf2e.actionspf2e.Item.5bCZGpp9yFHXDz1j]"
+const stand_still = "@UUID[Compendium.pf2e.feats-srd.Item.Mj1KTiAwwovm7K9f]"
+const impossible_technique = "@UUID[Compendium.pf2e.feats-srd.Item.srWsvDDdz77yieY1]"
 const rippling_spin = "@UUID[Compendium.pf2e.feats-srd.Item.9MiK0Lyro5dQgHij]"
 const electric_counter = "@UUID[Compendium.pf2e.feats-srd.Item.zfnZki2CxmZXdNBO]"
 const deflect_arrow = "@UUID[Compendium.pf2e.feats-srd.Item.sgaqlDFTVC7Ryurt]"
@@ -365,9 +370,15 @@ async function reactionWasUsedChat(uuid, combatant) {
 }
 
 async function postInChatTemplate(uuid, combatant, actionName=undefined, skipDeath=false) {
-    if((combatant?.actor?.system?.attributes?.hp?.value <= 0 || hasCondition(combatant?.actor, "unconscious") || hasCondition(combatant?.actor, "dying")) && !skipDeath) {
-        return
+    if (!skipDeath) {
+        if((combatant?.actor?.system?.attributes?.hp?.value <= 0 && combatant?.actor?.system?.attributes?.hp?.temp <= 0 )
+            || hasCondition(combatant?.actor, "unconscious")
+            || hasCondition(combatant?.actor, "dying")
+        ) {
+            return
+        }
     }
+
     var text = game.i18n.format("pf2e-reaction.ask", {uuid:uuid, name:combatant.token.name});
     var content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text:text});
     var check = {
@@ -699,6 +710,14 @@ export default function reactionHooks() {
                             postInChatTemplate(no_escape, cc);
                         }
                     });
+                characterWithReaction()
+                    .filter(a=>a.tokenId != tokenDoc._id)
+                    .filter(a=>actorFeat(a.actor, "stand-still"))
+                    .forEach(cc => {
+                        if (canReachEnemy(tokenDoc, cc.token, cc.actor)) {
+                            postInChatTemplate(stand_still, cc);
+                        }
+                    });
 
                 characterWithReaction()
                     .filter(a=>actorFeat(a.actor, "everdistant-defense"))
@@ -738,6 +757,12 @@ export default function reactionHooks() {
                     if (hasReaction(message?.token?.combatant)) {
                         if (actorAction(message?.actor, "ferocity")) {
                             postInChatTemplate(ferocity, message?.token?.combatant, undefined, true);
+                        }
+                        if (actorAction(message?.actor, "entitys-resurgence")) {
+                            postInChatTemplate(entitys_resurgence, message?.token?.combatant, undefined, true);
+                        }
+                        if (actorAction(message?.actor, "final-spite")) {
+                            postInChatTemplate(final_spite, message?.token?.combatant, undefined, true);
                         }
                         if (actorFeat(message?.actor, "cheat-death")) {
                             postInChatTemplate(cheat_death, message?.token?.combatant, undefined, true);
@@ -793,6 +818,16 @@ export default function reactionHooks() {
 
                 if (message?.item?.type == 'action' && messageWithAnyTrait(message, ["manipulate","move"])) {
                     checkImplementsInterruption(message);
+                }
+                if (message?.item?.type == 'action' && messageWithAnyTrait(message, "move")) {
+                    characterWithReaction()
+                        .filter(a=>a.actorId != message?.actor?._id)
+                        .filter(a=>actorFeat(a.actor, "stand-still"))
+                        .forEach(cc => {
+                            if (canReachEnemy(message?.token, cc.token, cc.actor)) {
+                                postInChatTemplate(stand_still, cc);
+                            }
+                        });
                 }
             } else if (user?.flags?.pf2e?.origin?.type == 'action') {
                 var actId = user.flags?.pf2e?.origin?.uuid.split('.').slice(-1)[0]
@@ -1010,6 +1045,12 @@ export default function reactionHooks() {
                         }
                         if (actorFeat(message?.target?.actor, "emergency-targe") && message?.item?.isMelee) {
                             postInChatTemplate(emergency_targe, message.target.token.combatant);
+                        }
+                        if (actorFeat(message?.target?.actor, "impossible-technique")
+                            && !hasCondition(message?.target?.actor, "fatigued")
+                            && message?.target?.actor?.armorClass?.parent?.item?.type != "armor"
+                        ) {
+                            postInChatTemplate(impossible_technique, message.target.token.combatant);
                         }
                         if (actorFeat(message?.target?.actor, "rippling-spin") && message?.item?.isMelee
                             && canReachEnemy(message.token, message?.target?.token, message?.target?.actor)
@@ -1374,7 +1415,6 @@ export default function reactionHooks() {
             return false;
         })
     }
-
 
     function combatantsForTriggers(tt, message) {
         var res = [];

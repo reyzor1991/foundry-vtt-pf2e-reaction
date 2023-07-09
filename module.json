@@ -2,7 +2,7 @@
   "id": "pf2e-reaction",
   "title": "PF2e Reaction Checker",
   "description": "Check reaction of combatant",
-  "version": "0.2.12",
+  "version": "0.2.13",
   "authors": [
     {
       "name": "Reyzor",
@@ -38,6 +38,15 @@
       "system": "pf2e",
       "private": false,
       "type": "Item",
+      "flags": {}
+    }
+  ],
+  "media": [
+    {
+      "type": "setup",
+      "caption": "PF2e Reaction Checker",
+      "thumbnail": "/modules/pf2e-reaction/reaction.png",
+      "loop": false,
       "flags": {}
     }
   ],

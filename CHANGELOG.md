@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 0.2.13
+
+### New feature
+-   Add Impossible Technique reaction check
+-   Add Stand Still reaction check
+-   Add Entity's Resurgence reaction check
+-   Add Final Spite reaction check
+
 ## Version 0.2.12
 
 ### New feature

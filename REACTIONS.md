@@ -76,3 +76,7 @@
 75. Deflect Arrow
 76. Electric Counter
 77. Rippling Spin
+78. Impossible Technique(Only enemy’s attack hits)
+79. Stand Still
+80. Entity's Resurgence
+81. Final Spite
