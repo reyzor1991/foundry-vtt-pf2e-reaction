@@ -82,3 +82,5 @@
 81. Final Spite
 82. Cringe
 83. Orc Ferocity
+84. Squawk!
+85. Unexpected Shift

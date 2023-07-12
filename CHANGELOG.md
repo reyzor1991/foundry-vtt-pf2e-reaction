@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 0.2.15
+
+### New feature
+-   Add Squawk! reaction check
+-   Add Unexpected Shift reaction check
+-   Update Recall Knowledge info
+
 ## Version 0.2.14
 
 ### New feature

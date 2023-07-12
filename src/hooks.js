@@ -1,6 +1,8 @@
 import Settings from "./settings.js";
 
 //const empty = "@UUID[]"
+const unexpected_shift = "@UUID[Compendium.pf2e.feats-srd.Item.AgR1OPBHDvwV5wKD]"
+const squawk = "@UUID[Compendium.pf2e.feats-srd.Item.CCmiEmS7ZgyQUfhn]"
 const orc_ferocity = "@UUID[Compendium.pf2e.feats-srd.Item.PlhPpdwIV0rIAJ8K]"
 const final_spite = "@UUID[Compendium.pf2e.actionspf2e.Item.jbmXxq56swDYw8hy]"
 const entitys_resurgence = "@UUID[Compendium.pf2e.actionspf2e.Item.5bCZGpp9yFHXDz1j]"
@@ -105,6 +107,8 @@ const identifySkills = new Map([
     ["spirit", ["occultism"]],
     ["undead", ["religion"]],
 ]);
+
+const filteredTraits = ["evil", "chaotic", "neutral", "lawful", "good"]
 
 function adjustDegreeByDieValue(dieResult, degree) {
         if (dieResult === 20) {
@@ -225,7 +229,7 @@ function updateCombatantReactionState(combatant, newState, actionName=undefined)
 }
 
 function getEnemyDistance(token, target) {
-    return new CONFIG.Token.objectClass(token).distanceTo(new CONFIG.Token.objectClass(target))
+    return token.object.distanceTo(target.object);
 }
 
 function nonReach(arr) {
@@ -566,6 +570,36 @@ async function setEffectToActor(actor, eff) {
     await actor.createEmbeddedDocuments("Item", [source]);
 }
 
+function addRecallButton(html, sheet, skill, dc, isLore=false) {
+    var loc_skill= isLore? skill.replaceAll("-", " ").replaceAll(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()) :game.i18n.localize("PF2E.Skill"+skill.replace(/^\w/, (c) => c.toUpperCase()))
+    var rec=game.i18n.localize("PF2E.RecallKnowledge.Label")
+    var but = document.createElement('button');
+    but.className = 'recall-knowledge gm-recall-knowledge-'+skill
+    but.textContent = rec+': '+loc_skill
+    but.onclick = function () {
+        let content = 'To Recall Knowledge '+(sheet?.token?.name?sheet?.token?.name:'') +', roll:';
+        content += '<br>@Check[type:'+skill+'|dc:'+dc+'|traits:secret,action:recall-knowledge]';
+        ChatMessage.create({
+            content: TextEditor.enrichHTML(content, { async: false }),
+            speaker: ChatMessage.getSpeaker({ token: sheet.token }),
+        }).then();
+    };
+
+    var skl = html.find(".recall-knowledge > .recall-knowledge-skills");
+
+    if (skl.length > 0) {
+        skl.append(but);
+    } else {
+        var div = document.createElement('div');
+        div.className = 'recall-knowledge-skills'
+
+        div.append(but)
+
+        html.find(".recall-knowledge").append(div);
+    }
+
+}
+
 export default function reactionHooks() {
     $(document).on('click', '.reaction-check', async function () {
         var mid = $(this).parent().parent().parent().data('message-id');
@@ -670,23 +704,46 @@ export default function reactionHooks() {
     Hooks.on("renderActorSheet", (sheet, html, data)=>{
         if (game.user?.isGM && sheet.actor?.type === "npc" && sheet.token && Settings.recallKnowledge) {
             var skills = Array.from(new Set(sheet.object.system.traits.value.flatMap((t) => identifySkills.get(t) ?? [])));
-            var dc = html.find(".recall-knowledge .section-body .identification-skills").eq(0).text().trim().match(/\d+/g)[0];
-            skills.forEach(skill => {
-                var loc_skill=game.i18n.localize("PF2E.Skill"+skill.replace(/^\w/, (c) => c.toUpperCase()))
-                var rec=game.i18n.localize("PF2E.RecallKnowledge.Label")
-                var but = document.createElement('button');
-                but.className = 'gm-recall-knowledge-'+skill
-                but.textContent = rec+': '+loc_skill
-                but.onclick = function () {
-                    let content = 'To Recall Knowledge '+(sheet?.token?.name?sheet?.token?.name:'') +', roll:';
-                    content += '<br>@Check[type:'+skill+'|dc:'+dc+'|traits:secret,action:recall-knowledge]';
-                    ChatMessage.create({
-                        content: TextEditor.enrichHTML(content, { async: false }),
-                        speaker: ChatMessage.getSpeaker({ token: sheet.token }),
-                    }).then();
-                };
-                html.find(".recall-knowledge").append(but);
-            });
+            var recalls = html.find(".recall-knowledge .section-body .identification-skills")
+
+            if (recalls.length == 0) {
+                return;
+            } else if (recalls.length == 1) {
+                var dcs = recalls.eq(0).text().trim().match(/\d+/g);
+                if (dcs.length == 2) {
+                    var [easyLoreDc, veryEasyLoreDc] = dcs;
+                    sheet.object.traits.forEach(a=>{
+                    if (filteredTraits.includes(a)) {
+                            return
+                        } else {
+                            addRecallButton(html, sheet, `${a}-lore`, easyLoreDc, true)
+                        }
+                    })
+                    addRecallButton(html, sheet, `${sheet.actor.name.toLowerCase().replaceAll(" ", "-")}-lore`, veryEasyLoreDc, true)
+                } else {
+                    var dc = dcs[0];
+                     skills.forEach(skill => {
+                        addRecallButton(html, sheet, skill, dc)
+                    })
+                }
+            } else if (recalls.length == 2) {
+                var dc = recalls.eq(0).text().trim().match(/\d+/g)[0];
+                var [easyLoreDc, veryEasyLoreDc] = recalls.eq(1).text().trim().match(/\d+/g);
+
+                skills.forEach(skill => {
+                    addRecallButton(html, sheet, skill, dc)
+                })
+               sheet.object.traits.forEach(a=>{
+                    if (filteredTraits.includes(a)) {
+                        return
+                    } else {
+                        addRecallButton(html, sheet, `${a}-lore`, easyLoreDc, true)
+                    }
+                })
+                addRecallButton(html, sheet, `${sheet.actor.name.toLowerCase().replaceAll(" ", "-")}-lore`, veryEasyLoreDc, true)
+            } else {
+                console.warn(game.i18n.localize("pf2e-reaction.recall-knowledge.need-fix"));
+            }
         }
     });
 
@@ -1161,10 +1218,19 @@ export default function reactionHooks() {
                         }
                     })
                 }
-                if (failureMessageOutcome(message)) {
-                    if (hasReaction(message?.token?.combatant)) {
+
+                if (hasReaction(message?.token?.combatant)) {
+                    if (failureMessageOutcome(message)) {
                         if (actorFeat(message?.actor, "spiritual-guides")) {
                             postInChatTemplate(spiritual_guides, message.token.combatant);
+                        }
+                    }
+                    if (criticalFailureMessageOutcome(message)) {
+                        if (actorFeat(message?.actor, "squawk")
+                            && ["deception","diplomacy","intimidation"].some(a=>message.flags?.pf2e?.context?.domains?.includes(a))
+                            && !message?.target?.actor?.system?.traits?.value?.includes("tengu")
+                        ) {
+                            postInChatTemplate(squawk, message.token.combatant);
                         }
                     }
                 }
@@ -1202,6 +1268,9 @@ export default function reactionHooks() {
                     }
                     if (actorFeat(message?.target?.actor, "all-in-my-head") && !message?.item?.traits.has("death")) {
                         postInChatTemplate(all_in_my_head, message.target.token.combatant);
+                    }
+                    if (actorFeat(message?.target?.actor,  "unexpected-shift")) {
+                        postInChatTemplate(unexpected_shift, message.target.token.combatant);
                     }
                     if (Object.values(message?.item?.system?.damageRolls).map(a=>a.damageType).filter(a=> a== "sonic").length > 0) {
                         if (actorFeat(message?.target?.actor, "resounding-finale")) {

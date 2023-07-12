@@ -13,6 +13,8 @@
 - Redirecting Shot
 - No! No! I Created You!
 - Trickster's Ace
+- Shadow Blending
+- Sudden Mindfulness
 -
 -
 -
@@ -90,10 +92,6 @@
 - Orc Superstition
 - Reassuring Presence
 - Recognize Spell
-- Shadow Blending
-- Squawk!
-- Sudden Mindfulness
-- Unexpected Shift
 - Willing Death
 - Consume Energy
 - Eerie Flicker

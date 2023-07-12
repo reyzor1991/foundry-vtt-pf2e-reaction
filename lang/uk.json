@@ -51,5 +51,7 @@
 	"pf2e-reaction.ask": "{name} може використати {uuid}. Реація була використана??",
 	"pf2e-reaction.askMultiple": "{name} може використати {uuid}, це сталося {count} разів. Реація була використана??",
 	"pf2e-reaction.yes": "Так",
-	"pf2e-reaction.no": "Ні"
+	"pf2e-reaction.no": "Ні",
+
+	"pf2e-reaction.recall-knowledge.need-fix": "Structure of Recall Knowledge object was changed. Need to update module"
 }
