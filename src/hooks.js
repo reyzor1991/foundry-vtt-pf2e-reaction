@@ -1,6 +1,7 @@
 import Settings from "./settings.js";
 
 //const empty = "@UUID[]"
+const orc_ferocity = "@UUID[Compendium.pf2e.feats-srd.Item.PlhPpdwIV0rIAJ8K]"
 const final_spite = "@UUID[Compendium.pf2e.actionspf2e.Item.jbmXxq56swDYw8hy]"
 const entitys_resurgence = "@UUID[Compendium.pf2e.actionspf2e.Item.5bCZGpp9yFHXDz1j]"
 const stand_still = "@UUID[Compendium.pf2e.feats-srd.Item.Mj1KTiAwwovm7K9f]"
@@ -238,7 +239,7 @@ function actorHeldWeapon(actor) {
 function hasReachWeapon(actor) {
     return actor?.system?.actions
         ?.filter(a=>a.ready)
-        ?.filter(a=>a?.weaponTraits?.find(b=>b.name=="reach") || a?.traits?.find(b=>b.name.startsWith("reach")))
+        ?.filter(a=>a?.weaponTraits?.find(b=>b.name=="reach"))
         ?.length != 0
 }
 
@@ -337,9 +338,33 @@ function heldItems(actor, item, trait=undefined) {
     return items;
 }
 
-function canReachEnemy(attackerToken, defendToken, defendActor) {
+function canReachEnemy(attackerToken, defendToken, defendActor, specificWeapon=undefined) {
     var distance = getEnemyDistance(attackerToken, defendToken);
-    return distance <= 5 || (distance <= 10 && hasReachWeapon(defendActor))
+    if (defendActor.type == "npc") {
+        let baseWeapons = defendActor?.system?.actions
+            .filter(a=>a.ready);
+
+        if (specificWeapon) {
+            specificWeapon = specificWeapon.toLowerCase()
+            baseWeapons = baseWeapons
+                .filter(a=>a.label.toLowerCase() == specificWeapon || a?.weapon?.slug?.toLowerCase() == specificWeapon)
+        }
+
+        let reachWs = baseWeapons
+            .map(a=>a.traits).flat()
+            .map(c=>c.name)
+            .filter(b=>b.startsWith("reach"))
+            .map(c=>c.split('-').slice(-1)[0]);
+
+        if (reachWs.length) {
+            return distance <= Math.max(...reachWs)
+        } else {
+            return distance <= defendActor.attributes.reach.base
+        }
+    } else {
+        return distance <= defendActor.attributes.reach.base
+            || (distance <= (defendActor.attributes.reach.base + 5) && hasReachWeapon(defendActor))
+    }
 }
 
 function adjacentEnemy(attackerToken, defendToken) {
@@ -436,32 +461,20 @@ function checkCombatantTriggerAttackOfOpportunity(actorType, actorId, token) {
     var filteredType = ((actorType  == "npc") ? 'character' : 'npc')
     game?.combats?.active?.combatants
         .filter((c=>c.actorId != actorId && c.actor.type == filteredType && hasReaction(c, "attack-of-opportunity")))
-        .filter((cc=>actorAction(cc.actor, "attack-of-opportunity")))
+        .filter((cc=>actorAction(cc.actor, "attack-of-opportunity") || actorFeat(cc.actor, "attack-of-opportunity")))
         .forEach(cc => {
-            var hasStrike = cc.token.actor.system.actions?.filter((e=>"strike"===e.type && e.ready));
-            if (hasStrike.length>0) {
-                var isReach = actorType  == "npc"
-                    ? hasStrike.filter((e=>e.weaponTraits.find(b=>b.name==="reach")))
-                    : hasStrike.filter((e=>e.traits.find(b=>b.name.startsWith("reach"))));
-
-                var reachValue = Settings.weaponRange;
-                if (isReach.length>0) {
-                    reachValue = Settings.weaponReachRange;
-                    if (filteredType == "npc") {
-                        var rV = Math.min.apply(null, isReach.map(a=>a.traits).flat()
-                            .filter(b=>b.name.startsWith("reach"))
-                            .map(c=>c.name)
-                            .map(c=>c.split('-').slice(-1)[0])
-                        );
-                        if (!isNaN(rV)) {
-                            reachValue = rV
-                        }
+            let specificWeapon=undefined
+            if (filteredType == "npc") {
+                let aoo = actorAction(cc.actor, "attack-of-opportunity");
+                if (aoo) {
+                    let match = aoo.name.match('\(([A-Za-z]{1,}) Only\)')
+                    if (match && match.length == 3) {
+                        specificWeapon=match[2]
                     }
                 }
-
-                if (getEnemyDistance(token, cc.token)<= reachValue) {
-                    postInChatTemplate(attack_of_opportunity, cc, "attack-of-opportunity");
-                }
+            }
+            if (canReachEnemy(token, cc.token, cc.actor, specificWeapon)) {
+                postInChatTemplate(attack_of_opportunity, cc, "attack-of-opportunity");
             }
         })
 }
@@ -757,6 +770,9 @@ export default function reactionHooks() {
                     if (hasReaction(message?.token?.combatant)) {
                         if (actorAction(message?.actor, "ferocity")) {
                             postInChatTemplate(ferocity, message?.token?.combatant, undefined, true);
+                        }
+                        if (actorFeat(message?.actor, "orc-ferocity")) {
+                            postInChatTemplate(orc_ferocity, message?.token?.combatant, undefined, true);
                         }
                         if (actorAction(message?.actor, "entitys-resurgence")) {
                             postInChatTemplate(entitys_resurgence, message?.token?.combatant, undefined, true);
@@ -1089,6 +1105,10 @@ export default function reactionHooks() {
                         }
                         if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && actorFeat(message?.target?.actor, "furious-vengeance")) {
                             postInChatTemplate(furious_vengeance, message.target.token.combatant);
+                        }
+                        var cringe = actorFeat(message?.target?.actor, "cringe")
+                        if (cringe) {
+                            postInChatTemplate(_uuid(cringe), message.target.token.combatant);
                         }
                         if (adjacentEnemy(message.token, message?.target?.token, message?.target?.actor)) {
                             if (message?.item?.isMelee || message?.item?.traits?.has("unarmed")) {

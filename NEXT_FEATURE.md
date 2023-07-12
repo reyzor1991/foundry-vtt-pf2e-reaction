@@ -77,7 +77,6 @@
 - Chance Death
 - Collapse
 - Community Knowledge
-- Cringe
 - Deliberate Death
 - Empathetic Plea
 - Goblin Scuttle
@@ -88,7 +87,6 @@
 - Life-Giving Magic
 - Maiden's Mending
 - Nanite Surge
-- Orc Ferocity
 - Orc Superstition
 - Reassuring Presence
 - Recognize Spell

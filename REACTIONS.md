@@ -80,3 +80,5 @@
 79. Stand Still
 80. Entity's Resurgence
 81. Final Spite
+82. Cringe
+83. Orc Ferocity

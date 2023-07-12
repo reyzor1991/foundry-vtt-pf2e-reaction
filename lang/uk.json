@@ -47,8 +47,6 @@
 	"pf2e-reaction.recall-knowledge.hint": "Додати Згадати знання до НІП листа",
 	"pf2e-reaction.weaponRange.name": "Базова відстань зброї",
 	"pf2e-reaction.weaponRange.hint": "Основна відстань зброї для перевірки атаки можливості",
-	"pf2e-reaction.weaponReachRange.name": "Відстань досяжності зброї",
-	"pf2e-reaction.weaponReachRange.hint": "Досягніть відстані зброї, щоб перевірити атаку можливості",
 	"pf2e-reaction.notify": "{name} має {uuid}. Зверніть на це увагу!",
 	"pf2e-reaction.ask": "{name} може використати {uuid}. Реація була використана??",
 	"pf2e-reaction.askMultiple": "{name} може використати {uuid}, це сталося {count} разів. Реація була використана??",

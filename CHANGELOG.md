@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.2.14
+
+### New feature
+-   Add Cringe reaction check
+-   Add Orc Ferocity reaction check
+
 ## Version 0.2.13
 
 ### New feature
