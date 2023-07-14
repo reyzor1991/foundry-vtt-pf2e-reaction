@@ -892,7 +892,7 @@ export default function reactionHooks() {
                 if (message?.item?.type == 'action' && messageWithAnyTrait(message, ["manipulate","move"])) {
                     checkImplementsInterruption(message);
                 }
-                if (message?.item?.type == 'action' && messageWithAnyTrait(message, "move")) {
+                if (message?.item?.type == 'action' && messageWithTrait(message, "move")) {
                     characterWithReaction()
                         .filter(a=>a.actorId != message?.actor?._id)
                         .filter(a=>actorFeat(a.actor, "stand-still"))
@@ -1253,12 +1253,10 @@ export default function reactionHooks() {
                 }
 
                 if(hasReaction(message?.target?.token?.combatant, "shield-block")) {
-                    if (message?.item?.system?.damageRolls) {
-                        var dTypes = Object.values(message?.item?.system?.damageRolls).map(a=>a.damageType);
-                        if (dTypes.filter(a=> a== "bludgeoning" || a == "piercing" || a== "slashing").length > 0) {
-                            if (actorFeat(message?.target?.actor, "shield-block") && hasEffect(message.target.actor, "effect-raise-a-shield")) {
-                                postInChatTemplate(shield_block, message.target.token.combatant, "shield-block");
-                            }
+                    var dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a=>a.damageType);
+                    if (dTypes.filter(a=> a== "bludgeoning" || a == "piercing" || a== "slashing").length > 0) {
+                        if (actorFeat(message?.target?.actor, "shield-block") && hasEffect(message.target.actor, "effect-raise-a-shield")) {
+                            postInChatTemplate(shield_block, message.target.token.combatant, "shield-block");
                         }
                     }
                 }
@@ -1272,7 +1270,11 @@ export default function reactionHooks() {
                     if (actorFeat(message?.target?.actor,  "unexpected-shift")) {
                         postInChatTemplate(unexpected_shift, message.target.token.combatant);
                     }
-                    if (Object.values(message?.item?.system?.damageRolls).map(a=>a.damageType).filter(a=> a== "sonic").length > 0) {
+
+                    var dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a=>a.damageType);
+
+
+                    if (dTypes.filter(a=> a== "sonic").length > 0) {
                         if (actorFeat(message?.target?.actor, "resounding-finale")) {
                             postInChatTemplate(resounding_finale, message.target.token.combatant);
                         }
@@ -1288,18 +1290,15 @@ export default function reactionHooks() {
                         postInChatTemplate(amulets_abeyance, message?.target?.token?.combatant);
                     }
 
-                    if (message?.item?.system?.damageRolls) {
-                        var dTypes = Object.values(message?.item?.system?.damageRolls).map(a=>a.damageType);
-                        if (dTypes.filter(a=> a== "bludgeoning" || a == "piercing" || a== "slashing").length > 0) {
-                            if (actorFeat(message?.target?.actor, "sacrifice-armor")) {
-                                postInChatTemplate(sacrifice_armor, message.target.token.combatant);
-                            }
+                    if (dTypes.filter(a=> a== "bludgeoning" || a == "piercing" || a== "slashing").length > 0) {
+                        if (actorFeat(message?.target?.actor, "sacrifice-armor")) {
+                            postInChatTemplate(sacrifice_armor, message.target.token.combatant);
                         }
+                    }
 
-                        if (dTypes.filter(a=> ["acid", "cold", "electricity", "fire", 'poison'].includes(a)).length > 0) {
-                            if (actorFeat(message?.target?.actor, "reactive-transformation")) {
-                                postInChatTemplate(reactive_transformation, message.target.token.combatant);
-                            }
+                    if (dTypes.filter(a=> ["acid", "cold", "electricity", "fire", 'poison'].includes(a)).length > 0) {
+                        if (actorFeat(message?.target?.actor, "reactive-transformation")) {
+                            postInChatTemplate(reactive_transformation, message.target.token.combatant);
                         }
                     }
 
