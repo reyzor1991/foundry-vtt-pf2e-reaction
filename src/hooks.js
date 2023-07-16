@@ -537,6 +537,10 @@ function checkCourageousOpportunity(message) {
         });
 }
 
+function spellWithTrait(spell, trait) {
+    return spell?.traits?.has(trait) || spell?.castingTraits?.includes(trait)
+}
+
 function messageWithTrait(message, trait) {
     return message?.item?.system?.traits?.value?.includes(trait) || message?.item?.castingTraits?.includes(trait)
 }
@@ -901,6 +905,12 @@ export default function reactionHooks() {
                                 postInChatTemplate(stand_still, cc);
                             }
                         });
+                }
+            } else if (user?.flags?.pf2e?.origin?.type == 'spell') {
+                var origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
+                if (spellWithTrait(origin, "manipulate")) {
+                    checkCombatantTriggerAttackOfOpportunity(message.actor?.type, message.actor._id, message.token);
+                    checkImplementsInterruption(message);
                 }
             } else if (user?.flags?.pf2e?.origin?.type == 'action') {
                 var actId = user.flags?.pf2e?.origin?.uuid.split('.').slice(-1)[0]
