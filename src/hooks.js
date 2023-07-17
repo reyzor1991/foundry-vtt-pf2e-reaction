@@ -906,11 +906,9 @@ export default function reactionHooks() {
                             }
                         });
                 }
-            } else if (message?.flags?.pf2e?.origin?.type == 'spell') {
+            } else if (message?.flags?.pf2e?.origin?.type == 'spell' && !messageType(message, "saving-throw")) {
                 var origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
                 if (spellWithTrait(origin, "manipulate")) {
-                    console.log('test3');
-
                     checkCombatantTriggerAttackOfOpportunity(message.actor?.type, message.actor._id, message.token);
                     checkImplementsInterruption(message);
                 }
