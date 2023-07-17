@@ -7,6 +7,9 @@ export default class Settings {
     static get recallKnowledge() {
         return game.settings.get("pf2e-reaction", "recall-knowledge");
     }
+    static get recallKnowledgeHideDef() {
+        return game.settings.get("pf2e-reaction", "recall-knowledge-hide-def");
+    }
     static get recallKnowledgeEasyLore() {
         return game.settings.get("pf2e-reaction", "recall-knowledge-easyLore");
     }
@@ -43,6 +46,13 @@ export default class Settings {
         game.settings.register("pf2e-reaction", "recall-knowledge", {
             name: game.i18n.localize("pf2e-reaction.recall-knowledge.name"),
             hint: game.i18n.localize("pf2e-reaction.recall-knowledge.hint"),
+            scope: "world",
+            config: true,
+            default: false,
+            type: Boolean,
+        });
+        game.settings.register("pf2e-reaction", "recall-knowledge-hide-def", {
+            name: 'Hide default recall knowledge labels',
             scope: "world",
             config: true,
             default: false,

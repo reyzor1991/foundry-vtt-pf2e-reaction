@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.20
+
+### New feature
+-   Hide Recall Knowledge Info from PC
+
 ## Version 0.2.19
 
 ### New feature

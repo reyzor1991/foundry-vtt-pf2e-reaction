@@ -583,11 +583,19 @@ function addRecallButton(html, sheet, skill, dc, isLore=false) {
     var a = document.createElement('a');
     a.textContent = rec+': '+loc_skill
     a.onclick = function () {
-        let content = 'To Recall Knowledge '+(sheet?.token?.name?sheet?.token?.name:'') +', roll:';
+        let content = 'To Recall Knowledge, roll:';
         content += '<br>@Check[type:'+skill+'|dc:'+dc+'|traits:secret,action:recall-knowledge]';
         ChatMessage.create({
             content: TextEditor.enrichHTML(content, { async: false }),
-            speaker: ChatMessage.getSpeaker({ token: sheet.token }),
+            flavor: '',
+            user: null,
+            speaker: {
+                scene: null,
+                actor: null,
+                token: null,
+                alias: "System"
+            },
+            type: CONST.CHAT_MESSAGE_TYPES.OOC
         }).then();
     };
     but.append(a);
@@ -710,6 +718,8 @@ export default function reactionHooks() {
             if (recalls.length == 0) {
                 return;
             }
+            if (Settings.recallKnowledgeHideDef){recalls.addClass('hidden')}
+
             html[0].style.width = "710px";
 
             var skills = Array.from(new Set(sheet.object.system.traits.value.flatMap((t) => identifySkills.get(t) ?? [])));
