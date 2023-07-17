@@ -906,14 +906,16 @@ export default function reactionHooks() {
                             }
                         });
                 }
-            } else if (user?.flags?.pf2e?.origin?.type == 'spell') {
+            } else if (message?.flags?.pf2e?.origin?.type == 'spell') {
                 var origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
                 if (spellWithTrait(origin, "manipulate")) {
+                    console.log('test3');
+
                     checkCombatantTriggerAttackOfOpportunity(message.actor?.type, message.actor._id, message.token);
                     checkImplementsInterruption(message);
                 }
-            } else if (user?.flags?.pf2e?.origin?.type == 'action') {
-                var actId = user.flags?.pf2e?.origin?.uuid.split('.').slice(-1)[0]
+            } else if (message?.flags?.pf2e?.origin?.type == 'action') {
+                var actId = message.flags?.pf2e?.origin?.uuid.split('.').slice(-1)[0]
                 if (game?.packs?.get("pf2e.actionspf2e")._source.find(a=>a._id==actId)?.system?.traits?.value.includes("manipulate")) {
                     checkCombatantTriggerAttackOfOpportunity(message.actor?.type, message.actor._id, message.token);
                     checkImplementsInterruption(message);
