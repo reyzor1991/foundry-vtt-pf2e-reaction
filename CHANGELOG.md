@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.19
+
+### New feature
+-   Updated Recall Knowledge – labels instead of buttons, add new setting options
+
 ## Version 0.2.15
 
 ### New feature

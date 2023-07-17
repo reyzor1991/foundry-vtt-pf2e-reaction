@@ -20,15 +20,3 @@
 #homebrewSettings-settings .first-line > label {
     flex: 2.2!important;
 }
-
-.recall-knowledge-skills {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-button.recall-knowledge{
-  width: 150px;
-  box-sizing: border-box;
-  border: 0.5px solid black;
-  line-height: 20px;
-}

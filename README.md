@@ -41,7 +41,10 @@ See [REACTIONS.md](./REACTIONS.md)
 
 ### Recall Knowledge:
 #### Need to turn on in settings.
-Add Recall Knowledge feature. Button for standard identification DCs based on creature type
+![](./recallSettings.png)
+
+### Add Recall Knowledge feature. Labels for standard identification DCs based on creature type and easy and very easy DC based on specific lore
+![](./exampleKnowledge.png)
 
 ### Issues:
 1. Nimble Dodge spam notification with area spell
@@ -71,7 +74,7 @@ Open Game License:
 
 * See [OpenGameLicense.md](OpenGameLicense.md)
 
-[Version]: https://img.shields.io/badge/Version-0.2.18-yellow?style=flat-square
+[Version]: https://img.shields.io/badge/Version-0.2.19-yellow?style=flat-square
 [Version URL]: https://github.com/reyzor1991/foundry-vtt-pf2e-reaction
 
 [Forge Installs ULR]: https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fpf2e-reaction&colorB=4aa94a

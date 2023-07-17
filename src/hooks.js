@@ -577,10 +577,12 @@ async function setEffectToActor(actor, eff) {
 function addRecallButton(html, sheet, skill, dc, isLore=false) {
     var loc_skill= isLore? skill.replaceAll("-", " ").replaceAll(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()) :game.i18n.localize("PF2E.Skill"+skill.replace(/^\w/, (c) => c.toUpperCase()))
     var rec=game.i18n.localize("PF2E.RecallKnowledge.Label")
-    var but = document.createElement('button');
-    but.className = 'recall-knowledge gm-recall-knowledge-'+skill
-    but.textContent = rec+': '+loc_skill
-    but.onclick = function () {
+    var but = document.createElement('div');
+    but.className = 'recall-knowledge tag-legacy tooltipstered gm-recall-knowledge-'+skill
+
+    var a = document.createElement('a');
+    a.textContent = rec+': '+loc_skill
+    a.onclick = function () {
         let content = 'To Recall Knowledge '+(sheet?.token?.name?sheet?.token?.name:'') +', roll:';
         content += '<br>@Check[type:'+skill+'|dc:'+dc+'|traits:secret,action:recall-knowledge]';
         ChatMessage.create({
@@ -588,20 +590,17 @@ function addRecallButton(html, sheet, skill, dc, isLore=false) {
             speaker: ChatMessage.getSpeaker({ token: sheet.token }),
         }).then();
     };
+    but.append(a);
 
-    var skl = html.find(".recall-knowledge > .recall-knowledge-skills");
+    html.find(".recall-knowledge > .section-body").append(but);
+}
 
-    if (skl.length > 0) {
-        skl.append(but);
-    } else {
-        var div = document.createElement('div');
-        div.className = 'recall-knowledge-skills'
+function easyLore(html, sheet, a, dc) {
+    addRecallButton(html, sheet, `${a}-lore`, dc, true)
+}
 
-        div.append(but)
-
-        html.find(".recall-knowledge").append(div);
-    }
-
+function veryEasyLore(html, sheet, dc) {
+    addRecallButton(html, sheet, `${sheet.actor.name.toLowerCase().replaceAll(" ", "-")}-lore`, dc, true)
 }
 
 export default function reactionHooks() {
@@ -707,23 +706,28 @@ export default function reactionHooks() {
 
     Hooks.on("renderActorSheet", (sheet, html, data)=>{
         if (game.user?.isGM && sheet.actor?.type === "npc" && sheet.token && Settings.recallKnowledge) {
-            var skills = Array.from(new Set(sheet.object.system.traits.value.flatMap((t) => identifySkills.get(t) ?? [])));
             var recalls = html.find(".recall-knowledge .section-body .identification-skills")
-
             if (recalls.length == 0) {
                 return;
-            } else if (recalls.length == 1) {
+            }
+            html[0].style.width = "710px";
+
+            var skills = Array.from(new Set(sheet.object.system.traits.value.flatMap((t) => identifySkills.get(t) ?? [])));
+
+            if (recalls.length == 1) {
                 var dcs = recalls.eq(0).text().trim().match(/\d+/g);
                 if (dcs.length == 2) {
                     var [easyLoreDc, veryEasyLoreDc] = dcs;
                     sheet.object.traits.forEach(a=>{
                     if (filteredTraits.includes(a)) {
                             return
-                        } else {
-                            addRecallButton(html, sheet, `${a}-lore`, easyLoreDc, true)
+                        } else if (Settings.recallKnowledgeEasyLore) {
+                            easyLore(html, sheet, a, easyLoreDc)
                         }
                     })
-                    addRecallButton(html, sheet, `${sheet.actor.name.toLowerCase().replaceAll(" ", "-")}-lore`, veryEasyLoreDc, true)
+                    if (Settings.recallKnowledgeVeryEasyLore) {
+                        veryEasyLore(html, sheet, veryEasyLoreDc);
+                    }
                 } else {
                     var dc = dcs[0];
                      skills.forEach(skill => {
@@ -740,11 +744,13 @@ export default function reactionHooks() {
                sheet.object.traits.forEach(a=>{
                     if (filteredTraits.includes(a)) {
                         return
-                    } else {
-                        addRecallButton(html, sheet, `${a}-lore`, easyLoreDc, true)
+                    } else if (Settings.recallKnowledgeEasyLore) {
+                        easyLore(html, sheet, a, easyLoreDc)
                     }
                 })
-                addRecallButton(html, sheet, `${sheet.actor.name.toLowerCase().replaceAll(" ", "-")}-lore`, veryEasyLoreDc, true)
+                if (Settings.recallKnowledgeVeryEasyLore) {
+                    veryEasyLore(html, sheet, veryEasyLoreDc);
+                }
             } else {
                 console.warn(game.i18n.localize("pf2e-reaction.recall-knowledge.need-fix"));
             }

@@ -7,6 +7,12 @@ export default class Settings {
     static get recallKnowledge() {
         return game.settings.get("pf2e-reaction", "recall-knowledge");
     }
+    static get recallKnowledgeEasyLore() {
+        return game.settings.get("pf2e-reaction", "recall-knowledge-easyLore");
+    }
+    static get recallKnowledgeVeryEasyLore() {
+        return game.settings.get("pf2e-reaction", "recall-knowledge-veryEasyLore");
+    }
     static get notification() {
         return game.settings.get("pf2e-reaction", "on_notification");
     }
@@ -37,6 +43,22 @@ export default class Settings {
         game.settings.register("pf2e-reaction", "recall-knowledge", {
             name: game.i18n.localize("pf2e-reaction.recall-knowledge.name"),
             hint: game.i18n.localize("pf2e-reaction.recall-knowledge.hint"),
+            scope: "world",
+            config: true,
+            default: false,
+            type: Boolean,
+        });
+        game.settings.register("pf2e-reaction", "recall-knowledge-easyLore", {
+            name: game.i18n.localize("pf2e-reaction.recall-knowledge-easyLore.name"),
+            hint: game.i18n.localize("pf2e-reaction.recall-knowledge-easyLore.hint"),
+            scope: "world",
+            config: true,
+            default: false,
+            type: Boolean,
+        });
+        game.settings.register("pf2e-reaction", "recall-knowledge-veryEasyLore", {
+            name: game.i18n.localize("pf2e-reaction.recall-knowledge-veryEasyLore.name"),
+            hint: game.i18n.localize("pf2e-reaction.recall-knowledge-veryEasyLore.hint"),
             scope: "world",
             config: true,
             default: false,
