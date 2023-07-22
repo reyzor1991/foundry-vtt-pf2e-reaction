@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.21
+
+### New feature
+-   Fix delete message issue
+
 ## Version 0.2.20
 
 ### New feature

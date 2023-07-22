@@ -1,4 +1,5 @@
 import Settings from "./settings.js";
+import socketlibSocket from "./socket.js";
 
 //const empty = "@UUID[]"
 const unexpected_shift = "@UUID[Compendium.pf2e.feats-srd.Item.AgR1OPBHDvwV5wKD]"
@@ -603,11 +604,23 @@ function addRecallButton(html, sheet, skill, dc, isLore=false) {
     html.find(".recall-knowledge > .section-body").append(but);
 }
 
-function easyLore(html, sheet, a, dc) {
-    addRecallButton(html, sheet, `${a}-lore`, dc, true)
+function easyLore(html, sheet, dc) {
+    if (!Settings.recallKnowledgeEasyLore) {
+        return
+    }
+
+    sheet.object.traits.forEach(a=>{
+        if (filteredTraits.includes(a)) {
+            return
+        }
+        addRecallButton(html, sheet, `${a}-lore`, dc, true)
+    })
 }
 
 function veryEasyLore(html, sheet, dc) {
+    if (!Settings.recallKnowledgeVeryEasyLore) {
+        return
+    }
     addRecallButton(html, sheet, `${sheet.actor.name.toLowerCase().replaceAll(" ", "-")}-lore`, dc, true)
 }
 
@@ -630,13 +643,24 @@ export default function reactionHooks() {
                             text = game.i18n.format("pf2e-reaction.askMultiple", {uuid:uuid, name:combatant.token.name, count: count -1});
                         }
                         var content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text:text});
-                        mes.update({
+
+                        var data = {
                             'content': content,
                             "flags.reaction-check.count": count - 1,
                             "flags.reaction-check.reactions": reactions - 1
-                        })
+                        };
+
+                        if (mes.permission == 3) {
+                            mes.update(data)
+                        } else {
+                            socketlibSocket._sendRequest("updateItem", [mes.uuid, data], 0)
+                        }
                     } else {
-                        mes.delete()
+                        if (mes.permission == 3) {
+                            mes.delete()
+                        } else {
+                            socketlibSocket._sendRequest("deleteItem", [mes.uuid], 0)
+                        }
                     }
                 }
             }
@@ -646,7 +670,11 @@ export default function reactionHooks() {
     $(document).on('click', '.reaction-cancel', function () {
         var mid = $(this).parent().parent().parent().data('message-id');
         if (mid) {
-            game.messages.get(mid)?.delete()
+            if (mid.permission == 3) {
+                game.messages.get(mid)?.delete()
+            } else {
+                socketlibSocket._sendRequest("deleteItem", [game.messages.get(mid)?.uuid], 0)
+            }
         }
     });
 
@@ -728,16 +756,8 @@ export default function reactionHooks() {
                 var dcs = recalls.eq(0).text().trim().match(/\d+/g);
                 if (dcs.length == 2) {
                     var [easyLoreDc, veryEasyLoreDc] = dcs;
-                    sheet.object.traits.forEach(a=>{
-                    if (filteredTraits.includes(a)) {
-                            return
-                        } else if (Settings.recallKnowledgeEasyLore) {
-                            easyLore(html, sheet, a, easyLoreDc)
-                        }
-                    })
-                    if (Settings.recallKnowledgeVeryEasyLore) {
-                        veryEasyLore(html, sheet, veryEasyLoreDc);
-                    }
+                    easyLore(html, sheet, easyLoreDc)
+                    veryEasyLore(html, sheet, veryEasyLoreDc);
                 } else {
                     var dc = dcs[0];
                      skills.forEach(skill => {
@@ -751,16 +771,8 @@ export default function reactionHooks() {
                 skills.forEach(skill => {
                     addRecallButton(html, sheet, skill, dc)
                 })
-               sheet.object.traits.forEach(a=>{
-                    if (filteredTraits.includes(a)) {
-                        return
-                    } else if (Settings.recallKnowledgeEasyLore) {
-                        easyLore(html, sheet, a, easyLoreDc)
-                    }
-                })
-                if (Settings.recallKnowledgeVeryEasyLore) {
-                    veryEasyLore(html, sheet, veryEasyLoreDc);
-                }
+                easyLore(html, sheet, easyLoreDc)
+                veryEasyLore(html, sheet, veryEasyLoreDc);
             } else {
                 console.warn(game.i18n.localize("pf2e-reaction.recall-knowledge.need-fix"));
             }
