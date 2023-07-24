@@ -132,6 +132,9 @@ function calculateDegreeOfSuccess(dc, rollTotal, dieResult) {
 }
 
 function updateInexhaustibleCountermoves(combatant) {
+    if (!combatant) {
+        return
+    }
     if (combatant.actor.type == "npc") {
         setInexhaustibleCountermoves(game.combat.combatants.filter(a=>a.actor.type=="character"), 1)
     } else {
@@ -150,6 +153,7 @@ function setInexhaustibleCountermoves(combatants, val) {
 }
 
 function updateCombatantReactionState(combatant, newState, actionName=undefined) {
+    if (!combatant) {return}
     if (!newState) {
         if (!hasReaction(combatant, actionName) && game.user.isGM) {
             ui.notifications.warn(`${combatant.name} does not have reaction anymore`);
@@ -670,8 +674,9 @@ export default function reactionHooks() {
     $(document).on('click', '.reaction-cancel', function () {
         var mid = $(this).parent().parent().parent().data('message-id');
         if (mid) {
-            if (mid.permission == 3) {
-                game.messages.get(mid)?.delete()
+            var mes = game.messages.get(mid);
+            if (mes.permission == 3) {
+                mes.delete()
             } else {
                 socketlibSocket._sendRequest("deleteItem", [game.messages.get(mid)?.uuid], 0)
             }
