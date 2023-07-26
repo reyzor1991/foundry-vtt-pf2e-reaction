@@ -34,8 +34,8 @@
 -
 - 
 -
-- 
-- Counter Thought
+-
+-
 - Mental Static
 - No!!!
 -

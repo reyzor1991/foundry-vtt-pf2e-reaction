@@ -31,6 +31,9 @@ export default class Settings {
     static get homebrewReactions() {
         return game.settings.get("pf2e-reaction", "homebrewReactions");
     }
+    static get postMessage() {
+        return game.settings.get("pf2e-reaction", "postMessage");
+    }
     static register() {
 
         ReactionHomebrewSettings.init();
@@ -91,6 +94,13 @@ export default class Settings {
         game.settings.register("pf2e-reaction", "addReactionEffect", {
             name: game.i18n.localize("pf2e-reaction.addReactionEffect.name"),
             hint: game.i18n.localize("pf2e-reaction.addReactionEffect.hint"),
+            scope: "world",
+            config: true,
+            default: false,
+            type: Boolean,
+        });
+        game.settings.register("pf2e-reaction", "postMessage", {
+            name: "Post message to chat when press 'Yes'",
             scope: "world",
             config: true,
             default: false,

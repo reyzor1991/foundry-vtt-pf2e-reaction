@@ -55,6 +55,7 @@
 	"pf2e-reaction.ask": "{name} may use {uuid}. Reaction was used??",
 	"pf2e-reaction.askMultiple": "{name} may use {uuid}, it happened {count} times. Reaction was used??",
 	"pf2e-reaction.yes": "Yes",
+	"pf2e-reaction.yes-target": "Yes (Choose target)",
 	"pf2e-reaction.no": "No",
 
 	"pf2e-reaction.recall-knowledge.need-fix": "Structure of Recall Knowledge object was changed. Need to update module"

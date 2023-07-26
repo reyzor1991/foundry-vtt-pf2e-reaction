@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.2.24
+
+### New feature
+-   Add Counter Thought reaction check
+-   Posted message to chat when press Yes button, to spare the time to search the reaction in the sheet
+
 ## Version 0.2.23
 
 ### New feature

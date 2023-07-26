@@ -53,6 +53,7 @@ const sacrifice_armor = "@UUID[Compendium.pf2e.feats-srd.Item.bYijGvCvCmJnW6aA]"
 const ringmasters_introduction = "@UUID[Compendium.pf2e.feats-srd.Item.OliKxFIqzky2o6vk]"
 const pirouette = "@UUID[Compendium.pf2e.feats-srd.Item.RlKGaxQWWLa7xJSc]"
 const accompany = "@UUID[Compendium.pf2e.feats-srd.Item.oTTddwzF9TPNkMyd]"
+const counter_thought = "@UUID[Compendium.pf2e.feats-srd.Item.QKC9iiR4Epj1Lyc7]"
 const spiritual_guides = "@UUID[Compendium.pf2e.feats-srd.Item.cEu8BUS41dlPyPGW]"
 const tangle_of_battle = "@UUID[Compendium.pf2e.feats-srd.Item.GLbl3qoWCvvjJr4S]"
 const mage_hunter = "@UUID[Compendium.pf2e.feats-srd.Item.mqLPCNdCSNyY7gyI]"
@@ -67,7 +68,8 @@ const airy_step_feat = "@UUID[Compendium.pf2e.feats-srd.Item.hOD9de1ftfYRSEKn]"
 const nimble_dodge_action = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.wCnsRCHvtZkZTmO0]"
 const nimble_dodge_feat = "@UUID[Compendium.pf2e.feats-srd.Item.dNH8OHEvx3vI9NBQ]"
 const fast_swallow = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.IQtb58p4EaeUzTN1]"
-const retributive_strike = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.IQtb58p4EaeUzTN1]"
+const retributive_strike_npc = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.IQtb58p4EaeUzTN1]"
+const retributive_strike = "@UUID[Compendium.pf2e.actionspf2e.Item.EAP98XaChJEbgKcK]"
 const ferocity = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.N1kstYbHScxgUQtN]"
 const attack_of_opportunity = "@UUID[Compendium.pf2e.actionspf2e.KAVf7AmRnbCAHrkT]"
 const no_escape = "@UUID[Compendium.pf2e.feats-srd.Item.lT8XlX1Ig900BblS]"
@@ -318,16 +320,16 @@ function npcWithReaction() {
     return game.combat.turns.filter(a => !isActorCharacter(a.actor)).filter(a=>hasReaction(a));
 }
 
-function actorWithReactionForType(type) {
-    return game.combat.turns.filter(a => a.actor.type == type).filter(a=>hasReaction(a));
-}
-
 function hasCondition(actor, con) {
     return actor && actor?.itemTypes?.condition?.find((c => c.type == "condition" && con === c.slug))
 }
 
 function hasEffect(actor, eff) {
     return actor && actor?.itemTypes?.effect?.find((c => eff === c.slug))
+}
+
+function hasEffectBySource(actor, eff) {
+    return actor?.itemTypes?.effect?.find((c => eff === c.sourceId))
 }
 
 function actorAction(actor, action) {
@@ -411,7 +413,11 @@ async function reactionWasUsedChat(uuid, combatant) {
     });
 }
 
-async function postInChatTemplate(uuid, combatant, actionName=undefined, skipDeath=false) {
+async function postTargetInChatTemplate(uuid, combatant) {
+    postInChatTemplate(uuid, combatant, undefined, false, true)
+}
+
+async function postInChatTemplate(uuid, combatant, actionName=undefined, skipDeath=false, needTarget=false) {
     if (!skipDeath) {
         if((combatant?.actor?.system?.attributes?.hp?.value <= 0 && combatant?.actor?.system?.attributes?.hp?.temp <= 0 )
             || hasCondition(combatant?.actor, "unconscious")
@@ -422,9 +428,10 @@ async function postInChatTemplate(uuid, combatant, actionName=undefined, skipDea
     }
 
     var text = game.i18n.format("pf2e-reaction.ask", {uuid:uuid, name:combatant.token.name});
-    var content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text:text});
+    var content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text:text, target: needTarget});
     var check = {
         cId: combatant._id,
+        uuid: uuid,
         actionName: actionName
     }
 
@@ -436,11 +443,11 @@ async function postInChatTemplate(uuid, combatant, actionName=undefined, skipDea
     if (game.messages.size > 0 && content == game.messages.contents[game.messages.size-1].content) {
         check['count'] = 2
         check['content'] = content
-        check['uuid'] = uuid
         check['reactions'] = countReaction(combatant, actionName)
+        check['needTarget'] = needTarget
 
         text = game.i18n.format("pf2e-reaction.askMultiple", {uuid:uuid, name:combatant.token.name, count: 2});
-        content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text:text});
+        content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text:text, target: needTarget});
 
         game.messages.contents[game.messages.size-1].update({
             'content': content,
@@ -449,7 +456,7 @@ async function postInChatTemplate(uuid, combatant, actionName=undefined, skipDea
     } else if (game.messages.size > 0 && content == game.messages.contents[game.messages.size-1]?.flags?.["reaction-check"]?.content) {
         var count = game.messages.contents[game.messages.size-1]?.flags?.["reaction-check"]?.count + 1;
         text = game.i18n.format("pf2e-reaction.askMultiple", {uuid:uuid, name:combatant.token.name, count: count});
-        content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text:text});
+        content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text:text, target: needTarget});
 
         game.messages.contents[game.messages.size-1].update({
             'content': content,
@@ -575,7 +582,9 @@ function checkImplementsInterruption(message) {
 
 async function decreaseReaction(combatant, actionName=undefined) {
     updateCombatantReactionState(combatant, false, actionName);
-    if (Settings.addReactionEffect && countAllReaction(combatant) <= 1) {
+    if (Settings.addReactionEffect && countAllReaction(combatant) <= 1
+        && !hasEffectBySource(combatant?.actor, "Compendium.pf2e-reaction.reaction-effects.Item.Dvi4ewimR9t5723U")
+    ) {
         setEffectToActor(combatant.actor, reactionWasUsedEffect);
     }
 }
@@ -645,6 +654,7 @@ export default function reactionHooks() {
             var reactions = mes.flags['reaction-check'].reactions;
             var count = mes.flags['reaction-check'].count;
             var uuid = mes.flags['reaction-check'].uuid;
+            var needTarget = mes.flags['reaction-check']?.needTarget ?? false;
             if (t) {
                 var combatant = game.combat.turns.find(a=>a._id === t);
                 if (combatant) {
@@ -654,7 +664,7 @@ export default function reactionHooks() {
                         if (count-1 > 1) {
                             text = game.i18n.format("pf2e-reaction.askMultiple", {uuid:uuid, name:combatant.token.name, count: count -1});
                         }
-                        var content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text:text});
+                        var content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text:text, target: needTarget});
 
                         var data = {
                             'content': content,
@@ -673,6 +683,13 @@ export default function reactionHooks() {
                         } else {
                             socketlibSocket._sendRequest("deleteItem", [mes.uuid], 0)
                         }
+                    }
+                    if (Settings.postMessage && uuid) {
+                        let ii = uuid.replace("@UUID[", "").replace("]", "")
+
+                        combatant.actor.itemTypes.action.concat(combatant.actor.itemTypes.feat)
+                        .find(a=>a.sourceId == ii)
+                        ?.toMessage()
                     }
                 }
             }
@@ -760,8 +777,6 @@ export default function reactionHooks() {
                 return;
             }
             if (Settings.recallKnowledgeHideDef){recalls.addClass('hidden')}
-
-            html[0].style.width = "710px";
 
             var skills = Array.from(new Set(sheet.object.system.traits.value.flatMap((t) => identifySkills.get(t) ?? [])));
 
@@ -866,590 +881,393 @@ export default function reactionHooks() {
     });
 
     Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
-        if (game?.combats?.active) {
-            if (message?.flags?.pf2e?.appliedDamage && !message?.flags?.pf2e?.appliedDamage?.isHealing) {
-                if (message.actor.system?.attributes?.hp?.value == 0) {
-                    if (hasReaction(message?.token?.combatant)) {
-                        if (actorAction(message?.actor, "ferocity")) {
-                            postInChatTemplate(ferocity, message?.token?.combatant, undefined, true);
-                        }
-                        if (actorFeat(message?.actor, "orc-ferocity")) {
-                            postInChatTemplate(orc_ferocity, message?.token?.combatant, undefined, true);
-                        }
-                        if (actorAction(message?.actor, "entitys-resurgence")) {
-                            postInChatTemplate(entitys_resurgence, message?.token?.combatant, undefined, true);
-                        }
-                        if (actorAction(message?.actor, "final-spite")) {
-                            postInChatTemplate(final_spite, message?.token?.combatant, undefined, true);
-                        }
-                        if (actorFeat(message?.actor, "cheat-death")) {
-                            postInChatTemplate(cheat_death, message?.token?.combatant, undefined, true);
-                        }
-                        if (actorFeat(message?.actor, "ruby-resurrection")) {
-                            postInChatTemplate(ruby_resurrection, message?.token?.combatant, undefined, true);
-                        }
+        if (!game?.combats?.active) {return}
+        if (message?.flags?.pf2e?.appliedDamage && !message?.flags?.pf2e?.appliedDamage?.isHealing) {
+            if (message.actor.system?.attributes?.hp?.value == 0) {
+                if (hasReaction(message?.token?.combatant)) {
+                    if (actorAction(message?.actor, "ferocity")) {
+                        postInChatTemplate(ferocity, message?.token?.combatant, undefined, true);
                     }
-                    // ally
-                    if (isActorCharacter(message?.actor)) {
-                        characterWithReaction()
-                        .filter(a=>a.actorId != message?.actor?._id)
-                        .filter(a=>actorFeat(a.actor, "rapid-response"))
-                        .forEach(cc => {
-                            postInChatTemplate(rapid_response, cc);
-                        });
+                    if (actorFeat(message?.actor, "orc-ferocity")) {
+                        postInChatTemplate(orc_ferocity, message?.token?.combatant, undefined, true);
                     }
-                } else {
-                    if (hasReaction(message?.token?.combatant)) {
-                        if (actorFeat(message?.actor, "wounded-rage") && !hasCondition(message?.actor,"encumbered") && !hasEffect(message.actor, "effect-rage")) {
-                            postInChatTemplate(wounded_rage, message?.token?.combatant);
-                        }
-                        if (actorFeat(message?.actor, "negate-damage")) {
-                            postInChatTemplate(negate_damage, message?.token?.combatant);
-                        }
+                    if (actorAction(message?.actor, "entitys-resurgence")) {
+                        postInChatTemplate(entitys_resurgence, message?.token?.combatant, undefined, true);
+                    }
+                    if (actorAction(message?.actor, "final-spite")) {
+                        postInChatTemplate(final_spite, message?.token?.combatant, undefined, true);
+                    }
+                    if (actorFeat(message?.actor, "cheat-death")) {
+                        postInChatTemplate(cheat_death, message?.token?.combatant, undefined, true);
+                    }
+                    if (actorFeat(message?.actor, "ruby-resurrection")) {
+                        postInChatTemplate(ruby_resurrection, message?.token?.combatant, undefined, true);
+                    }
+                }
+                // ally
+                if (isActorCharacter(message?.actor)) {
+                    characterWithReaction()
+                    .filter(a=>a.actorId != message?.actor?._id)
+                    .filter(a=>actorFeat(a.actor, "rapid-response"))
+                    .forEach(cc => {
+                        postInChatTemplate(rapid_response, cc);
+                    });
+                }
+            } else {
+                if (hasReaction(message?.token?.combatant)) {
+                    if (actorFeat(message?.actor, "wounded-rage") && !hasCondition(message?.actor,"encumbered") && !hasEffect(message.actor, "effect-rage")) {
+                        postInChatTemplate(wounded_rage, message?.token?.combatant);
+                    }
+                    if (actorFeat(message?.actor, "negate-damage")) {
+                        postInChatTemplate(negate_damage, message?.token?.combatant);
                     }
                 }
             }
+        }
 
-            if (!isActorCharacter(message?.actor) && messageWithTrait(message, "concentrate")) {
+        if (!isActorCharacter(message?.actor) && messageWithTrait(message, "concentrate")) {
+            characterWithReaction()
+                .filter(a=>actorFeat(a.actor, "distracting-explosion"))
+                .forEach(cc => {
+                    if (canReachEnemy(message.token, cc.token, cc.actor)) {
+                        postInChatTemplate(distracting_explosion, cc);
+                    }
+                });
+        }
+
+        if (messageWithTrait(message, "auditory")) {
+            checkCourageousOpportunity(message);
+        }
+        if (messageWithAnyTrait(message, ["concentrate", "manipulate"])) {
+            checkImplementsInterruption(message);
+        }
+
+        if (
+            (messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll"))
+            || (message?.item?.type == 'action' && messageWithAnyTrait(message, ["manipulate","move"]))
+        ) {
+            checkCombatantTriggerAttackOfOpportunity(message.actor, message.actor._id, message.token);
+            checkCourageousOpportunity(message);
+
+            if (message?.item?.type == 'action' && messageWithAnyTrait(message, ["manipulate","move"])) {
+                checkImplementsInterruption(message);
+            }
+            if (message?.item?.type == 'action' && messageWithTrait(message, "move")) {
                 characterWithReaction()
-                    .filter(a=>actorFeat(a.actor, "distracting-explosion"))
+                    .filter(a=>a.actorId != message?.actor?._id)
+                    .filter(a=>actorFeat(a.actor, "stand-still"))
                     .forEach(cc => {
-                        if (canReachEnemy(message.token, cc.token, cc.actor)) {
-                            postInChatTemplate(distracting_explosion, cc);
+                        if (canReachEnemy(message?.token, cc.token, cc.actor)) {
+                            postInChatTemplate(stand_still, cc);
                         }
                     });
             }
-
-            if (messageWithTrait(message, "auditory")) {
-                checkCourageousOpportunity(message);
-            }
-            if (messageWithAnyTrait(message, ["concentrate", "manipulate"])) {
+        } else if (message?.flags?.pf2e?.origin?.type == 'spell' && !messageType(message, "saving-throw")) {
+            var origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
+            if (spellWithTrait(origin, "manipulate")) {
+                checkCombatantTriggerAttackOfOpportunity(message.actor, message.actor._id, message.token);
                 checkImplementsInterruption(message);
             }
-
-            if (
-                (messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll"))
-                || (message?.item?.type == 'action' && messageWithAnyTrait(message, ["manipulate","move"]))
-            ) {
+        } else if (message?.flags?.pf2e?.origin?.type == 'action') {
+            var actId = message.flags?.pf2e?.origin?.uuid.split('.').slice(-1)[0]
+            if (game?.packs?.get("pf2e.actionspf2e")._source.find(a=>a._id==actId)?.system?.traits?.value.includes("manipulate")) {
                 checkCombatantTriggerAttackOfOpportunity(message.actor, message.actor._id, message.token);
-                checkCourageousOpportunity(message);
+                checkImplementsInterruption(message);
+            }
+        }
 
-                if (message?.item?.type == 'action' && messageWithAnyTrait(message, ["manipulate","move"])) {
-                    checkImplementsInterruption(message);
-                }
-                if (message?.item?.type == 'action' && messageWithTrait(message, "move")) {
+        if (message?.flags?.pf2e?.casting || messageType(message, 'spell-cast')) {
+            (isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction())
+                .forEach(cc => {
+                    if (canReachEnemy(message.token, cc.token, cc.actor)) {
+                        if (actorFeat(cc.actor, "mage-hunter")) {
+                            postInChatTemplate(mage_hunter, cc);
+                        }
+                    }
+
+                    if (getEnemyDistance(message.token, cc.token) <= 30) {
+                        if (actorFeat(cc.actor, "counter-thought") && spellWithTrait(message?.item, "mental")) {
+                            postInChatTemplate(counter_thought, cc);
+                        }
+                    }
+                })
+            if (message?.item && isActorCharacter(message?.actor)) {
+                if (!message?.item?.isCantrip) {
                     characterWithReaction()
                         .filter(a=>a.actorId != message?.actor?._id)
-                        .filter(a=>actorFeat(a.actor, "stand-still"))
+                        .filter(a=>getEnemyDistance(message.token, a.token) <= 30)
                         .forEach(cc => {
-                            if (canReachEnemy(message?.token, cc.token, cc.actor)) {
-                                postInChatTemplate(stand_still, cc);
+                            if (actorFeat(cc.actor, "accompany")) {
+                                postInChatTemplate(accompany, cc);
                             }
-                        });
+                        })
                 }
-            } else if (message?.flags?.pf2e?.origin?.type == 'spell' && !messageType(message, "saving-throw")) {
-                var origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
-                if (spellWithTrait(origin, "manipulate")) {
-                    checkCombatantTriggerAttackOfOpportunity(message.actor, message.actor._id, message.token);
-                    checkImplementsInterruption(message);
+
+                if (hasReaction(message?.token?.combatant)) {
+                    if ( actorFeat(message?.actor, "verdant-presence") && message?.item?.system?.traditions.value.includes("primal")) {
+                        postInChatTemplate(verdant_presence, message?.token?.combatant);
+                    }
+
+                    if (actorFeat(message?.actor, "align-ki") && messageWithTrait(message, "monk")) {
+                        postInChatTemplate(align_ki, message?.token?.combatant);
+                    }
                 }
-            } else if (message?.flags?.pf2e?.origin?.type == 'action') {
-                var actId = message.flags?.pf2e?.origin?.uuid.split('.').slice(-1)[0]
-                if (game?.packs?.get("pf2e.actionspf2e")._source.find(a=>a._id==actId)?.system?.traits?.value.includes("manipulate")) {
-                    checkCombatantTriggerAttackOfOpportunity(message.actor, message.actor._id, message.token);
-                    checkImplementsInterruption(message);
-                }
+
+                let spellRange = message?.item?.system?.range?.value?.match(/\d+/g);
+                spellRange = spellRange ? spellRange[0] : 0;
+
+                characterWithReaction()
+                    .filter(a=>a.actorId != message?.actor?._id)
+                    .filter(a=>getEnemyDistance(message.token, a.token) <= spellRange)
+                    .filter(a=>actorFeat(a.actor, "spell-relay"))
+                    .forEach(cc => {
+                        postInChatTemplate(spell_relay, cc);
+                    })
+
             }
 
-            if (message?.flags?.pf2e?.casting || messageType(message, 'spell-cast')) {
-                (isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction())
-                    .forEach(cc => {
-                        if (canReachEnemy(message.token, cc.token, cc.actor)) {
-                            if (actorFeat(cc.actor, "mage-hunter")) {
-                                postInChatTemplate(mage_hunter, cc);
-                            }
-                        }
-                    })
-                if (message?.item && isActorCharacter(message?.actor)) {
-                    if (!message?.item?.isCantrip) {
-                        characterWithReaction()
-                            .filter(a=>a.actorId != message?.actor?._id)
-                            .filter(a=>getEnemyDistance(message.token, a.token) <= 30)
-                            .forEach(cc => {
-                                if (actorFeat(cc.actor, "accompany")) {
-                                    postInChatTemplate(accompany, cc);
-                                }
-                            })
+        } else if (messageType(message, "spell-attack-roll")) {
+            if (hasReaction(message?.target?.token?.combatant)) {
+                if (criticalFailureMessageOutcome(message)) {
+                    if (actorFeat(message?.target?.actor, "mirror-shield")) {
+                        postInChatTemplate(mirror_shield, message?.target?.token?.combatant);
                     }
-
-                    if (hasReaction(message?.token?.combatant)) {
-                        if ( actorFeat(message?.actor, "verdant-presence") && message?.item?.system?.traditions.value.includes("primal")) {
-                            postInChatTemplate(verdant_presence, message?.token?.combatant);
-                        }
-
-                        if (actorFeat(message?.actor, "align-ki") && messageWithTrait(message, "monk")) {
-                            postInChatTemplate(align_ki, message?.token?.combatant);
-                        }
-                    }
-
-                    let spellRange = message?.item?.system?.range?.value?.match(/\d+/g);
-                    spellRange = spellRange ? spellRange[0] : 0;
-
-                    characterWithReaction()
-                        .filter(a=>a.actorId != message?.actor?._id)
-                        .filter(a=>getEnemyDistance(message.token, a.token) <= spellRange)
-                        .filter(a=>actorFeat(a.actor, "spell-relay"))
-                        .forEach(cc => {
-                            postInChatTemplate(spell_relay, cc);
-                        })
-
                 }
-
-            } else if (messageType(message, "spell-attack-roll")) {
-                if (hasReaction(message?.target?.token?.combatant)) {
-                    if (criticalFailureMessageOutcome(message)) {
-                        if (actorFeat(message?.target?.actor, "mirror-shield")) {
-                            postInChatTemplate(mirror_shield, message?.target?.token?.combatant);
-                        }
+                if (actorAction(message?.target?.actor, "ring-bell")
+                        && getEnemyDistance(message.token, message.target.token)<=30
+                        && hasEffect(message.actor, "effect-exploit-vulnerability")) {
+                        postInChatTemplate(ring_bell, message.target.token.combatant);
+                }
+                if (actorFeat(message?.target?.actor, "you-failed-to-account-for-this")) {
+                    postInChatTemplate(you_failed_to_account_for_this, message.target.token.combatant);
+                }
+                if (actorFeat(message?.target?.actor, "foresee-danger")) {
+                    postInChatTemplate(foresee_danger, message.target.token.combatant);
+                }
+                if (actorFeat(message?.target?.actor, "suspect-of-opportunity")) {
+                    postInChatTemplate(suspect_of_opportunity, message.target.token.combatant);
+                }
+            }
+            if (isTargetCharacter(message)) {
+                characterWithReaction()
+                .filter(a=>a.actorId != message?.target?.actor._id)
+                .forEach(cc => {
+                    if (actorAction(cc?.actor, "ring-bell")
+                        && getEnemyDistance(cc?.token, message.token)<=30
+                        && hasEffect(message.actor, "effect-exploit-vulnerability")) {
+                        postInChatTemplate(ring_bell, cc);
                     }
-                    if (actorAction(message?.target?.actor, "ring-bell")
-                            && getEnemyDistance(message.token, message.target.token)<=30
-                            && hasEffect(message.actor, "effect-exploit-vulnerability")) {
-                            postInChatTemplate(ring_bell, message.target.token.combatant);
-                    }
+                })
+            }
+        } else if (messageType(message, 'attack-roll')) {
+            if (hasReaction(message?.target?.token?.combatant)) {
+                if (isTargetCharacter(message)) {
                     if (actorFeat(message?.target?.actor, "you-failed-to-account-for-this")) {
                         postInChatTemplate(you_failed_to_account_for_this, message.target.token.combatant);
-                    }
-                    if (actorFeat(message?.target?.actor, "foresee-danger")) {
-                        postInChatTemplate(foresee_danger, message.target.token.combatant);
                     }
                     if (actorFeat(message?.target?.actor, "suspect-of-opportunity")) {
                         postInChatTemplate(suspect_of_opportunity, message.target.token.combatant);
                     }
-                }
-                if (isTargetCharacter(message)) {
-                    characterWithReaction()
-                    .filter(a=>a.actorId != message?.target?.actor._id)
-                    .forEach(cc => {
-                        if (actorAction(cc?.actor, "ring-bell")
-                            && getEnemyDistance(cc?.token, message.token)<=30
-                            && hasEffect(message.actor, "effect-exploit-vulnerability")) {
-                            postInChatTemplate(ring_bell, cc);
-                        }
-                    })
-                }
-            } else if (messageType(message, 'attack-roll')) {
-                if (hasReaction(message?.target?.token?.combatant)) {
-                    if (isTargetCharacter(message)) {
-                        if (actorFeat(message?.target?.actor, "you-failed-to-account-for-this")) {
-                            postInChatTemplate(you_failed_to_account_for_this, message.target.token.combatant);
-                        }
-                        if (actorFeat(message?.target?.actor, "suspect-of-opportunity")) {
-                            postInChatTemplate(suspect_of_opportunity, message.target.token.combatant);
-                        }
-                        if (actorFeat(message?.target?.actor, "foresee-danger")) {
-                            postInChatTemplate(foresee_danger, message.target.token.combatant);
-                        }
-                        if (actorFeat(message?.target?.actor, "nimble-dodge") && !hasCondition(message?.target?.actor,"encumbered")) {
-                            postInChatTemplate(nimble_dodge_feat, message.target.token.combatant);
-                        }
-                        if (actorFeat(message?.target?.actor, "airy-step")) {
-                            postInChatTemplate(airy_step_feat, message.target.token.combatant);
-                        }
-                        if (actorFeat(message?.target?.actor, "farabellus-flip")) {
-                            postInChatTemplate(farabellus_flip, message.target.token.combatant);
-                        }
-                        if (actorFeat(message?.target?.actor, "reactive-shield") && !hasEffect(message?.target?.actor, "effect-raise-a-shield") && message?.item?.isMelee) {
-                            postInChatTemplate(reactive_shield, message.target.token.combatant);
-                        }
-                        if (actorFeat(message?.target?.actor, "pirouette") && hasEffect(message?.target?.actor, "stance-masquerade-of-seasons-stance")) {
-                            postInChatTemplate(pirouette, message.target.token.combatant);
-                        }
-                        if (actorFeat(message?.target?.actor, "fiery-retort") && adjacentEnemy(message.token, message.target.token)
-                            && (message?.item?.isMelee|| message?.item?.traits?.has("unarmed"))) {
-                            postInChatTemplate(fiery_retort, message.target.token.combatant);
-                        }
-                        if (actorFeat(message?.target?.actor, "knights-retaliation")
-                            && message?.actor?.system.traits.value.includes("undead")
-                            && criticalFailureMessageOutcome(message)
-                        ) {
-                            postInChatTemplate(knights_retaliation, message.target.token.combatant);
-                        }
-                        if (actorAction(message?.target?.actor, "ring-bell")
-                            && getEnemyDistance(message.token, message.target.token)<=30
-                            && hasEffect(message.actor, "effect-exploit-vulnerability")) {
-                            postInChatTemplate(ring_bell, message.target.token.combatant);
-                        }
-                        if (message?.target?.actor?.flags?.pf2e?.rollOptions?.ac?.['hit-the-dirt'] && hasOption(message, "ranged")) {
-                            postInChatTemplate(hit_the_dirt, message.target.token.combatant);
-                        }
-                        if (message?.item?.isMelee && message?.target?.actor?.flags?.pf2e?.rollOptions?.all?.['crane-flutter']) {
-                            decreaseReaction(message.target.token.combatant);
-                            reactionWasUsedChat(crane_flutter, message.target.token.combatant);
-                        }
-                        if (message?.item?.isRanged && message?.target?.actor?.flags?.pf2e?.rollOptions?.ac?.['deflect-arrow']) {
-                            decreaseReaction(message.target.token.combatant);
-                            reactionWasUsedChat(deflect_arrow, message.target.token.combatant);
-                        }
-                    } else {
-                        if (actorAction(message?.target?.actor, "nimble-dodge") && !hasCondition(message?.target?.actor,"encumbered")) {
-                            postInChatTemplate(nimble_dodge_action, message.target.token.combatant);
-                        }
-                        if (actorAction(message?.target?.actor, "airy-step")) {
-                            postInChatTemplate(airy_step_action, message.target.token.combatant);
-                        }
+                    if (actorFeat(message?.target?.actor, "foresee-danger")) {
+                        postInChatTemplate(foresee_danger, message.target.token.combatant);
                     }
-                }
-                if (criticalFailureMessageOutcome(message) && hasReaction(message?.target?.token?.combatant, "opportune-riposte")) {
-                    if (message.actor?.type == 'npc') {
-                        if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && actorFeat(message?.target?.actor, "opportune-riposte")) {
-                            postInChatTemplate(opportune_riposte, message.target.token.combatant, "opportune-riposte");
-                        }
-                    } else {
-                        if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && actorAction(message?.target?.actor, "opportune-riposte")) {
-                            postInChatTemplate(opportune_riposte_action, message.target.token.combatant, "opportune-riposte");
-                        }
+                    if (actorFeat(message?.target?.actor, "nimble-dodge") && !hasCondition(message?.target?.actor,"encumbered")) {
+                        postInChatTemplate(nimble_dodge_feat, message.target.token.combatant);
                     }
-                }
-                if (criticalFailureMessageOutcome(message) && hasReaction(message?.target?.token?.combatant)) {
-                    if (actorFeat(message?.target?.actor, "dueling-riposte") && hasEffect(message.target.actor, "effect-dueling-parry")) {
-                        postInChatTemplate(dueling_riposte, message.target.token.combatant);
+                    if (actorFeat(message?.target?.actor, "airy-step")) {
+                        postInChatTemplate(airy_step_feat, message.target.token.combatant);
                     }
-                    if (actorFeat(message?.target?.actor, "twin-riposte") && canReachEnemy(message.token, message?.target?.token, message?.target?.actor)
-                        && (hasEffect(message.target.actor, "effect-twin-parry")||hasEffect(message.target.actor, "effect-twin-parry-parry-trait"))) {
-                        postInChatTemplate(twin_riposte, message.target.token.combatant);
+                    if (actorFeat(message?.target?.actor, "farabellus-flip")) {
+                        postInChatTemplate(farabellus_flip, message.target.token.combatant);
                     }
-                }
-                if (anyFailureMessageOutcome(message)) {
-                    if (hasReaction(message?.token?.combatant)) {
-                        if (actorFeat(message?.actor, "perfect-clarity")) {
-                            postInChatTemplate(perfect_clarity, message?.token?.combatant);
-                        }
+                    if (actorFeat(message?.target?.actor, "reactive-shield") && !hasEffect(message?.target?.actor, "effect-raise-a-shield") && message?.item?.isMelee) {
+                        postInChatTemplate(reactive_shield, message.target.token.combatant);
                     }
-                }
-
-                if (!isTargetCharacter(message)) {
-                    npcWithReaction()
-                    .filter(a=>a.actorId != message?.target?.actor._id)
-                    .forEach(cc => {
-                        if (adjacentEnemy(message.token, cc.token)) {
-                            var ab = actorAction(cc.actor, "avenging-bite");
-                            if (ab) {
-                                postInChatTemplate(_uuid(ab), cc?.token?.combatant);
-                            }
-                        }
-                    })
+                    if (actorFeat(message?.target?.actor, "pirouette") && hasEffect(message?.target?.actor, "stance-masquerade-of-seasons-stance")) {
+                        postInChatTemplate(pirouette, message.target.token.combatant);
+                    }
+                    if (actorFeat(message?.target?.actor, "fiery-retort") && adjacentEnemy(message.token, message.target.token)
+                        && (message?.item?.isMelee|| message?.item?.traits?.has("unarmed"))) {
+                        postInChatTemplate(fiery_retort, message.target.token.combatant);
+                    }
+                    if (actorFeat(message?.target?.actor, "knights-retaliation")
+                        && message?.actor?.system.traits.value.includes("undead")
+                        && criticalFailureMessageOutcome(message)
+                    ) {
+                        postInChatTemplate(knights_retaliation, message.target.token.combatant);
+                    }
+                    if (actorAction(message?.target?.actor, "ring-bell")
+                        && getEnemyDistance(message.token, message.target.token)<=30
+                        && hasEffect(message.actor, "effect-exploit-vulnerability")) {
+                        postInChatTemplate(ring_bell, message.target.token.combatant);
+                    }
+                    if (message?.target?.actor?.flags?.pf2e?.rollOptions?.ac?.['hit-the-dirt'] && hasOption(message, "ranged")) {
+                        postInChatTemplate(hit_the_dirt, message.target.token.combatant);
+                    }
+                    if (message?.item?.isMelee && message?.target?.actor?.flags?.pf2e?.rollOptions?.all?.['crane-flutter']) {
+                        decreaseReaction(message.target.token.combatant);
+                        reactionWasUsedChat(crane_flutter, message.target.token.combatant);
+                    }
+                    if (message?.item?.isRanged && message?.target?.actor?.flags?.pf2e?.rollOptions?.ac?.['deflect-arrow']) {
+                        decreaseReaction(message.target.token.combatant);
+                        reactionWasUsedChat(deflect_arrow, message.target.token.combatant);
+                    }
                 } else {
-                    characterWithReaction()
-                    .filter(a=>a.actorId != message?.target?.actor._id)
-                    .forEach(cc => {
-                        if (actorAction(cc?.actor, "ring-bell")
-                            && getEnemyDistance(cc?.token, message.token)<=30
-                            && hasEffect(message.actor, "effect-exploit-vulnerability")) {
-                            postInChatTemplate(ring_bell, cc);
-                        }
-                    })
-                }
-
-                //Hit by
-                if (anySuccessMessageOutcome(message)) {
-                    if (hasReaction(message?.token?.combatant)) {
-                        if (message?.item?.system?.attackEffects?.value.includes("improved-grab")) {
-                            var fs = actorAction(message?.actor, "fast-swallow");
-                            if (fs) {
-                                postInChatTemplate(_uuid(fs), message?.token?.combatant);
-                            }
-                        }
+                    if (actorAction(message?.target?.actor, "nimble-dodge") && !hasCondition(message?.target?.actor,"encumbered")) {
+                        postInChatTemplate(nimble_dodge_action, message.target.token.combatant);
                     }
-                    if (hasReaction(message?.target?.token?.combatant)) {
-                        if (actorAction(message?.target?.actor, "wicked-thorns")) {
-                            if (message?.item?.traits.has("unarmed") || (message?.item?.isMelee && nonReach(message?.item?.traits))) {
-                                postInChatTemplate(wicked_thorns, message.target.token.combatant);
-                            }
-                        }
-                        if (actorFeat(message?.target?.actor, "emergency-targe") && message?.item?.isMelee) {
-                            postInChatTemplate(emergency_targe, message.target.token.combatant);
-                        }
-                        if (actorFeat(message?.target?.actor, "impossible-technique")
-                            && !hasCondition(message?.target?.actor, "fatigued")
-                            && message?.target?.actor?.armorClass?.parent?.item?.type != "armor"
-                        ) {
-                            postInChatTemplate(impossible_technique, message.target.token.combatant);
-                        }
-                        if (actorFeat(message?.target?.actor, "rippling-spin") && message?.item?.isMelee
-                            && canReachEnemy(message.token, message?.target?.token, message?.target?.actor)
-                            && hasEffect(message?.target?.actor, "stance-reflective-ripple-stance")
-                        ) {
-                            postInChatTemplate(rippling_spin, message.target.token.combatant);
-                        }
-                    }
-
-                    if (isTargetCharacter(message)) {
-                        const rr = message.rolls.at(0);
-                        let newR = calculateDegreeOfSuccess(message?.flags?.pf2e?.context?.dc?.value, rr._total - 2, rr.dice.at(0).total)
-
-                        if (rr.degreeOfSuccess != newR) {
-                            characterWithReaction()
-                                .filter(a=>a.actorId != message?.target?.actor._id)
-                                .filter(cc=>canReachEnemy(message?.target?.token, cc.token, cc.actor))
-                                .forEach(cc => {
-                                    if (actorFeat(cc.actor, "guardians-deflection-fighter")) {
-                                        postInChatTemplate(guardians_deflection_fighter, cc);
-                                    }
-                                    if (actorFeat(cc.actor, "guardians-deflection-swashbuckler")) {
-                                        postInChatTemplate(guardians_deflection_swashbuckler, cc);
-                                    }
-                                })
-                        }
+                    if (actorAction(message?.target?.actor, "airy-step")) {
+                        postInChatTemplate(airy_step_action, message.target.token.combatant);
                     }
                 }
-
-                //Hit by crit
-                if (criticalSuccessMessageOutcome(message)) {
-                    if (hasReaction(message?.target?.token?.combatant)) {
-                        var vs = actorAction(message?.target?.actor, "vengeful-spite");
-                        if (vs) {
-                            postInChatTemplate(_uuid(vs), message.target?.token?.combatant);
-                        }
-                        if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && actorFeat(message?.target?.actor, "furious-vengeance")) {
-                            postInChatTemplate(furious_vengeance, message.target.token.combatant);
-                        }
-                        var cringe = actorFeat(message?.target?.actor, "cringe")
-                        if (cringe) {
-                            postInChatTemplate(_uuid(cringe), message.target.token.combatant);
-                        }
-                        if (adjacentEnemy(message.token, message?.target?.token, message?.target?.actor)) {
-                            if (message?.item?.isMelee || message?.item?.traits?.has("unarmed")) {
-                                if (message?.target?.actor?.system?.resources?.focus?.value > 0) {
-                                    if (actorFeat(message?.target?.actor, "storm-retribution")) {
-                                        postInChatTemplate(storm_retribution, message.target.token.combatant);
-                                    }
-                                }
-                            }
-                        }
+            }
+            if (criticalFailureMessageOutcome(message) && hasReaction(message?.target?.token?.combatant, "opportune-riposte")) {
+                if (isNPC(message.actor)) {
+                    if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && actorFeat(message?.target?.actor, "opportune-riposte")) {
+                        postInChatTemplate(opportune_riposte, message.target.token.combatant, "opportune-riposte");
                     }
-                    if (hasReaction(message?.token?.combatant)) {
-                        if (actorFeat(message?.actor, "tangle-of-battle") && adjacentEnemy(message.target.token, message?.token)) {
-                            postInChatTemplate(tangle_of_battle, message.token.combatant);
-                        }
-                        if (actorFeat(message?.actor, "clever-gambit") && hasEffect(message?.target?.actor, "effect-recall-knowledge-identified")) {
-                            postInChatTemplate(clever_gambit, message.token.combatant);
-                        }
+                } else {
+                    if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && actorAction(message?.target?.actor, "opportune-riposte")) {
+                        postInChatTemplate(opportune_riposte_action, message.target.token.combatant, "opportune-riposte");
                     }
                 }
-            } else if (messageType(message, 'perception-check')) {
-                if (failureMessageOutcome(message)) {
-                    if (hasReaction(message?.token?.combatant)) {
-                        if (actorFeat(message?.actor, "spiritual-guides")) {
-                            postInChatTemplate(spiritual_guides, message.token.combatant);
-                        }
-                    }
+            }
+            if (criticalFailureMessageOutcome(message) && hasReaction(message?.target?.token?.combatant)) {
+                if (actorFeat(message?.target?.actor, "dueling-riposte") && hasEffect(message.target.actor, "effect-dueling-parry")) {
+                    postInChatTemplate(dueling_riposte, message.target.token.combatant);
                 }
-                if (message?.flags?.pf2e?.origin?.uuid) {
-                    var origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
-                    if (hasReaction(origin?.actor?.combatant)) {
-                        if (successMessageOutcome(message)) {
-                            if (actorFeat(origin?.actor, "convincing-illusion") && origin?.traits?.has("illusion")) {
-                                postInChatTemplate(convincing_illusion, origin?.actor?.combatant);
-                            }
-                        }
-                    }
+                if (actorFeat(message?.target?.actor, "twin-riposte") && canReachEnemy(message.token, message?.target?.token, message?.target?.actor)
+                    && (hasEffect(message.target.actor, "effect-twin-parry")||hasEffect(message.target.actor, "effect-twin-parry-parry-trait"))) {
+                    postInChatTemplate(twin_riposte, message.target.token.combatant);
                 }
-            } else if (messageType(message, 'skill-check')) {
-                if (isTargetCharacter(message) && anySuccessMessageOutcome(message)) {
-                    characterWithReaction()
-                    .filter(a=>a.actorId != message?.target?.actor._id)
-                    .forEach(cc => {
-                        if (message?.flags?.pf2e?.context?.options.find(bb=>bb=="action:grapple")) {
-                            if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15){
-                                if (actorAction(cc.actor, "liberating-step")) {
-                                    postInChatTemplate(liberating_step, cc);
-                                }
-                            }
-                        }
-                    })
-                }
-
+            }
+            if (anyFailureMessageOutcome(message)) {
                 if (hasReaction(message?.token?.combatant)) {
-                    if (failureMessageOutcome(message)) {
-                        if (actorFeat(message?.actor, "spiritual-guides")) {
-                            postInChatTemplate(spiritual_guides, message.token.combatant);
-                        }
-                    }
-                    if (criticalFailureMessageOutcome(message)) {
-                        if (actorFeat(message?.actor, "squawk")
-                            && ["deception","diplomacy","intimidation"].some(a=>message.flags?.pf2e?.context?.domains?.includes(a))
-                            && !message?.target?.actor?.system?.traits?.value?.includes("tengu")
-                        ) {
-                            postInChatTemplate(squawk, message.token.combatant);
-                        }
+                    if (actorFeat(message?.actor, "perfect-clarity")) {
+                        postInChatTemplate(perfect_clarity, message?.token?.combatant);
                     }
                 }
+            }
 
-            } else if (messageType(message, 'damage-roll')) {
-                if (hasReaction(message.actor.combatant)) {
-                    if (actorFeat(message.actor, "cleave") && message?.item?.isMelee) {
-                        if (message.target.actor.system.attributes.hp.value <= parseInt(message.content)) {
-
-                            var adjEnemies = game.combat.turns.filter(a => !isActorCharacter(a.actor))
-                            .filter(a=>a.actorId != message?.target?.actor._id)
-                            .filter(a=>adjacentEnemy(message.target.token, a.token))
-                            .filter(a=>a.actor.system.attributes.hp.value>0);
-
-                            if (adjEnemies.length > 0) {
-                                postInChatTemplate(cleave, message.actor.combatant);
-                            }
-                        }
-                    }
-                }
-
-                if(hasReaction(message?.target?.token?.combatant, "shield-block")) {
-                    var dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a=>a.damageType);
-                    if (dTypes.filter(a=> a== "bludgeoning" || a == "piercing" || a== "slashing").length > 0) {
-                        if (actorFeat(message?.target?.actor, "shield-block") && hasEffect(message.target.actor, "effect-raise-a-shield")) {
-                            postInChatTemplate(shield_block, message.target.token.combatant, "shield-block");
-                        }
-                    }
-                }
-                if(hasReaction(message?.target?.token?.combatant)) {
-                    if (actorFeat(message?.target?.actor, "electric-counter") && hasEffect(message?.target?.actor, "stance-wild-winds-stance")) {
-                        postInChatTemplate(electric_counter, message?.target?.token?.combatant);
-                    }
-                    if (actorFeat(message?.target?.actor, "all-in-my-head") && !message?.item?.traits.has("death")) {
-                        postInChatTemplate(all_in_my_head, message.target.token.combatant);
-                    }
-                    if (actorFeat(message?.target?.actor,  "unexpected-shift")) {
-                        postInChatTemplate(unexpected_shift, message.target.token.combatant);
-                    }
-
-                    var dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a=>a.damageType);
-
-
-                    if (dTypes.filter(a=> a== "sonic").length > 0) {
-                        if (actorFeat(message?.target?.actor, "resounding-finale")) {
-                            postInChatTemplate(resounding_finale, message.target.token.combatant);
-                        }
-                        if (actorFeat(message?.target?.actor, "reverberate") && message.item.type == "spell") {
-                            postInChatTemplate(reverberate, message.target.token.combatant);
-                        }
-                    }
-
-                    if (actorFeat(message?.target?.actor, "verdant-presence")) {
-                        postInChatTemplate(verdant_presence, message.target.token.combatant);
-                    }
-                    if (actorAction(message?.target?.actor, "amulets-abeyance") && hasEffect(message.actor, "effect-exploit-vulnerability")) {
-                        postInChatTemplate(amulets_abeyance, message?.target?.token?.combatant);
-                    }
-
-                    if (dTypes.filter(a=> a== "bludgeoning" || a == "piercing" || a== "slashing").length > 0) {
-                        if (actorFeat(message?.target?.actor, "sacrifice-armor")) {
-                            postInChatTemplate(sacrifice_armor, message.target.token.combatant);
-                        }
-                    }
-
-                    if (dTypes.filter(a=> ["acid", "cold", "electricity", "fire", 'poison'].includes(a)).length > 0) {
-                        if (actorFeat(message?.target?.actor, "reactive-transformation")) {
-                            postInChatTemplate(reactive_transformation, message.target.token.combatant);
-                        }
-                    }
-
-                    if (message?.item?.isMelee && actorFeat(message?.target?.actor, "embrace-the-pain")) {
-                        postInChatTemplate(embrace_the_pain, message.target.token.combatant);
-                    }
-                    if (adjacentEnemy(message.target.token, message.token)) {
-                        var rg = actorAction(message?.target?.actor, "reactive-gnaw");
-                        if (rg && message?.item?.system?.damage?.damageType == "slashing") {
-                            postInChatTemplate(_uuid(rg), message.target.token.combatant);
-                        }
-                        var rc = actorFeat(message?.target?.actor, "retaliatory-cleansing");
-                        if (rc) {
-                            if (actorHeldWeapon(message?.target?.actor).filter(a=>a.slug=="holy-water" || (a.weaponTraits.filter(b=>b.name == "bomb").length > 0 && a.weaponTraits.filter(b=>b.name == "positive").length > 0)).length > 0) {
-                                postInChatTemplate(retaliatory_cleansing, message.target.token.combatant);
-                            }
-                        }
-                    //15 ft damage you
-                    } else if (getEnemyDistance(message?.target.token, message.token) <= 15) {
-                        if (actorAction(message?.target?.actor, "iron-command")) {
-                            postInChatTemplate(iron_command, message.target.token.combatant);
-                        }
-                        if (actorAction(message?.target?.actor, "selfish-shield")) {
-                            postInChatTemplate(selfish_shield, message.target.token.combatant);
-                        }
-                        if (actorAction(message?.target?.actor, "destructive-vengeance")) {
-                            postInChatTemplate(destructive_vengeance, message.target.token.combatant);
-                        }
-                    }
-                }
-                //ally damaged
-                actorWithReactionForType(message?.target?.actor?.type)
+            if (!isTargetCharacter(message)) {
+                npcWithReaction()
                 .filter(a=>a.actorId != message?.target?.actor._id)
                 .forEach(cc => {
-                    if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15) {
-                        if (actorAction(cc.actor, "glimpse-of-redemption")) {
-                            postInChatTemplate(glimpse_of_redemption, cc);
-                        }
-                        if (actorAction(cc.actor, "liberating-step")) {
-                            postInChatTemplate(liberating_step, cc);
-                        }
-                        if (actorAction(cc.actor, "retributive-strike")) {
-                            postInChatTemplate(retributive_strike, cc);
-                        }
-                    }
-                    if (getEnemyDistance(message.target.token, cc.token) <= 15 && hasEffect(message.actor, "effect-exploit-vulnerability")) {
-                        if (actorAction(cc.actor, "amulets-abeyance")) {
-                            postInChatTemplate(amulets_abeyance, cc);
-                        }
-                    }
-                    if (getEnemyDistance(message.target.token, cc.token) <= 30) {
-                        if (actorFeat(cc.actor, "denier-of-destruction")) {
-                            postInChatTemplate(denier_of_destruction, cc);
+                    if (adjacentEnemy(message.token, cc.token)) {
+                        var ab = actorAction(cc.actor, "avenging-bite");
+                        if (ab) {
+                            postInChatTemplate(_uuid(ab), cc?.token?.combatant);
                         }
                     }
                 })
-            } else if (messageType(message, "saving-throw")) {
-                var origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
+            } else {
+                characterWithReaction()
+                .filter(a=>a.actorId != message?.target?.actor._id)
+                .forEach(cc => {
+                    if (actorAction(cc?.actor, "ring-bell")
+                        && getEnemyDistance(cc?.token, message.token)<=30
+                        && hasEffect(message.actor, "effect-exploit-vulnerability")) {
+                        postInChatTemplate(ring_bell, cc);
+                    }
+                })
+            }
+
+            //Hit by
+            if (anySuccessMessageOutcome(message)) {
                 if (hasReaction(message?.token?.combatant)) {
-                    if (actorFeat(message.actor, "charmed-life")) {
-                        if (message?.flags?.pf2e?.modifiers?.find(a=>a.slug=="charmed-life" && a.enabled)) {
-                            decreaseReaction(message.token.combatant)
-                            reactionWasUsedChat(charmed_life, message.token.combatant);
+                    if (message?.item?.system?.attackEffects?.value.includes("improved-grab")) {
+                        var fs = actorAction(message?.actor, "fast-swallow");
+                        if (fs) {
+                            postInChatTemplate(_uuid(fs), message?.token?.combatant);
                         }
                     }
-                    if (anyFailureMessageOutcome(message)) {
-                        if (actorFeat(message.actor, "premonition-of-clarity") && origin?.traits?.has("mental")) {
-                            postInChatTemplate(premonition_of_clarity, message.token.combatant);
-                        }
-                        if (actorFeat(message.actor, "grit-and-tenacity")) {
-                            postInChatTemplate(grit_and_tenacity, message.token.combatant);
-                        }
-                        if (actorFeat(message?.actor, "emergency-targe") && message?.flags?.pf2e?.origin?.type  == 'spell') {
-                            postInChatTemplate(emergency_targe, message.token.combatant);
-                        }
-                    }
-                    if (criticalFailureMessageOutcome(message)) {
-                        if (actorSpell(message.actor, "schadenfreude")) {
-                            postInChatTemplate(schadenfreude, message.token.combatant)
-                        }
-                    }
-
-                    if (actorAction(message?.actor, "ring-bell")
-                            && getEnemyDistance(message.token, origin?.actor?.token)<=30
-                            && hasEffect(origin?.actor, "effect-exploit-vulnerability")) {
-                            postInChatTemplate(ring_bell, message?.actor?.combatant);
-                    }
-
                 }
-                if (isActorCharacter(message?.actor)) {
-                    characterWithReaction()
-                    .filter(a=>a.actorId != message?.actor._id)
-                    .forEach(cc => {
-                        if (actorAction(cc?.actor, "ring-bell")
-                            && getEnemyDistance(cc?.token, origin?.actor?.token)<=30
-                            && hasEffect(origin?.actor, "effect-exploit-vulnerability")) {
-                            postInChatTemplate(ring_bell, cc);
+                if (hasReaction(message?.target?.token?.combatant)) {
+                    if (actorAction(message?.target?.actor, "wicked-thorns")) {
+                        if (message?.item?.traits.has("unarmed") || (message?.item?.isMelee && nonReach(message?.item?.traits))) {
+                            postInChatTemplate(wicked_thorns, message.target.token.combatant);
                         }
-                    })
+                    }
+                    if (actorFeat(message?.target?.actor, "emergency-targe") && message?.item?.isMelee) {
+                        postInChatTemplate(emergency_targe, message.target.token.combatant);
+                    }
+                    if (actorFeat(message?.target?.actor, "impossible-technique")
+                        && !hasCondition(message?.target?.actor, "fatigued")
+                        && message?.target?.actor?.armorClass?.parent?.item?.type != "armor"
+                    ) {
+                        postInChatTemplate(impossible_technique, message.target.token.combatant);
+                    }
+                    if (actorFeat(message?.target?.actor, "rippling-spin") && message?.item?.isMelee
+                        && canReachEnemy(message.token, message?.target?.token, message?.target?.actor)
+                        && hasEffect(message?.target?.actor, "stance-reflective-ripple-stance")
+                    ) {
+                        postInChatTemplate(rippling_spin, message.target.token.combatant);
+                    }
                 }
+
+                if (isTargetCharacter(message)) {
+                    const rr = message.rolls.at(0);
+                    let newR = calculateDegreeOfSuccess(message?.flags?.pf2e?.context?.dc?.value, rr._total - 2, rr.dice.at(0).total)
+
+                    if (rr.degreeOfSuccess != newR) {
+                        characterWithReaction()
+                            .filter(a=>a.actorId != message?.target?.actor._id)
+                            .filter(cc=>canReachEnemy(message?.target?.token, cc.token, cc.actor))
+                            .forEach(cc => {
+                                if (actorFeat(cc.actor, "guardians-deflection-fighter")) {
+                                    postInChatTemplate(guardians_deflection_fighter, cc);
+                                }
+                                if (actorFeat(cc.actor, "guardians-deflection-swashbuckler")) {
+                                    postInChatTemplate(guardians_deflection_swashbuckler, cc);
+                                }
+                            })
+                    }
+                }
+            }
+
+            //Hit by crit
+            if (criticalSuccessMessageOutcome(message)) {
+                if (hasReaction(message?.target?.token?.combatant)) {
+                    var vs = actorAction(message?.target?.actor, "vengeful-spite");
+                    if (vs) {
+                        postInChatTemplate(_uuid(vs), message.target?.token?.combatant);
+                    }
+                    if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && actorFeat(message?.target?.actor, "furious-vengeance")) {
+                        postInChatTemplate(furious_vengeance, message.target.token.combatant);
+                    }
+                    var cringe = actorFeat(message?.target?.actor, "cringe")
+                    if (cringe) {
+                        postInChatTemplate(_uuid(cringe), message.target.token.combatant);
+                    }
+                    if (adjacentEnemy(message.token, message?.target?.token, message?.target?.actor)) {
+                        if (message?.item?.isMelee || message?.item?.traits?.has("unarmed")) {
+                            if (message?.target?.actor?.system?.resources?.focus?.value > 0) {
+                                if (actorFeat(message?.target?.actor, "storm-retribution")) {
+                                    postInChatTemplate(storm_retribution, message.target.token.combatant);
+                                }
+                            }
+                        }
+                    }
+                }
+                if (hasReaction(message?.token?.combatant)) {
+                    if (actorFeat(message?.actor, "tangle-of-battle") && adjacentEnemy(message.target.token, message?.token)) {
+                        postInChatTemplate(tangle_of_battle, message.token.combatant);
+                    }
+                    if (actorFeat(message?.actor, "clever-gambit") && hasEffect(message?.target?.actor, "effect-recall-knowledge-identified")) {
+                        postInChatTemplate(clever_gambit, message.token.combatant);
+                    }
+                }
+            }
+        } else if (messageType(message, 'perception-check')) {
+            if (failureMessageOutcome(message)) {
+                if (hasReaction(message?.token?.combatant)) {
+                    if (actorFeat(message?.actor, "spiritual-guides")) {
+                        postInChatTemplate(spiritual_guides, message.token.combatant);
+                    }
+                }
+            }
+            if (message?.flags?.pf2e?.origin?.uuid) {
+                var origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
                 if (hasReaction(origin?.actor?.combatant)) {
                     if (successMessageOutcome(message)) {
                         if (actorFeat(origin?.actor, "convincing-illusion") && origin?.traits?.has("illusion")) {
@@ -1458,9 +1276,211 @@ export default function reactionHooks() {
                     }
                 }
             }
+        } else if (messageType(message, 'skill-check')) {
+            if (isTargetCharacter(message) && anySuccessMessageOutcome(message)) {
+                characterWithReaction()
+                .filter(a=>a.actorId != message?.target?.actor._id)
+                .forEach(cc => {
+                    if (message?.flags?.pf2e?.context?.options.find(bb=>bb=="action:grapple")) {
+                        if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15){
+                            if (actorAction(cc.actor, "liberating-step")) {
+                                postInChatTemplate(liberating_step, cc);
+                            }
+                        }
+                    }
+                })
+            }
 
-            handleHomebrewMessages(message)
+            if (hasReaction(message?.token?.combatant)) {
+                if (failureMessageOutcome(message)) {
+                    if (actorFeat(message?.actor, "spiritual-guides")) {
+                        postInChatTemplate(spiritual_guides, message.token.combatant);
+                    }
+                }
+                if (criticalFailureMessageOutcome(message)) {
+                    if (actorFeat(message?.actor, "squawk")
+                        && ["deception","diplomacy","intimidation"].some(a=>message.flags?.pf2e?.context?.domains?.includes(a))
+                        && !message?.target?.actor?.system?.traits?.value?.includes("tengu")
+                    ) {
+                        postInChatTemplate(squawk, message.token.combatant);
+                    }
+                }
+            }
+
+        } else if (messageType(message, 'damage-roll')) {
+            if (hasReaction(message.actor.combatant)) {
+                if (actorFeat(message.actor, "cleave") && message?.item?.isMelee) {
+                    if (message.target.actor.system.attributes.hp.value <= parseInt(message.content)) {
+
+                        var adjEnemies = game.combat.turns.filter(a => !isActorCharacter(a.actor))
+                        .filter(a=>a.actorId != message?.target?.actor._id)
+                        .filter(a=>adjacentEnemy(message.target.token, a.token))
+                        .filter(a=>a.actor.system.attributes.hp.value>0);
+
+                        if (adjEnemies.length > 0) {
+                            postInChatTemplate(cleave, message.actor.combatant);
+                        }
+                    }
+                }
+            }
+
+            if(hasReaction(message?.target?.token?.combatant, "shield-block")) {
+                var dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a=>a.damageType);
+                if (dTypes.filter(a=> a== "bludgeoning" || a == "piercing" || a== "slashing").length > 0) {
+                    if (actorFeat(message?.target?.actor, "shield-block") && hasEffect(message.target.actor, "effect-raise-a-shield")) {
+                        postInChatTemplate(shield_block, message.target.token.combatant, "shield-block");
+                    }
+                }
+            }
+            if(hasReaction(message?.target?.token?.combatant)) {
+                if (actorFeat(message?.target?.actor, "electric-counter") && hasEffect(message?.target?.actor, "stance-wild-winds-stance")) {
+                    postInChatTemplate(electric_counter, message?.target?.token?.combatant);
+                }
+                if (actorFeat(message?.target?.actor, "all-in-my-head") && !message?.item?.traits.has("death")) {
+                    postInChatTemplate(all_in_my_head, message.target.token.combatant);
+                }
+                if (actorFeat(message?.target?.actor,  "unexpected-shift")) {
+                    postInChatTemplate(unexpected_shift, message.target.token.combatant);
+                }
+
+                var dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a=>a.damageType);
+
+
+                if (dTypes.filter(a=> a== "sonic").length > 0) {
+                    if (actorFeat(message?.target?.actor, "resounding-finale")) {
+                        postInChatTemplate(resounding_finale, message.target.token.combatant);
+                    }
+                    if (actorFeat(message?.target?.actor, "reverberate") && message.item.type == "spell") {
+                        postInChatTemplate(reverberate, message.target.token.combatant);
+                    }
+                }
+
+                if (actorFeat(message?.target?.actor, "verdant-presence")) {
+                    postInChatTemplate(verdant_presence, message.target.token.combatant);
+                }
+                if (actorAction(message?.target?.actor, "amulets-abeyance") && hasEffect(message.actor, "effect-exploit-vulnerability")) {
+                    postInChatTemplate(amulets_abeyance, message?.target?.token?.combatant);
+                }
+
+                if (dTypes.filter(a=> a== "bludgeoning" || a == "piercing" || a== "slashing").length > 0) {
+                    if (actorFeat(message?.target?.actor, "sacrifice-armor")) {
+                        postInChatTemplate(sacrifice_armor, message.target.token.combatant);
+                    }
+                }
+
+                if (dTypes.filter(a=> ["acid", "cold", "electricity", "fire", 'poison'].includes(a)).length > 0) {
+                    if (actorFeat(message?.target?.actor, "reactive-transformation")) {
+                        postInChatTemplate(reactive_transformation, message.target.token.combatant);
+                    }
+                }
+
+                if (message?.item?.isMelee && actorFeat(message?.target?.actor, "embrace-the-pain")) {
+                    postInChatTemplate(embrace_the_pain, message.target.token.combatant);
+                }
+                if (adjacentEnemy(message.target.token, message.token)) {
+                    var rg = actorAction(message?.target?.actor, "reactive-gnaw");
+                    if (rg && message?.item?.system?.damage?.damageType == "slashing") {
+                        postInChatTemplate(_uuid(rg), message.target.token.combatant);
+                    }
+                    var rc = actorFeat(message?.target?.actor, "retaliatory-cleansing");
+                    if (rc) {
+                        if (actorHeldWeapon(message?.target?.actor).filter(a=>a.slug=="holy-water" || (a.weaponTraits.filter(b=>b.name == "bomb").length > 0 && a.weaponTraits.filter(b=>b.name == "positive").length > 0)).length > 0) {
+                            postInChatTemplate(retaliatory_cleansing, message.target.token.combatant);
+                        }
+                    }
+                //15 ft damage you
+                } else if (getEnemyDistance(message?.target.token, message.token) <= 15) {
+                    if (actorAction(message?.target?.actor, "iron-command")) {
+                        postInChatTemplate(iron_command, message.target.token.combatant);
+                    }
+                    if (actorAction(message?.target?.actor, "selfish-shield")) {
+                        postInChatTemplate(selfish_shield, message.target.token.combatant);
+                    }
+                    if (actorAction(message?.target?.actor, "destructive-vengeance")) {
+                        postInChatTemplate(destructive_vengeance, message.target.token.combatant);
+                    }
+                }
+            }
+            //ally damaged
+            (isActorCharacter(message?.target?.actor) ? characterWithReaction() : npcWithReaction())
+            .filter(a=>a.actorId != message?.target?.actor._id)
+            .forEach(cc => {
+                if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15) {
+                    if (actorAction(cc.actor, "glimpse-of-redemption")) {
+                        postTargetInChatTemplate(glimpse_of_redemption, cc);
+                    }
+                    if (actorAction(cc.actor, "liberating-step")) {
+                        postTargetInChatTemplate(liberating_step, cc);
+                    }
+                    if (actorAction(cc.actor, "retributive-strike")) {
+                        postTargetInChatTemplate(cc.actor.type == "npc" ? retributive_strike_npc: retributive_strike, cc);
+                    }
+                }
+                if (getEnemyDistance(message.target.token, cc.token) <= 15 && hasEffect(message.actor, "effect-exploit-vulnerability")) {
+                    if (actorAction(cc.actor, "amulets-abeyance")) {
+                        postTargetInChatTemplate(amulets_abeyance, cc);
+                    }
+                }
+                if (getEnemyDistance(message.target.token, cc.token) <= 30) {
+                    if (actorFeat(cc.actor, "denier-of-destruction")) {
+                        postTargetInChatTemplate(denier_of_destruction, cc);
+                    }
+                }
+            })
+        } else if (messageType(message, "saving-throw")) {
+            var origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
+            if (hasReaction(message?.token?.combatant)) {
+                if (actorFeat(message.actor, "charmed-life")) {
+                    if (message?.flags?.pf2e?.modifiers?.find(a=>a.slug=="charmed-life" && a.enabled)) {
+                        decreaseReaction(message.token.combatant)
+                        reactionWasUsedChat(charmed_life, message.token.combatant);
+                    }
+                }
+                if (anyFailureMessageOutcome(message)) {
+                    if (actorFeat(message.actor, "premonition-of-clarity") && origin?.traits?.has("mental")) {
+                        postInChatTemplate(premonition_of_clarity, message.token.combatant);
+                    }
+                    if (actorFeat(message.actor, "grit-and-tenacity")) {
+                        postInChatTemplate(grit_and_tenacity, message.token.combatant);
+                    }
+                    if (actorFeat(message?.actor, "emergency-targe") && message?.flags?.pf2e?.origin?.type  == 'spell') {
+                        postInChatTemplate(emergency_targe, message.token.combatant);
+                    }
+                }
+                if (criticalFailureMessageOutcome(message)) {
+                    if (actorSpell(message.actor, "schadenfreude")) {
+                        postInChatTemplate(schadenfreude, message.token.combatant)
+                    }
+                }
+
+                if (actorAction(message?.actor, "ring-bell")
+                        && getEnemyDistance(message.token, origin?.actor?.token)<=30
+                        && hasEffect(origin?.actor, "effect-exploit-vulnerability")) {
+                        postInChatTemplate(ring_bell, message?.actor?.combatant);
+                }
+
+            }
+            if (isActorCharacter(message?.actor)) {
+                characterWithReaction()
+                .filter(a=>a.actorId != message?.actor._id)
+                .forEach(cc => {
+                    if (actorAction(cc?.actor, "ring-bell")
+                        && getEnemyDistance(cc?.token, origin?.actor?.token)<=30
+                        && hasEffect(origin?.actor, "effect-exploit-vulnerability")) {
+                        postTargetInChatTemplate(ring_bell, cc);
+                    }
+                })
+            }
+            if (hasReaction(origin?.actor?.combatant)) {
+                if (successMessageOutcome(message)) {
+                    if (actorFeat(origin?.actor, "convincing-illusion") && origin?.traits?.has("illusion")) {
+                        postInChatTemplate(convincing_illusion, origin?.actor?.combatant);
+                    }
+                }
+            }
         }
+
+        handleHomebrewMessages(message)
     });
 
     function handleHomebrewTrigger(tr, message) {
@@ -1584,7 +1604,7 @@ export default function reactionHooks() {
                 res = res.concat(t);
             }
             if (tr.name == 'AllyTakeDamage' && messageType(message, 'damage-roll')) {
-                var t = filterByDistance(actorWithReactionForType(message?.target?.actor?.type)
+                var t = filterByDistance((isActorCharacter(message?.target?.actor) ? characterWithReaction() : npcWithReaction())
                 .filter(a=>a.actorId != message?.target?.actor._id), tr, message);
                 res = res.concat(t);
             }
@@ -1605,7 +1625,7 @@ export default function reactionHooks() {
                 && !message?.flags?.pf2e?.appliedDamage?.isHealing
                 && message.actor.system?.attributes?.hp?.value == 0) {
 
-                var t = filterByDistance(actorWithReactionForType(message?.actor?.type)
+                var t = filterByDistance((isActorCharacter(message?.target?.actor) ? characterWithReaction() : npcWithReaction())
                     .filter(a=>a.actorId != message?.actor?._id), tr, message);
                 res = res.concat(t);
             }

@@ -84,3 +84,4 @@
 83. Orc Ferocity
 84. Squawk!
 85. Unexpected Shift
+86. Counter Thought
