@@ -1284,7 +1284,7 @@ export default function reactionHooks() {
                     if (message?.flags?.pf2e?.context?.options.find(bb=>bb=="action:grapple")) {
                         if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15){
                             if (actorAction(cc.actor, "liberating-step")) {
-                                postInChatTemplate(liberating_step, cc);
+                                postTargetInChatTemplate(liberating_step, cc);
                             }
                         }
                     }
