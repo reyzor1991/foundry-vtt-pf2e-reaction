@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.23
+
+### New feature
+-   Add support NPC alliance - Party
+
 ## Version 0.2.21
 
 ### New feature

@@ -135,10 +135,10 @@ function updateInexhaustibleCountermoves(combatant) {
     if (!combatant) {
         return
     }
-    if (combatant.actor.type == "npc") {
-        setInexhaustibleCountermoves(game.combat.combatants.filter(a=>a.actor.type=="character"), 1)
+    if (isNPC(combatant.actor)) {
+        setInexhaustibleCountermoves(game.combat.combatants.filter(a=>isActorCharacter(a.actor)), 1)
     } else {
-        setInexhaustibleCountermoves(game.combat.combatants.filter(a=>a.actor.type=="character"), 0)
+        setInexhaustibleCountermoves(game.combat.combatants.filter(a=>isActorCharacter(a.actor)), 0)
     }
 }
 
@@ -203,7 +203,7 @@ function updateCombatantReactionState(combatant, newState, actionName=undefined)
             "flags.reaction-check.state": false
         });
     } else {
-        if (combatant.actor.type == "npc") {
+        if (isNPC(combatant.actor)) {
             if (actorAction(combatant.actor, "triple-opportunity")) {
                 combatant.update({
                     "flags.reaction-check.triple-opportunity": 2
@@ -253,7 +253,15 @@ function hasReachWeapon(actor) {
 }
 
 function isTargetCharacter(message) {
-    return "character" == message?.target?.actor?.type;
+    return isActorCharacter(message?.target?.actor);
+}
+
+function isActorCharacter(actor) {
+    return "character" == actor?.type || (actor?.type == "npc" && actor?.alliance == "party");
+}
+
+function isNPC(actor) {
+    return "npc" == actor?.type;
 }
 
 function _uuid(obj) {
@@ -303,11 +311,11 @@ function hasReaction(combatant, actionName=undefined) {
 }
 
 function characterWithReaction() {
-    return actorWithReactionForType("character");
+    return game.combat.turns.filter(a => isActorCharacter(a.actor)).filter(a=>hasReaction(a));
 }
 
 function npcWithReaction() {
-    return actorWithReactionForType("npc");
+    return game.combat.turns.filter(a => !isActorCharacter(a.actor)).filter(a=>hasReaction(a));
 }
 
 function actorWithReactionForType(type) {
@@ -349,7 +357,7 @@ function heldItems(actor, item, trait=undefined) {
 
 function canReachEnemy(attackerToken, defendToken, defendActor, specificWeapon=undefined) {
     var distance = getEnemyDistance(attackerToken, defendToken);
-    if (defendActor.type == "npc") {
+    if (isNPC(defendActor)) {
         let baseWeapons = defendActor?.system?.actions
             .filter(a=>a.ready);
 
@@ -466,14 +474,14 @@ async function postInChatTemplate(uuid, combatant, actionName=undefined, skipDea
     }
 }
 
-function checkCombatantTriggerAttackOfOpportunity(actorType, actorId, token) {
-    var filteredType = ((actorType  == "npc") ? 'character' : 'npc')
-    game?.combats?.active?.combatants
-        .filter((c=>c.actorId != actorId && c.actor.type == filteredType && hasReaction(c, "attack-of-opportunity")))
+function checkCombatantTriggerAttackOfOpportunity(actor, actorId, token) {
+    (isActorCharacter(actor) ? npcWithReaction() : characterWithReaction())
+        .filter(c=>c.actorId != actorId)
+        .filter(c=> hasReaction(c, "attack-of-opportunity"))
         .filter((cc=>actorAction(cc.actor, "attack-of-opportunity") || actorFeat(cc.actor, "attack-of-opportunity")))
         .forEach(cc => {
             let specificWeapon=undefined
-            if (filteredType == "npc") {
+            if (isNPC(cc.actor)) {
                 let aoo = actorAction(cc.actor, "attack-of-opportunity");
                 if (aoo) {
                     let match = aoo.name.match('\(([A-Za-z]{1,}) Only\)')
@@ -489,7 +497,7 @@ function checkCombatantTriggerAttackOfOpportunity(actorType, actorId, token) {
 }
 
 function checkRingmasterIntroduction(combatant) {
-    if (combatant?.actor?.type == "character") {
+    if (isActorCharacter(combatant?.actor)) {
         characterWithReaction()
             .filter(a=>a.tokenId != combatant.tokenId)
             .filter(a=>hasReaction(a))
@@ -533,7 +541,7 @@ function hasOption(message, opt) {
 }
 
 function checkCourageousOpportunity(message) {
-    ("character" == message.actor?.type ? npcWithReaction() : characterWithReaction())
+    (isActorCharacter(message.actor) ? npcWithReaction() : characterWithReaction())
         .filter(a=>actorFeat(a.actor, "courageous-opportunity"))
         .filter(cc=>canReachEnemy(message.token, cc.token, cc.actor))
         .filter(a=>hasEffect(a.actor, "spell-effect-inspire-courage"))
@@ -555,7 +563,7 @@ function messageWithAnyTrait(message, traits) {
 }
 
 function checkImplementsInterruption(message) {
-    if ("npc" == message.actor?.type && hasEffect(message.actor, "effect-exploit-vulnerability")) {
+    if (!isActorCharacter(message.actor) && hasEffect(message.actor, "effect-exploit-vulnerability")) {
         characterWithReaction()
         .filter(a=>actorAction(a.actor, "implements-interruption"))
         .filter(cc=>canReachEnemy(message.token, cc.token, cc.actor))
@@ -686,7 +694,7 @@ export default function reactionHooks() {
     Hooks.on('combatTurn', async (combat, updateData, updateOptions) => {
         updateCombatantReactionState(combat.nextCombatant, true);
         updateInexhaustibleCountermoves(combat.nextCombatant);
-        if (combat.nextCombatant?.actor?.type == "character") {
+        if (isActorCharacter(combat.nextCombatant?.actor)) {
             npcWithReaction()
                 .forEach(cc => {
                     var pg = actorAction(cc.actor, "petrifying-glance")
@@ -707,7 +715,7 @@ export default function reactionHooks() {
         let _combatant = combat.turns[0];
         updateCombatantReactionState(_combatant, true);
         updateInexhaustibleCountermoves(_combatant);
-        if (_combatant?.actor?.type == "character") {
+        if (isActorCharacter(_combatant?.actor)) {
             npcWithReaction()
                 .forEach(cc => {
                     var pg = actorAction(cc.actor, "petrifying-glance")
@@ -746,7 +754,7 @@ export default function reactionHooks() {
     });
 
     Hooks.on("renderActorSheet", (sheet, html, data)=>{
-        if (game.user?.isGM && sheet.actor?.type === "npc" && sheet.token && Settings.recallKnowledge) {
+        if (game.user?.isGM && isNPC(sheet.actor) && sheet.token && Settings.recallKnowledge) {
             var recalls = html.find(".recall-knowledge .section-body .identification-skills")
             if (recalls.length == 0) {
                 return;
@@ -785,9 +793,9 @@ export default function reactionHooks() {
     });
 
     Hooks.on('createItem', (effect, data, id) => {
-        if ("effect-raise-a-shield" == effect.slug && effect.actor.type ==  "character") {
+        if ("effect-raise-a-shield" == effect.slug && isActorCharacter(effect.actor)) {
             var currCom = game.combat.turns.find(a=>a.actorId == effect.actor.id);
-            var withShield = game.combat.turns.filter(a => a.actor.type == "character")
+            var withShield = game.combat.turns.filter(a => isActorCharacter(a.actor))
                 .filter(a=>hasEffect(a.actor, "effect-raise-a-shield"));
             if (hasReaction(currCom) && actorFeat(currCom.actor, "shield-wall")) {
                 var adjacent = withShield
@@ -807,8 +815,8 @@ export default function reactionHooks() {
 
     Hooks.on('preUpdateToken', (tokenDoc, data, deep, id) => {
         if (game?.combats?.active && (data.x > 0 || data.y > 0)) {
-            checkCombatantTriggerAttackOfOpportunity(tokenDoc.actor?.type, tokenDoc.actorId, tokenDoc);
-            if (tokenDoc.actor.type == "npc") {
+            checkCombatantTriggerAttackOfOpportunity(tokenDoc.actor, tokenDoc.actorId, tokenDoc);
+            if (!isActorCharacter(tokenDoc.actor)) {
                 characterWithReaction()
                     .filter(a=>a.tokenId != tokenDoc._id)
                     .filter(a=>actorFeat(a.actor, "no-escape"))
@@ -882,7 +890,7 @@ export default function reactionHooks() {
                         }
                     }
                     // ally
-                    if ("character" == message?.actor?.type) {
+                    if (isActorCharacter(message?.actor)) {
                         characterWithReaction()
                         .filter(a=>a.actorId != message?.actor?._id)
                         .filter(a=>actorFeat(a.actor, "rapid-response"))
@@ -902,7 +910,7 @@ export default function reactionHooks() {
                 }
             }
 
-            if ("npc" == message?.actor?.type && messageWithTrait(message, "concentrate")) {
+            if (!isActorCharacter(message?.actor) && messageWithTrait(message, "concentrate")) {
                 characterWithReaction()
                     .filter(a=>actorFeat(a.actor, "distracting-explosion"))
                     .forEach(cc => {
@@ -923,7 +931,7 @@ export default function reactionHooks() {
                 (messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll"))
                 || (message?.item?.type == 'action' && messageWithAnyTrait(message, ["manipulate","move"]))
             ) {
-                checkCombatantTriggerAttackOfOpportunity(message.actor?.type, message.actor._id, message.token);
+                checkCombatantTriggerAttackOfOpportunity(message.actor, message.actor._id, message.token);
                 checkCourageousOpportunity(message);
 
                 if (message?.item?.type == 'action' && messageWithAnyTrait(message, ["manipulate","move"])) {
@@ -942,19 +950,19 @@ export default function reactionHooks() {
             } else if (message?.flags?.pf2e?.origin?.type == 'spell' && !messageType(message, "saving-throw")) {
                 var origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
                 if (spellWithTrait(origin, "manipulate")) {
-                    checkCombatantTriggerAttackOfOpportunity(message.actor?.type, message.actor._id, message.token);
+                    checkCombatantTriggerAttackOfOpportunity(message.actor, message.actor._id, message.token);
                     checkImplementsInterruption(message);
                 }
             } else if (message?.flags?.pf2e?.origin?.type == 'action') {
                 var actId = message.flags?.pf2e?.origin?.uuid.split('.').slice(-1)[0]
                 if (game?.packs?.get("pf2e.actionspf2e")._source.find(a=>a._id==actId)?.system?.traits?.value.includes("manipulate")) {
-                    checkCombatantTriggerAttackOfOpportunity(message.actor?.type, message.actor._id, message.token);
+                    checkCombatantTriggerAttackOfOpportunity(message.actor, message.actor._id, message.token);
                     checkImplementsInterruption(message);
                 }
             }
 
             if (message?.flags?.pf2e?.casting || messageType(message, 'spell-cast')) {
-                ("character" == message?.actor?.type ? npcWithReaction() : characterWithReaction())
+                (isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction())
                     .forEach(cc => {
                         if (canReachEnemy(message.token, cc.token, cc.actor)) {
                             if (actorFeat(cc.actor, "mage-hunter")) {
@@ -962,7 +970,7 @@ export default function reactionHooks() {
                             }
                         }
                     })
-                if (message?.item && "character" == message?.actor?.type) {
+                if (message?.item && isActorCharacter(message?.actor)) {
                     if (!message?.item?.isCantrip) {
                         characterWithReaction()
                             .filter(a=>a.actorId != message?.actor?._id)
@@ -1283,7 +1291,7 @@ export default function reactionHooks() {
                     if (actorFeat(message.actor, "cleave") && message?.item?.isMelee) {
                         if (message.target.actor.system.attributes.hp.value <= parseInt(message.content)) {
 
-                            var adjEnemies = game.combat.turns.filter(a => a.actor.type == "npc")
+                            var adjEnemies = game.combat.turns.filter(a => !isActorCharacter(a.actor))
                             .filter(a=>a.actorId != message?.target?.actor._id)
                             .filter(a=>adjacentEnemy(message.target.token, a.token))
                             .filter(a=>a.actor.system.attributes.hp.value>0);
@@ -1431,7 +1439,7 @@ export default function reactionHooks() {
                     }
 
                 }
-                if ("character" == message?.actor?.type) {
+                if (isActorCharacter(message?.actor)) {
                     characterWithReaction()
                     .filter(a=>a.actorId != message?.actor._id)
                     .forEach(cc => {
@@ -1552,15 +1560,15 @@ export default function reactionHooks() {
 
         tt.forEach(tr => {
             if (tr.name == 'EnemyUseRangedAttack' && messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll")) {
-                var t = filterByDistance(("character" == message?.actor?.type ? npcWithReaction() : characterWithReaction()), tr, message);
+                var t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
                 res = res.concat(t);
             }
             if (tr.name == 'EnemyUseManipulateAction' && message?.item?.type == 'action' && message?.item?.system?.traits?.value.includes("manipulate")) {
-                var t = filterByDistance(("character" == message?.actor?.type ? npcWithReaction() : characterWithReaction()), tr, message);
+                var t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
                 res = res.concat(t);
             }
             if (tr.name == 'EnemyUseMoveAction' && message?.item?.type == 'action' && message?.item?.system?.traits?.value.includes("move")) {
-                var t = filterByDistance(("character" == message?.actor?.type ? npcWithReaction() : characterWithReaction()), tr, message);
+                var t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
                 res = res.concat(t);
             }
             if (tr.name == 'FailSavingThrow' && messageType(message, 'saving-throw') && anyFailureMessageOutcome(message)) {
@@ -1604,11 +1612,11 @@ export default function reactionHooks() {
             if (tr.name == 'EnemyUsesTrait'
                 && message?.item?.system?.traits?.value?.includes(tr.trait)) {
 
-                var t = filterByDistance(("character" == message.actor?.type ? npcWithReaction() : characterWithReaction()), tr, message);
+                var t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
                 res = res.concat(t);
             }
             if (tr.name == 'EnemyCastSpell' && (message?.flags?.pf2e?.casting || messageType(message, 'spell-cast'))) {
-                var t = filterByDistance(("character" == message.actor?.type ? npcWithReaction() : characterWithReaction()), tr, message);
+                var t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
                 res = res.concat(t);
             }
             if (tr.name == 'EnemyHitsActor' && messageType(message, 'attack-roll')) {
@@ -1632,7 +1640,7 @@ export default function reactionHooks() {
                 res = res.concat(t);
             }
             if (tr.name == 'CreatureAttacksAlly' && messageType(message, 'attack-roll')) {
-                var t = filterByDistance(("character" == message.actor?.type ? npcWithReaction() : characterWithReaction())
+                var t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction())
                     .filter(a=>a.actorId != message?.target?.actor._id), tr, message);
                 res = res.concat(t);
             }
@@ -1683,7 +1691,7 @@ export default function reactionHooks() {
     Hooks.on("targetToken", (_user, token, isTargeted, opts) => {
         if (Settings.notification && game?.combats?.active && isTargeted && hasReaction(token?.combatant)) {
             if (game.user.isGM || token.combatant.players.find(a=>a.id==game.user.id)) {
-                if (token?.actor?.type == "character") {
+                if (isActorCharacter(token?.actor)) {
                     var nd = actorFeat(token.actor, "nimble-dodge");
                     if (nd && !hasCondition(token.actor, "encumbered")) {
                         sendNotification(_user, token, nd);
