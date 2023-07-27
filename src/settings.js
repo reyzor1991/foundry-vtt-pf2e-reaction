@@ -1,5 +1,3 @@
-import ReactionHomebrewSettings from "./homebrew.js";
-
 export default class Settings {
     static get weaponRange() {
         return game.settings.get("pf2e-reaction", "weaponRange");

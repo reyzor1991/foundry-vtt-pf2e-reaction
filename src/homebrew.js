@@ -308,3 +308,242 @@ export default class ReactionHomebrewSettings extends FormApplication {
     }
 
 }
+
+
+async function handleHomebrewMessages(message) {
+    if (Settings.useHomebrew) {
+        Settings.homebrewReactions
+            .filter(a=>a.slug.length > 0 && a.uuid.length > 0 && a.triggers.length > 0)
+            .filter(a=>a.triggers.filter(a=> a.name != "None").length > 0)
+            .forEach(hr => {
+                var tt = hr.triggers.filter(a=> a.name != "None");
+                var requirements = hr.requirements.filter(a=> a.name != "None");
+                if (!messageRequirements(message, requirements)) {
+                    return;
+                }
+                if (tt.some(a=>handleHomebrewTrigger(a, message))) {
+                    combatantsForTriggers(tt, message)
+                        .filter(a=>actorFeat(a.actor, hr.slug) || actorAction(a.actor, hr.slug) || actorSpell(a.actor, hr.slug))
+                        .forEach(cc => {
+                            postInChatTemplate(_uuid(hr), cc, undefined, tt.find(a=>a.name=="YouHPZero") != undefined);
+                        })
+                }
+            })
+    }
+}
+
+function handleHomebrewTrigger(tr, message) {
+    if (tr.name == 'EnemyUseRangedAttack' && messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll")) {
+        return true;
+    }
+    if (tr.name == 'EnemyUseManipulateAction' && message?.item?.type == 'action' && message?.item?.system?.traits?.value.includes("manipulate")) {
+        return true;
+    }
+    if (tr.name == 'EnemyUseMoveAction' && message?.item?.type == 'action' && message?.item?.system?.traits?.value.includes("move")) {
+        return true;
+    }
+    if (tr.name == 'FailSavingThrow' && messageType(message, 'saving-throw') && anyFailureMessageOutcome(message)) {
+        return true;
+    }
+    if (tr.name == 'CriticalFailSavingThrow' && messageType(message, 'saving-throw') && criticalFailureMessageOutcome(message)) {
+        return true;
+    }
+    if (tr.name == 'CriticalHitCreature' && messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
+        return true;
+    }
+    if (tr.name == 'AllyTakeDamage' && messageType(message, 'damage-roll')) {
+        return true;
+    }
+    if (tr.name == 'ActorTakeDamage' && messageType(message, 'damage-roll')) {
+        return true;
+    }
+    if ((tr.name == 'YouHPZero' || tr.name == "AllyHPZero")
+        && message?.flags?.pf2e?.appliedDamage
+        && !message?.flags?.pf2e?.appliedDamage?.isHealing
+        && message.actor.system?.attributes?.hp?.value == 0) {
+        return true;
+    }
+    if (tr.name == 'EnemyUsesTrait'
+        && message?.item?.system?.traits?.value?.includes(tr.trait)) {
+        return true;
+    }
+    if (tr.name == 'EnemyCastSpell' && (message?.flags?.pf2e?.casting || messageType(message, 'spell-cast'))) {
+        return true;
+    }
+    if (tr.name == 'EnemyHitsActor' && messageType(message, 'attack-roll')) {
+        return true;
+    }
+    if (tr.name == 'EnemyCriticalFailHitsActor' && messageType(message, 'attack-roll') && criticalFailureMessageOutcome(message)) {
+        return true;
+    }
+    if (tr.name == 'EnemyCriticalHitsActor' && messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
+        return true;
+    }
+    if (tr.name == 'EnemyFailHitsActor' && messageType(message, 'attack-roll') && anyFailureMessageOutcome(message)) {
+        return true;
+    }
+    if (tr.name == 'ActorFailsHit' && messageType(message, 'attack-roll') && anyFailureMessageOutcome(message)) {
+        return true;
+    }
+    if (tr.name == 'CreatureAttacksAlly' && messageType(message, 'attack-roll')) {
+        return true;
+    }
+    if (tr.name == 'ActorFailsSkillCheck' && messageType(message, 'skill-check') && anyFailureMessageOutcome(message)) {
+        return true;
+    }
+    return false;
+}
+
+function filterByDistance(t, tr, message) {
+    var r = t;
+    if (tr.reach) {
+        r = r.filter(cc=>canReachEnemy(message.token, cc.token, cc.actor));
+    } else if (tr.adjacent) {
+        r = r.filter(a=>adjacentEnemy(message.token, a.token));
+    } else if (tr.reachValue > 0) {
+        r = r.filter(a=>getEnemyDistance(message.token, a.token) <= tr.reachValue);
+    }
+    return r;
+}
+
+function messageRequirements(message, requirements) {
+    return requirements.every(a=>{
+        if (a.name == 'TargetHasEffect' && hasEffect(message?.target?.actor, a.effect)) {
+            return true;
+        }
+        if (a.name == 'ActorHasEffect' && hasEffect(message?.actor, a.effect)) {
+            return true;
+        }
+        if (a.name == 'ActorHoldsItem' && heldItems(message?.actor, a.item, a.trait).length > 0) {
+            return true;
+        }
+        if (a.name == 'TargetHoldsItem' && heldItems(message?.target?.actor, a.item, a.trait).length > 0) {
+            return true;
+        }
+        return false;
+    })
+}
+
+function combatantsForTriggers(tt, message) {
+    var res = [];
+
+    tt.forEach(tr => {
+        if (tr.name == 'EnemyUseRangedAttack' && messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll")) {
+            var t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
+            res = res.concat(t);
+        }
+        if (tr.name == 'EnemyUseManipulateAction' && message?.item?.type == 'action' && message?.item?.system?.traits?.value.includes("manipulate")) {
+            var t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
+            res = res.concat(t);
+        }
+        if (tr.name == 'EnemyUseMoveAction' && message?.item?.type == 'action' && message?.item?.system?.traits?.value.includes("move")) {
+            var t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
+            res = res.concat(t);
+        }
+        if (tr.name == 'FailSavingThrow' && messageType(message, 'saving-throw') && anyFailureMessageOutcome(message)) {
+            var t = filterByDistance([message?.token?.combatant], tr, message);
+            res = res.concat(t);
+        }
+        if (tr.name == 'CriticalFailSavingThrow' && messageType(message, 'saving-throw') && criticalFailureMessageOutcome(message)) {
+            var t = filterByDistance([message?.token?.combatant], tr, message);
+            res = res.concat(t);
+        }
+        if (tr.name == 'CriticalHitCreature' && messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
+            var t = filterByDistance([message?.token?.combatant], tr, message);
+            res = res.concat(t);
+        }
+        if (tr.name == 'AllyTakeDamage' && messageType(message, 'damage-roll')) {
+            var t = filterByDistance((isActorCharacter(message?.target?.actor) ? characterWithReaction() : npcWithReaction())
+            .filter(a=>a.actorId != message?.target?.actor._id), tr, message);
+            res = res.concat(t);
+        }
+        if (tr.name == 'ActorTakeDamage' && messageType(message, 'damage-roll')) {
+            var t = filterByDistance([message?.target?.token?.combatant], tr, message);
+            res = res.concat(t);
+        }
+        if ((tr.name == 'YouHPZero')
+            && message?.flags?.pf2e?.appliedDamage
+            && !message?.flags?.pf2e?.appliedDamage?.isHealing
+            && message.actor.system?.attributes?.hp?.value == 0) {
+
+            var t = filterByDistance([message?.token?.combatant], tr, message);
+            res = res.concat(t);
+        }
+        if ((tr.name == "AllyHPZero")
+            && message?.flags?.pf2e?.appliedDamage
+            && !message?.flags?.pf2e?.appliedDamage?.isHealing
+            && message.actor.system?.attributes?.hp?.value == 0) {
+
+            var t = filterByDistance((isActorCharacter(message?.target?.actor) ? characterWithReaction() : npcWithReaction())
+                .filter(a=>a.actorId != message?.actor?._id), tr, message);
+            res = res.concat(t);
+        }
+        if (tr.name == 'EnemyUsesTrait'
+            && message?.item?.system?.traits?.value?.includes(tr.trait)) {
+
+            var t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
+            res = res.concat(t);
+        }
+        if (tr.name == 'EnemyCastSpell' && (message?.flags?.pf2e?.casting || messageType(message, 'spell-cast'))) {
+            var t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
+            res = res.concat(t);
+        }
+        if (tr.name == 'EnemyHitsActor' && messageType(message, 'attack-roll')) {
+            var t = filterByDistance([message?.target?.token?.combatant], tr, message);
+            res = res.concat(t);
+        }
+        if (tr.name == 'EnemyCriticalFailHitsActor' && messageType(message, 'attack-roll') && criticalFailureMessageOutcome(message)) {
+            var t = filterByDistance([message?.target?.token?.combatant], tr, message);
+            res = res.concat(t);
+        }
+        if (tr.name == 'EnemyCriticalHitsActor' && messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
+            var t = filterByDistance([message?.target?.token?.combatant], tr, message);
+            res = res.concat(t);
+        }
+        if (tr.name == 'EnemyFailHitsActor' && messageType(message, 'attack-roll') && anyFailureMessageOutcome(message)) {
+            var t = filterByDistance([message?.target?.token?.combatant], tr, message);
+            res = res.concat(t);
+        }
+        if (tr.name == 'ActorFailsHit' && messageType(message, 'attack-roll') && anyFailureMessageOutcome(message)) {
+            var t = filterByDistance([message?.token?.combatant], tr, message);
+            res = res.concat(t);
+        }
+        if (tr.name == 'CreatureAttacksAlly' && messageType(message, 'attack-roll')) {
+            var t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction())
+                .filter(a=>a.actorId != message?.target?.actor._id), tr, message);
+            res = res.concat(t);
+        }
+        if (tr.name == 'ActorFailsSkillCheck' && messageType(message, 'skill-check') && anyFailureMessageOutcome(message)) {
+            var t = filterByDistance([message?.token?.combatant], tr, message);
+            res = res.concat(t);
+        }
+    });
+    res = res.filter(a=>a!==null)
+    res = [...new Map(res.map(item =>[item['actorId'], item])).values()];
+
+    return res;
+}
+
+
+Hooks.on('preUpdateToken', (tokenDoc, data, deep, id) => {
+    if (game?.combats?.active && (data.x > 0 || data.y > 0)) {
+        handleHomebrewMessages({
+            'token': tokenDoc,
+            'item': {
+                'type': 'action',
+                'system': {
+                    'traits': {
+                        'value': ['move']
+                    }
+                }
+            },
+            'actor': {
+                'type': tokenDoc.actor?.type
+            }
+        })
+    }
+});
+
+Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
+    handleHomebrewMessages(message)
+});

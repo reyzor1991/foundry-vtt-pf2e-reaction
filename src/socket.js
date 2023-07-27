@@ -1,16 +1,14 @@
-export default var socketlibSocket = undefined;
+var socketlibSocket = undefined;
 
 async function deleteItem(id) {
-    let target = await fromUuid(id);
-    target.delete()
+    (await fromUuid(id)).delete()
 }
 
 async function updateItem(id, data) {
-    var _obj = await fromUuid(id);
-    _obj.update(data);
+    (await fromUuid(id)).update(data);
 }
 
-let setupSocket = () => {
+var setupSocket = () => {
   if (globalThis.socketlib) {
       socketlibSocket = globalThis.socketlib.registerModule("pf2e-reaction");
       socketlibSocket.register("deleteItem", deleteItem);
