@@ -1,92 +1,9 @@
 import Settings from "./settings.js";
 import socketlibSocket from "./socket.js";
 
-//const empty = "@UUID[]"
-const unexpected_shift = "@UUID[Compendium.pf2e.feats-srd.Item.AgR1OPBHDvwV5wKD]"
-const squawk = "@UUID[Compendium.pf2e.feats-srd.Item.CCmiEmS7ZgyQUfhn]"
-const orc_ferocity = "@UUID[Compendium.pf2e.feats-srd.Item.PlhPpdwIV0rIAJ8K]"
-const final_spite = "@UUID[Compendium.pf2e.actionspf2e.Item.jbmXxq56swDYw8hy]"
-const entitys_resurgence = "@UUID[Compendium.pf2e.actionspf2e.Item.5bCZGpp9yFHXDz1j]"
-const stand_still = "@UUID[Compendium.pf2e.feats-srd.Item.Mj1KTiAwwovm7K9f]"
-const impossible_technique = "@UUID[Compendium.pf2e.feats-srd.Item.srWsvDDdz77yieY1]"
-const rippling_spin = "@UUID[Compendium.pf2e.feats-srd.Item.9MiK0Lyro5dQgHij]"
-const electric_counter = "@UUID[Compendium.pf2e.feats-srd.Item.zfnZki2CxmZXdNBO]"
-const deflect_arrow = "@UUID[Compendium.pf2e.feats-srd.Item.sgaqlDFTVC7Ryurt]"
-const crane_flutter = "@UUID[Compendium.pf2e.feats-srd.Item.S14S52HjszTgIy4l]"
-const align_ki = "@UUID[Compendium.pf2e.feats-srd.Item.6iDd7CTzxkvMp6lB]"
-const suspect_of_opportunity = "@UUID[Compendium.pf2e.feats-srd.Item.Sc9clbAXe97vlzxM]"
-const foresee_danger = "@UUID[Compendium.pf2e.feats-srd.Item.pVDgiaqu1RbCOhuv]"
-const you_failed_to_account_for_this = "@UUID[Compendium.pf2e.feats-srd.Item.zBS1qFyIpFuCGhWW]"
-const negate_damage = "@UUID[Compendium.pf2e.feats-srd.Item.J8HLcsOkAcXfTxYy]"
-const everdistant_defense = "@UUID[Compendium.pf2e.feats-srd.Item.EP8kaXNmrMfxOFAf]"
-const reverberate = "@UUID[Compendium.pf2e.feats-srd.Item.ecV3Nljvs4FOBS27]"
-const resounding_finale = "@UUID[Compendium.pf2e.feats-srd.Item.lhSqWHXK1JShUabF]"
-const all_in_my_head = "@UUID[Compendium.pf2e.feats-srd.Item.wqAdzjRUOvTpKFKq]"
-const wounded_rage = "@UUID[Compendium.pf2e.feats-srd.Item.CLKlavik0540j5bl]"
-const cleave = "@UUID[Compendium.pf2e.feats-srd.Item.GE96a0UGPYM74qjI]"
-const shield_block = "@UUID[Compendium.pf2e.feats-srd.Item.jM72TjJ965jocBV8]"
-const schadenfreude = "@UUID[Compendium.pf2e.spells-srd.Item.8E97SA9KAWCNdXfO]"
-const clever_gambit = "@UUID[Compendium.pf2e.feats-srd.Item.D1o7GUraoFFzjaub]"
-const implements_interruption = "@UUID[Compendium.pf2e.actionspf2e.Item.dnaPJfA0CDLNrWcW]"
-const ring_bell = "@UUID[Compendium.pf2e.actionspf2e.Item.ublVm5gmCIm3eRdQ]"
-const amulets_abeyance = "@UUID[Compendium.pf2e.actionspf2e.Item.Or6RLXeoZkN8CLdi]"
-const convincing_illusion = "@UUID[Compendium.pf2e.feats-srd.Item.bSXcyu7ExWq9qUzG]"
-const scapegoat_parallel_self = "@UUID[Compendium.pf2e.feats-srd.Item.tBWSxVxrojRcEzJt]"
-const ruby_resurrection = "@UUID[Compendium.pf2e.feats-srd.Item.9Slu8lSOYnDtKsIb]"
-const spell_relay = "@UUID[Compendium.pf2e.feats-srd.Item.zwEaXGKqnlBTllfE]"
-const cheat_death = "@UUID[Compendium.pf2e.feats-srd.Item.D2KSVHPRlBEibrV8]"
-const twin_riposte = "@UUID[Compendium.pf2e.feats-srd.Item.GJIAecRq1bD2r8O0]"
-const guardians_deflection_swashbuckler = "@UUID[Compendium.pf2e.feats-srd.Item.YJIzE2RhGRGfbt9j]"
-const guardians_deflection_fighter = "@UUID[Compendium.pf2e.feats-srd.Item.JdCRxwgtdQkJ1Ha6]"
-const farabellus_flip = "@UUID[Compendium.pf2e.feats-srd.Item.PH5b61x3iJSKP3Xi]"
-const dueling_riposte = "@UUID[Compendium.pf2e.feats-srd.Item.mf2cdCRV8uowOMOm]"
-const verdant_presence = "@UUID[Compendium.pf2e.feats-srd.Item.Lbpm0OrQb4u2LVtj]"
-const storm_retribution = "@UUID[Compendium.pf2e.feats-srd.Item.F1DVDJRARfdb1Kjz]"
-const reactive_transformation = "@UUID[Compendium.pf2e.feats-srd.Item.4Q9Q41KLPYJMdV4b]"
-const fiery_retort = "@UUID[Compendium.pf2e.feats-srd.Item.6biVVoaqqUdQmQ37]"
-const courageous_opportunity = "@UUID[Compendium.pf2e.feats-srd.Item.nEmaHLsZEBru1Jjv]"
-const premonition_of_clarity = "@UUID[Compendium.pf2e.feats-srd.Item.2h8a6pKhXTXwpJjP]"
-const rapid_response = "@UUID[Compendium.pf2e.feats-srd.Item.OcBaEnGdDm6CuSnr]"
-const denier_of_destruction = "@UUID[Compendium.pf2e.feats-srd.Item.siegOEdEpevAJNFw]"
-const shield_wall = "@UUID[Compendium.pf2e.feats-srd.Item.QpRzvfWdj6YH9TyE]"
-const sacrifice_armor = "@UUID[Compendium.pf2e.feats-srd.Item.bYijGvCvCmJnW6aA]"
-const ringmasters_introduction = "@UUID[Compendium.pf2e.feats-srd.Item.OliKxFIqzky2o6vk]"
-const pirouette = "@UUID[Compendium.pf2e.feats-srd.Item.RlKGaxQWWLa7xJSc]"
-const accompany = "@UUID[Compendium.pf2e.feats-srd.Item.oTTddwzF9TPNkMyd]"
-const counter_thought = "@UUID[Compendium.pf2e.feats-srd.Item.QKC9iiR4Epj1Lyc7]"
-const spiritual_guides = "@UUID[Compendium.pf2e.feats-srd.Item.cEu8BUS41dlPyPGW]"
-const tangle_of_battle = "@UUID[Compendium.pf2e.feats-srd.Item.GLbl3qoWCvvjJr4S]"
-const mage_hunter = "@UUID[Compendium.pf2e.feats-srd.Item.mqLPCNdCSNyY7gyI]"
-const furious_vengeance = "@UUID[Compendium.pf2e.feats-srd.Item.Oyml3OGNy468z3XI]"
-const embrace_the_pain = "@UUID[Compendium.pf2e.feats-srd.Item.j20djiiuVwUf8MqL]"
-const opportune_riposte = "@UUID[Compendium.pf2e.actionspf2e.EfjoIuDmtUn4yiow]"
-const perfect_clarity = "@UUID[Compendium.pf2e.feats-srd.Item.JkQjKyzfhMWLr9Gs]"
-const opportune_riposte_action = "@UUID[Compendium.pf2e.actionspf2e.EfjoIuDmtUn4yiow]"
-const airy_step_action = "@UUID[Compendium.pf2e.actionspf2e.akmQzZoNhyfCKFpL]"
-const retaliatory_cleansing = "@UUID[Compendium.pf2e.feats-srd.Item.y7SYHv0DWkkwjT95]"
-const airy_step_feat = "@UUID[Compendium.pf2e.feats-srd.Item.hOD9de1ftfYRSEKn]"
-const nimble_dodge_action = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.wCnsRCHvtZkZTmO0]"
-const nimble_dodge_feat = "@UUID[Compendium.pf2e.feats-srd.Item.dNH8OHEvx3vI9NBQ]"
-const fast_swallow = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.IQtb58p4EaeUzTN1]"
-const retributive_strike_npc = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.IQtb58p4EaeUzTN1]"
-const retributive_strike = "@UUID[Compendium.pf2e.actionspf2e.Item.EAP98XaChJEbgKcK]"
-const ferocity = "@UUID[Compendium.pf2e.bestiary-ability-glossary-srd.N1kstYbHScxgUQtN]"
-const attack_of_opportunity = "@UUID[Compendium.pf2e.actionspf2e.KAVf7AmRnbCAHrkT]"
-const no_escape = "@UUID[Compendium.pf2e.feats-srd.Item.lT8XlX1Ig900BblS]"
-const glimpse_of_redemption = "@UUID[Compendium.pf2e.actionspf2e.tuZnRWHixLArvaIf]"
-const wicked_thorns = "@UUID[Compendium.pf2e.actionspf2e.ncdryKskPwHMgHFh]"
-const iron_command = "@UUID[Compendium.pf2e.actionspf2e.M8RCbthRhB4bxO9t]"
-const selfish_shield = "@UUID[Compendium.pf2e.actionspf2e.enQieRrITuEQZxx2]"
-const destructive_vengeance = "@UUID[Compendium.pf2e.actionspf2e.r5Uth6yvCoE4tr9z]"
-const liberating_step = "@UUID[Compendium.pf2e.actionspf2e.IX1VlVCL5sFTptEE]"
-const knights_retaliation = "@UUID[Compendium.pf2e.feats-srd.Item.jZy91ekcS9ZqmdEH]"
-const mirror_shield = "@UUID[Compendium.pf2e.feats-srd.Item.kQEIPYoKTt69yXxV]"
-const reactive_shield = "@UUID[Compendium.pf2e.feats-srd.Item.w8Ycgeq2zfyshtoS]"
-const charmed_life = "@UUID[Compendium.pf2e.feats-srd.Item.DkoxNw9tsFFXrfJY]"
-const hit_the_dirt = "@UUID[Compendium.pf2e.feats-srd.Item.6LFBPpPPJjDq07fg]"
-const grit_and_tenacity = "@UUID[Compendium.pf2e.feats-srd.Item.94PGauGdzrVARMLc]"
-const distracting_explosion = "@UUID[Compendium.pf2e.feats-srd.Item.XPTSCUoA8c4o9RgQ]"
-const emergency_targe = "@UUID[Compendium.pf2e.feats-srd.Item.uY03kVQBA81gbTj9]"
+const deflect_arrow = "Compendium.pf2e.feats-srd.Item.sgaqlDFTVC7Ryurt"
+const crane_flutter = "Compendium.pf2e.feats-srd.Item.S14S52HjszTgIy4l"
+const hit_the_dirt = "Compendium.pf2e.feats-srd.Item.6LFBPpPPJjDq07fg"
 
 const reactionWasUsedEffect = "Compendium.pf2e-reaction.reaction-effects.Item.Dvi4ewimR9t5723U"
 
@@ -267,7 +184,7 @@ function isNPC(actor) {
 }
 
 function _uuid(obj) {
-    return "@UUID["+obj.uuid+"]";
+    return obj.uuid;
 }
 
 function countAllReaction(combatant) {
@@ -485,8 +402,9 @@ function checkCombatantTriggerAttackOfOpportunity(actor, actorId, token) {
     (isActorCharacter(actor) ? npcWithReaction() : characterWithReaction())
         .filter(c=>c.actorId != actorId)
         .filter(c=> hasReaction(c, "attack-of-opportunity"))
-        .filter((cc=>actorAction(cc.actor, "attack-of-opportunity") || actorFeat(cc.actor, "attack-of-opportunity")))
         .forEach(cc => {
+            let aa = actorAction(cc.actor, "attack-of-opportunity") ?? actorFeat(cc.actor, "attack-of-opportunity");
+            if (!aa) {return}
             let specificWeapon=undefined
             if (isNPC(cc.actor)) {
                 let aoo = actorAction(cc.actor, "attack-of-opportunity");
@@ -498,7 +416,7 @@ function checkCombatantTriggerAttackOfOpportunity(actor, actorId, token) {
                 }
             }
             if (canReachEnemy(token, cc.token, cc.actor, specificWeapon)) {
-                postInChatTemplate(attack_of_opportunity, cc, "attack-of-opportunity");
+                postInChatTemplate(_uuid(aa), cc, "attack-of-opportunity");
             }
         })
 }
@@ -509,8 +427,9 @@ function checkRingmasterIntroduction(combatant) {
             .filter(a=>a.tokenId != combatant.tokenId)
             .filter(a=>hasReaction(a))
             .forEach(cc => {
-                if (actorFeat(cc.actor, "ringmasters-introduction")) {
-                    postInChatTemplate(ringmasters_introduction, cc);
+                let aa = actorFeat(cc.actor, "ringmasters-introduction");
+                if (aa) {
+                    postInChatTemplate(_uuid(aa), cc);
                 }
             })
     }
@@ -549,11 +468,13 @@ function hasOption(message, opt) {
 
 function checkCourageousOpportunity(message) {
     (isActorCharacter(message.actor) ? npcWithReaction() : characterWithReaction())
-        .filter(a=>actorFeat(a.actor, "courageous-opportunity"))
         .filter(cc=>canReachEnemy(message.token, cc.token, cc.actor))
         .filter(a=>hasEffect(a.actor, "spell-effect-inspire-courage"))
         .forEach(cc => {
-            postInChatTemplate(courageous_opportunity, cc);
+            let aa = actorFeat(cc.actor, "courageous-opportunity")
+            if (aa) {
+                postInChatTemplate(_uuid(aa), cc);
+            }
         });
 }
 
@@ -572,10 +493,11 @@ function messageWithAnyTrait(message, traits) {
 function checkImplementsInterruption(message) {
     if (!isActorCharacter(message.actor) && hasEffect(message.actor, "effect-exploit-vulnerability")) {
         characterWithReaction()
-        .filter(a=>actorAction(a.actor, "implements-interruption"))
         .filter(cc=>canReachEnemy(message.token, cc.token, cc.actor))
         .forEach(cc => {
-            postInChatTemplate(implements_interruption, cc);
+            let aa = actorAction(cc.actor, "implements-interruption");
+            if (!aa) {return}
+            postInChatTemplate(_uuid(aa), cc);
         });
     }
 }
@@ -685,10 +607,8 @@ export default function reactionHooks() {
                         }
                     }
                     if (Settings.postMessage && uuid) {
-                        let ii = uuid.replace("@UUID[", "").replace("]", "")
-
                         combatant.actor.itemTypes.action.concat(combatant.actor.itemTypes.feat)
-                        .find(a=>a.sourceId == ii)
+                        .find(a=>a.sourceId == uuid || a.uuid == uuid)
                         ?.toMessage()
                     }
                 }
@@ -723,8 +643,9 @@ export default function reactionHooks() {
         if (combat.round == 1) {
             checkRingmasterIntroduction(combat.nextCombatant)
         }
-        if (actorFeat(combat.nextCombatant?.actor, "scapegoat-parallel-self")) {
-            postInChatTemplate(scapegoat_parallel_self, combat.nextCombatant);
+        let aa = actorFeat(combat.nextCombatant?.actor, "scapegoat-parallel-self")
+        if (aa) {
+            postInChatTemplate(_uuid(aa), combat.nextCombatant);
         }
     });
 
@@ -741,8 +662,9 @@ export default function reactionHooks() {
                     }
                 })
         }
-        if (actorFeat(_combatant?.actor, "scapegoat-parallel-self")) {
-            postInChatTemplate(scapegoat_parallel_self, _combatant);
+        let aa = actorFeat(_combatant?.actor, "scapegoat-parallel-self")
+        if (aa) {
+            postInChatTemplate(_uuid, _combatant);
         }
     });
 
@@ -812,18 +734,22 @@ export default function reactionHooks() {
             var currCom = game.combat.turns.find(a=>a.actorId == effect.actor.id);
             var withShield = game.combat.turns.filter(a => isActorCharacter(a.actor))
                 .filter(a=>hasEffect(a.actor, "effect-raise-a-shield"));
-            if (hasReaction(currCom) && actorFeat(currCom.actor, "shield-wall")) {
+            let aa = actorFeat(currCom.actor, "shield-wall");
+            if (hasReaction(currCom) && aa) {
                 var adjacent = withShield
                 .filter(a=>adjacentEnemy(a.token, currCom.token));
                 if (adjacent.length > 1) {
-                    postInChatTemplate(shield_wall, currCom);
+                    postInChatTemplate(_uuid(aa), currCom);
                 }
             }
-            withShield.filter(a=>hasReaction(a) && actorFeat(a.actor, "shield-wall"))
+            withShield.filter(a=>hasReaction(a))
             .filter(a=>a.id != currCom.id)
             .filter(a=>adjacentEnemy(a.token, currCom.token))
             .forEach(cc => {
-                postInChatTemplate(shield_wall, cc);
+                let aa = actorFeat(a.actor, "shield-wall");
+                if (aa) {
+                    postInChatTemplate(_uuid(aa), cc);
+                }
             });
         }
     });
@@ -834,28 +760,30 @@ export default function reactionHooks() {
             if (!isActorCharacter(tokenDoc.actor)) {
                 characterWithReaction()
                     .filter(a=>a.tokenId != tokenDoc._id)
-                    .filter(a=>actorFeat(a.actor, "no-escape"))
                     .forEach(cc => {
-                        if (canReachEnemy(tokenDoc, cc.token, cc.actor)) {
-                            postInChatTemplate(no_escape, cc);
+                        let aa = actorFeat(cc.actor, "no-escape")
+                        if (aa && canReachEnemy(tokenDoc, cc.token, cc.actor)) {
+                            postInChatTemplate(_uuid(aa), cc);
                         }
                     });
                 characterWithReaction()
                     .filter(a=>a.tokenId != tokenDoc._id)
-                    .filter(a=>actorFeat(a.actor, "stand-still"))
                     .forEach(cc => {
+                        let aa = actorFeat(cc.actor, "stand-still");
+                        if (!aa) {return}
                         if (canReachEnemy(tokenDoc, cc.token, cc.actor)) {
-                            postInChatTemplate(stand_still, cc);
+                            postInChatTemplate(_uuid(aa), cc);
                         }
                     });
 
                 characterWithReaction()
-                    .filter(a=>actorFeat(a.actor, "everdistant-defense"))
                     .filter(a=>a.actor.auras.size > 0)
                     .forEach(cc => {
+                        let aa = actorFeat(cc.actor, "everdistant-defense");
+                        if (!aa) {return}
                         let radius = Math.max(...Array.from(cc.actor.auras.values()).map(a=>a.radius));
                         if (getEnemyDistance(tokenDoc, cc.token) <= radius) {
-                            postInChatTemplate(everdistant_defense, cc);
+                            postInChatTemplate(_uuid(aa), cc);
                         }
                     })
             }
@@ -885,41 +813,51 @@ export default function reactionHooks() {
         if (message?.flags?.pf2e?.appliedDamage && !message?.flags?.pf2e?.appliedDamage?.isHealing) {
             if (message.actor.system?.attributes?.hp?.value == 0) {
                 if (hasReaction(message?.token?.combatant)) {
-                    if (actorAction(message?.actor, "ferocity")) {
-                        postInChatTemplate(ferocity, message?.token?.combatant, undefined, true);
+                    let aa = actorAction(message?.actor, "ferocity");
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message?.token?.combatant, undefined, true);
                     }
-                    if (actorFeat(message?.actor, "orc-ferocity")) {
-                        postInChatTemplate(orc_ferocity, message?.token?.combatant, undefined, true);
+                    aa = actorFeat(message?.actor, "orc-ferocity");
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message?.token?.combatant, undefined, true);
                     }
-                    if (actorAction(message?.actor, "entitys-resurgence")) {
-                        postInChatTemplate(entitys_resurgence, message?.token?.combatant, undefined, true);
+                    aa = actorAction(message?.actor, "entitys-resurgence");
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message?.token?.combatant, undefined, true);
                     }
-                    if (actorAction(message?.actor, "final-spite")) {
-                        postInChatTemplate(final_spite, message?.token?.combatant, undefined, true);
+                    aa = actorAction(message?.actor, "final-spite");
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message?.token?.combatant, undefined, true);
                     }
-                    if (actorFeat(message?.actor, "cheat-death")) {
-                        postInChatTemplate(cheat_death, message?.token?.combatant, undefined, true);
+                    aa = actorFeat(message?.actor, "cheat-death")
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message?.token?.combatant, undefined, true);
                     }
-                    if (actorFeat(message?.actor, "ruby-resurrection")) {
-                        postInChatTemplate(ruby_resurrection, message?.token?.combatant, undefined, true);
+                    aa = actorFeat(message?.actor, "ruby-resurrection")
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message?.token?.combatant, undefined, true);
                     }
                 }
                 // ally
                 if (isActorCharacter(message?.actor)) {
                     characterWithReaction()
                     .filter(a=>a.actorId != message?.actor?._id)
-                    .filter(a=>actorFeat(a.actor, "rapid-response"))
                     .forEach(cc => {
-                        postInChatTemplate(rapid_response, cc);
+                        let aa = actorFeat(a.actor, "rapid-response");
+                        if (aa) {
+                            postInChatTemplate(_uuid(aa), cc);
+                        }
                     });
                 }
             } else {
                 if (hasReaction(message?.token?.combatant)) {
-                    if (actorFeat(message?.actor, "wounded-rage") && !hasCondition(message?.actor,"encumbered") && !hasEffect(message.actor, "effect-rage")) {
-                        postInChatTemplate(wounded_rage, message?.token?.combatant);
+                    let aa = actorFeat(message?.actor, "wounded-rage")
+                    if (aa && !hasCondition(message?.actor,"encumbered") && !hasEffect(message.actor, "effect-rage")) {
+                        postInChatTemplate(_uuid(aa), message?.token?.combatant);
                     }
-                    if (actorFeat(message?.actor, "negate-damage")) {
-                        postInChatTemplate(negate_damage, message?.token?.combatant);
+                    aa = actorFeat(message?.actor, "negate-damage")
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message?.token?.combatant);
                     }
                 }
             }
@@ -927,10 +865,10 @@ export default function reactionHooks() {
 
         if (!isActorCharacter(message?.actor) && messageWithTrait(message, "concentrate")) {
             characterWithReaction()
-                .filter(a=>actorFeat(a.actor, "distracting-explosion"))
                 .forEach(cc => {
-                    if (canReachEnemy(message.token, cc.token, cc.actor)) {
-                        postInChatTemplate(distracting_explosion, cc);
+                    let aa = actorFeat(cc.actor, "distracting-explosion");
+                    if (aa && canReachEnemy(message.token, cc.token, cc.actor)) {
+                        postInChatTemplate(_uuid(aa), cc);
                     }
                 });
         }
@@ -955,10 +893,11 @@ export default function reactionHooks() {
             if (message?.item?.type == 'action' && messageWithTrait(message, "move")) {
                 characterWithReaction()
                     .filter(a=>a.actorId != message?.actor?._id)
-                    .filter(a=>actorFeat(a.actor, "stand-still"))
                     .forEach(cc => {
+                        let aa = actorFeat(cc.actor, "stand-still");
+                        if (!aa) {return}
                         if (canReachEnemy(message?.token, cc.token, cc.actor)) {
-                            postInChatTemplate(stand_still, cc);
+                            postInChatTemplate(_uuid(aa), cc);
                         }
                     });
             }
@@ -980,14 +919,16 @@ export default function reactionHooks() {
             (isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction())
                 .forEach(cc => {
                     if (canReachEnemy(message.token, cc.token, cc.actor)) {
-                        if (actorFeat(cc.actor, "mage-hunter")) {
-                            postInChatTemplate(mage_hunter, cc);
+                        let aa = actorFeat(cc.actor, "mage-hunter")
+                        if (aa) {
+                            postInChatTemplate(_uuid(aa), cc);
                         }
                     }
 
                     if (getEnemyDistance(message.token, cc.token) <= 30) {
-                        if (actorFeat(cc.actor, "counter-thought") && spellWithTrait(message?.item, "mental")) {
-                            postInChatTemplate(counter_thought, cc);
+                        let aa = actorFeat(cc.actor, "counter-thought");
+                        if (aa && spellWithTrait(message?.item, "mental")) {
+                            postInChatTemplate(_uuid(aa), cc);
                         }
                     }
                 })
@@ -997,19 +938,22 @@ export default function reactionHooks() {
                         .filter(a=>a.actorId != message?.actor?._id)
                         .filter(a=>getEnemyDistance(message.token, a.token) <= 30)
                         .forEach(cc => {
-                            if (actorFeat(cc.actor, "accompany")) {
-                                postInChatTemplate(accompany, cc);
+                            let aa = actorFeat(cc.actor, "accompany")
+                            if (aa) {
+                                postInChatTemplate(_uuid(aa), cc);
                             }
                         })
                 }
 
                 if (hasReaction(message?.token?.combatant)) {
-                    if ( actorFeat(message?.actor, "verdant-presence") && message?.item?.system?.traditions.value.includes("primal")) {
-                        postInChatTemplate(verdant_presence, message?.token?.combatant);
+                    let aa = actorFeat(message?.actor, "verdant-presence");
+                    if ( aa && message?.item?.system?.traditions.value.includes("primal")) {
+                        postInChatTemplate(_uuid(aa), message?.token?.combatant);
                     }
 
-                    if (actorFeat(message?.actor, "align-ki") && messageWithTrait(message, "monk")) {
-                        postInChatTemplate(align_ki, message?.token?.combatant);
+                    aa = actorFeat(message?.actor, "align-ki");
+                    if (aa && messageWithTrait(message, "monk")) {
+                        postInChatTemplate(_uuid(aa), message?.token?.combatant);
                     }
                 }
 
@@ -1019,90 +963,109 @@ export default function reactionHooks() {
                 characterWithReaction()
                     .filter(a=>a.actorId != message?.actor?._id)
                     .filter(a=>getEnemyDistance(message.token, a.token) <= spellRange)
-                    .filter(a=>actorFeat(a.actor, "spell-relay"))
                     .forEach(cc => {
-                        postInChatTemplate(spell_relay, cc);
+                        let aa = actorFeat(cc.actor, "spell-relay");
+                        if (!aa) {return}
+                        postInChatTemplate(_uuid, cc);
                     })
 
             }
 
         } else if (messageType(message, "spell-attack-roll")) {
             if (hasReaction(message?.target?.token?.combatant)) {
-                if (criticalFailureMessageOutcome(message)) {
-                    if (actorFeat(message?.target?.actor, "mirror-shield")) {
-                        postInChatTemplate(mirror_shield, message?.target?.token?.combatant);
-                    }
-                }
-                if (actorAction(message?.target?.actor, "ring-bell")
+                let aa = actorAction(message?.target?.actor, "ring-bell");
+                if (aa
                         && getEnemyDistance(message.token, message.target.token)<=30
                         && hasEffect(message.actor, "effect-exploit-vulnerability")) {
-                        postInChatTemplate(ring_bell, message.target.token.combatant);
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant);
                 }
-                if (actorFeat(message?.target?.actor, "you-failed-to-account-for-this")) {
-                    postInChatTemplate(you_failed_to_account_for_this, message.target.token.combatant);
+                aa = actorFeat(message?.target?.actor, "you-failed-to-account-for-this");
+                if (aa) {
+                    postInChatTemplate(_uuid(aa), message.target.token.combatant);
                 }
-                if (actorFeat(message?.target?.actor, "foresee-danger")) {
-                    postInChatTemplate(foresee_danger, message.target.token.combatant);
+                aa = actorFeat(message?.target?.actor, "foresee-danger");
+                if (aa) {
+                    postInChatTemplate(_uuid(aa), message.target.token.combatant);
                 }
-                if (actorFeat(message?.target?.actor, "suspect-of-opportunity")) {
-                    postInChatTemplate(suspect_of_opportunity, message.target.token.combatant);
+                aa = actorFeat(message?.target?.actor, "suspect-of-opportunity");
+                if (aa) {
+                    postInChatTemplate(_uuid(aa), message.target.token.combatant);
+                }
+                if (criticalFailureMessageOutcome(message)) {
+                    aa = actorFeat(message?.target?.actor, "mirror-shield");
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message?.target?.token?.combatant);
+                    }
                 }
             }
             if (isTargetCharacter(message)) {
                 characterWithReaction()
                 .filter(a=>a.actorId != message?.target?.actor._id)
                 .forEach(cc => {
-                    if (actorAction(cc?.actor, "ring-bell")
+                    let aa = actorAction(cc?.actor, "ring-bell");
+                    if (aa
                         && getEnemyDistance(cc?.token, message.token)<=30
                         && hasEffect(message.actor, "effect-exploit-vulnerability")) {
-                        postInChatTemplate(ring_bell, cc);
+                        postInChatTemplate(_uuid(aa), cc);
                     }
                 })
             }
         } else if (messageType(message, 'attack-roll')) {
             if (hasReaction(message?.target?.token?.combatant)) {
                 if (isTargetCharacter(message)) {
-                    if (actorFeat(message?.target?.actor, "you-failed-to-account-for-this")) {
-                        postInChatTemplate(you_failed_to_account_for_this, message.target.token.combatant);
+                    let aa = actorFeat(message?.target?.actor, "you-failed-to-account-for-this");
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant);
                     }
-                    if (actorFeat(message?.target?.actor, "suspect-of-opportunity")) {
-                        postInChatTemplate(suspect_of_opportunity, message.target.token.combatant);
+                    aa = actorFeat(message?.target?.actor, "suspect-of-opportunity");
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant);
                     }
-                    if (actorFeat(message?.target?.actor, "foresee-danger")) {
-                        postInChatTemplate(foresee_danger, message.target.token.combatant);
+                    aa = actorFeat(message?.target?.actor, "foresee-danger")
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant);
                     }
-                    if (actorFeat(message?.target?.actor, "nimble-dodge") && !hasCondition(message?.target?.actor,"encumbered")) {
-                        postInChatTemplate(nimble_dodge_feat, message.target.token.combatant);
+                    aa = actorFeat(message?.target?.actor, "nimble-dodge")
+                    if (aa && !hasCondition(message?.target?.actor,"encumbered")) {
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant);
                     }
-                    if (actorFeat(message?.target?.actor, "airy-step")) {
-                        postInChatTemplate(airy_step_feat, message.target.token.combatant);
+                    aa = actorFeat(message?.target?.actor, "airy-step")
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant);
                     }
-                    if (actorFeat(message?.target?.actor, "farabellus-flip")) {
-                        postInChatTemplate(farabellus_flip, message.target.token.combatant);
+                    aa = actorFeat(message?.target?.actor, "farabellus-flip")
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant);
                     }
-                    if (actorFeat(message?.target?.actor, "reactive-shield") && !hasEffect(message?.target?.actor, "effect-raise-a-shield") && message?.item?.isMelee) {
-                        postInChatTemplate(reactive_shield, message.target.token.combatant);
+                    aa = actorFeat(message?.target?.actor, "reactive-shield")
+                    if (aa && !hasEffect(message?.target?.actor, "effect-raise-a-shield") && message?.item?.isMelee) {
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant);
                     }
-                    if (actorFeat(message?.target?.actor, "pirouette") && hasEffect(message?.target?.actor, "stance-masquerade-of-seasons-stance")) {
-                        postInChatTemplate(pirouette, message.target.token.combatant);
+                    aa = actorFeat(message?.target?.actor, "pirouette")
+                    if (aa && hasEffect(message?.target?.actor, "stance-masquerade-of-seasons-stance")) {
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant);
                     }
-                    if (actorFeat(message?.target?.actor, "fiery-retort") && adjacentEnemy(message.token, message.target.token)
+                    aa = actorFeat(message?.target?.actor, "fiery-retort")
+                    if (aa && adjacentEnemy(message.token, message.target.token)
                         && (message?.item?.isMelee|| message?.item?.traits?.has("unarmed"))) {
-                        postInChatTemplate(fiery_retort, message.target.token.combatant);
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant);
                     }
-                    if (actorFeat(message?.target?.actor, "knights-retaliation")
+                    aa = actorFeat(message?.target?.actor, "knights-retaliation")
+                    if (aa
                         && message?.actor?.system.traits.value.includes("undead")
                         && criticalFailureMessageOutcome(message)
                     ) {
-                        postInChatTemplate(knights_retaliation, message.target.token.combatant);
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant);
                     }
-                    if (actorAction(message?.target?.actor, "ring-bell")
+                    aa = actorAction(message?.target?.actor, "ring-bell")
+                    if (aa
                         && getEnemyDistance(message.token, message.target.token)<=30
                         && hasEffect(message.actor, "effect-exploit-vulnerability")) {
-                        postInChatTemplate(ring_bell, message.target.token.combatant);
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant);
                     }
-                    if (message?.target?.actor?.flags?.pf2e?.rollOptions?.ac?.['hit-the-dirt'] && hasOption(message, "ranged")) {
-                        postInChatTemplate(hit_the_dirt, message.target.token.combatant);
+                    if (hasOption(message, "hit-the-dirt") && hasOption(message, "item:ranged")) {
+                        decreaseReaction(message.target.token.combatant);
+                        reactionWasUsedChat(hit_the_dirt, message.target.token.combatant);
                     }
                     if (message?.item?.isMelee && message?.target?.actor?.flags?.pf2e?.rollOptions?.all?.['crane-flutter']) {
                         decreaseReaction(message.target.token.combatant);
@@ -1113,38 +1076,45 @@ export default function reactionHooks() {
                         reactionWasUsedChat(deflect_arrow, message.target.token.combatant);
                     }
                 } else {
-                    if (actorAction(message?.target?.actor, "nimble-dodge") && !hasCondition(message?.target?.actor,"encumbered")) {
-                        postInChatTemplate(nimble_dodge_action, message.target.token.combatant);
+                    let aa = actorAction(message?.target?.actor, "nimble-dodge");
+                    if (aa && !hasCondition(message?.target?.actor,"encumbered")) {
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant);
                     }
-                    if (actorAction(message?.target?.actor, "airy-step")) {
-                        postInChatTemplate(airy_step_action, message.target.token.combatant);
+                    aa = actorAction(message?.target?.actor, "airy-step")
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant);
                     }
                 }
             }
             if (criticalFailureMessageOutcome(message) && hasReaction(message?.target?.token?.combatant, "opportune-riposte")) {
                 if (isNPC(message.actor)) {
-                    if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && actorFeat(message?.target?.actor, "opportune-riposte")) {
-                        postInChatTemplate(opportune_riposte, message.target.token.combatant, "opportune-riposte");
+                    let aa = actorFeat(message?.target?.actor, "opportune-riposte");
+                    if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && aa) {
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant, "opportune-riposte");
                     }
                 } else {
-                    if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && actorAction(message?.target?.actor, "opportune-riposte")) {
-                        postInChatTemplate(opportune_riposte_action, message.target.token.combatant, "opportune-riposte");
+                    let aa = actorAction(message?.target?.actor, "opportune-riposte");
+                    if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && aa) {
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant, "opportune-riposte");
                     }
                 }
             }
             if (criticalFailureMessageOutcome(message) && hasReaction(message?.target?.token?.combatant)) {
-                if (actorFeat(message?.target?.actor, "dueling-riposte") && hasEffect(message.target.actor, "effect-dueling-parry")) {
-                    postInChatTemplate(dueling_riposte, message.target.token.combatant);
+                let aa = actorFeat(message?.target?.actor, "dueling-riposte")
+                if (aa && hasEffect(message.target.actor, "effect-dueling-parry")) {
+                    postInChatTemplate(_uuid(aa), message.target.token.combatant);
                 }
-                if (actorFeat(message?.target?.actor, "twin-riposte") && canReachEnemy(message.token, message?.target?.token, message?.target?.actor)
+                aa = actorFeat(message?.target?.actor, "twin-riposte")
+                if (aa && canReachEnemy(message.token, message?.target?.token, message?.target?.actor)
                     && (hasEffect(message.target.actor, "effect-twin-parry")||hasEffect(message.target.actor, "effect-twin-parry-parry-trait"))) {
-                    postInChatTemplate(twin_riposte, message.target.token.combatant);
+                    postInChatTemplate(_uuid(aa), message.target.token.combatant);
                 }
             }
             if (anyFailureMessageOutcome(message)) {
                 if (hasReaction(message?.token?.combatant)) {
-                    if (actorFeat(message?.actor, "perfect-clarity")) {
-                        postInChatTemplate(perfect_clarity, message?.token?.combatant);
+                    let aa = actorFeat(message?.actor, "perfect-clarity")
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message?.token?.combatant);
                     }
                 }
             }
@@ -1164,10 +1134,11 @@ export default function reactionHooks() {
                 characterWithReaction()
                 .filter(a=>a.actorId != message?.target?.actor._id)
                 .forEach(cc => {
-                    if (actorAction(cc?.actor, "ring-bell")
+                    let aa = actorAction(cc?.actor, "ring-bell")
+                    if (aa
                         && getEnemyDistance(cc?.token, message.token)<=30
                         && hasEffect(message.actor, "effect-exploit-vulnerability")) {
-                        postInChatTemplate(ring_bell, cc);
+                        postInChatTemplate(_uuid(aa), cc);
                     }
                 })
             }
@@ -1183,25 +1154,29 @@ export default function reactionHooks() {
                     }
                 }
                 if (hasReaction(message?.target?.token?.combatant)) {
-                    if (actorAction(message?.target?.actor, "wicked-thorns")) {
+                    let aa = actorAction(message?.target?.actor, "wicked-thorns");
+                    if (aa) {
                         if (message?.item?.traits.has("unarmed") || (message?.item?.isMelee && nonReach(message?.item?.traits))) {
-                            postInChatTemplate(wicked_thorns, message.target.token.combatant);
+                            postInChatTemplate(_uuid(aa), message.target.token.combatant);
                         }
                     }
-                    if (actorFeat(message?.target?.actor, "emergency-targe") && message?.item?.isMelee) {
-                        postInChatTemplate(emergency_targe, message.target.token.combatant);
+                    aa = actorFeat(message?.target?.actor, "emergency-targe");
+                    if (aa && message?.item?.isMelee) {
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant);
                     }
-                    if (actorFeat(message?.target?.actor, "impossible-technique")
+                    aa = actorFeat(message?.target?.actor, "impossible-technique");
+                    if (aa
                         && !hasCondition(message?.target?.actor, "fatigued")
                         && message?.target?.actor?.armorClass?.parent?.item?.type != "armor"
                     ) {
-                        postInChatTemplate(impossible_technique, message.target.token.combatant);
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant);
                     }
-                    if (actorFeat(message?.target?.actor, "rippling-spin") && message?.item?.isMelee
+                    aa = actorFeat(message?.target?.actor, "rippling-spin");
+                    if (aa && message?.item?.isMelee
                         && canReachEnemy(message.token, message?.target?.token, message?.target?.actor)
                         && hasEffect(message?.target?.actor, "stance-reflective-ripple-stance")
                     ) {
-                        postInChatTemplate(rippling_spin, message.target.token.combatant);
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant);
                     }
                 }
 
@@ -1214,11 +1189,13 @@ export default function reactionHooks() {
                             .filter(a=>a.actorId != message?.target?.actor._id)
                             .filter(cc=>canReachEnemy(message?.target?.token, cc.token, cc.actor))
                             .forEach(cc => {
-                                if (actorFeat(cc.actor, "guardians-deflection-fighter")) {
-                                    postInChatTemplate(guardians_deflection_fighter, cc);
+                                let aa = actorFeat(cc.actor, "guardians-deflection-fighter");
+                                if (aa) {
+                                    postInChatTemplate(_uuid(aa), cc);
                                 }
-                                if (actorFeat(cc.actor, "guardians-deflection-swashbuckler")) {
-                                    postInChatTemplate(guardians_deflection_swashbuckler, cc);
+                                aa = actorFeat(cc.actor, "guardians-deflection-swashbuckler")
+                                if (aa) {
+                                    postInChatTemplate(_uuid(aa), cc);
                                 }
                             })
                     }
@@ -1232,8 +1209,9 @@ export default function reactionHooks() {
                     if (vs) {
                         postInChatTemplate(_uuid(vs), message.target?.token?.combatant);
                     }
-                    if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && actorFeat(message?.target?.actor, "furious-vengeance")) {
-                        postInChatTemplate(furious_vengeance, message.target.token.combatant);
+                    vs = actorFeat(message?.target?.actor, "furious-vengeance")
+                    if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && vs) {
+                        postInChatTemplate(_uuid(vs), message.target.token.combatant);
                     }
                     var cringe = actorFeat(message?.target?.actor, "cringe")
                     if (cringe) {
@@ -1242,27 +1220,31 @@ export default function reactionHooks() {
                     if (adjacentEnemy(message.token, message?.target?.token, message?.target?.actor)) {
                         if (message?.item?.isMelee || message?.item?.traits?.has("unarmed")) {
                             if (message?.target?.actor?.system?.resources?.focus?.value > 0) {
-                                if (actorFeat(message?.target?.actor, "storm-retribution")) {
-                                    postInChatTemplate(storm_retribution, message.target.token.combatant);
+                                vs = actorFeat(message?.target?.actor, "storm-retribution")
+                                if (vs) {
+                                    postInChatTemplate(_uuid(vs), message.target.token.combatant);
                                 }
                             }
                         }
                     }
                 }
                 if (hasReaction(message?.token?.combatant)) {
-                    if (actorFeat(message?.actor, "tangle-of-battle") && adjacentEnemy(message.target.token, message?.token)) {
-                        postInChatTemplate(tangle_of_battle, message.token.combatant);
+                    let aa = actorFeat(message?.actor, "tangle-of-battle");
+                    if (aa && adjacentEnemy(message.target.token, message?.token)) {
+                        postInChatTemplate(_uuid(aa), message.token.combatant);
                     }
-                    if (actorFeat(message?.actor, "clever-gambit") && hasEffect(message?.target?.actor, "effect-recall-knowledge-identified")) {
-                        postInChatTemplate(clever_gambit, message.token.combatant);
+                    aa = actorFeat(message?.actor, "clever-gambit")
+                    if (aa && hasEffect(message?.target?.actor, "effect-recall-knowledge-identified")) {
+                        postInChatTemplate(_uuid(aa), message.token.combatant);
                     }
                 }
             }
         } else if (messageType(message, 'perception-check')) {
             if (failureMessageOutcome(message)) {
                 if (hasReaction(message?.token?.combatant)) {
-                    if (actorFeat(message?.actor, "spiritual-guides")) {
-                        postInChatTemplate(spiritual_guides, message.token.combatant);
+                    let aa = actorFeat(message?.actor, "spiritual-guides")
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message.token.combatant);
                     }
                 }
             }
@@ -1270,8 +1252,9 @@ export default function reactionHooks() {
                 var origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
                 if (hasReaction(origin?.actor?.combatant)) {
                     if (successMessageOutcome(message)) {
-                        if (actorFeat(origin?.actor, "convincing-illusion") && origin?.traits?.has("illusion")) {
-                            postInChatTemplate(convincing_illusion, origin?.actor?.combatant);
+                        let aa = actorFeat(origin?.actor, "convincing-illusion");
+                        if (aa && origin?.traits?.has("illusion")) {
+                            postInChatTemplate(_uuid(aa), origin?.actor?.combatant);
                         }
                     }
                 }
@@ -1283,8 +1266,9 @@ export default function reactionHooks() {
                 .forEach(cc => {
                     if (message?.flags?.pf2e?.context?.options.find(bb=>bb=="action:grapple")) {
                         if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15){
-                            if (actorAction(cc.actor, "liberating-step")) {
-                                postTargetInChatTemplate(liberating_step, cc);
+                            let aa = actorAction(cc.actor, "liberating-step")
+                            if (aa) {
+                                postTargetInChatTemplate(_uuid(aa), cc);
                             }
                         }
                     }
@@ -1293,23 +1277,26 @@ export default function reactionHooks() {
 
             if (hasReaction(message?.token?.combatant)) {
                 if (failureMessageOutcome(message)) {
-                    if (actorFeat(message?.actor, "spiritual-guides")) {
-                        postInChatTemplate(spiritual_guides, message.token.combatant);
+                    let aa = actorFeat(message?.actor, "spiritual-guides");
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message.token.combatant);
                     }
                 }
                 if (criticalFailureMessageOutcome(message)) {
-                    if (actorFeat(message?.actor, "squawk")
+                    let aa = actorFeat(message?.actor, "squawk")
+                    if (aa
                         && ["deception","diplomacy","intimidation"].some(a=>message.flags?.pf2e?.context?.domains?.includes(a))
                         && !message?.target?.actor?.system?.traits?.value?.includes("tengu")
                     ) {
-                        postInChatTemplate(squawk, message.token.combatant);
+                        postInChatTemplate(_uuid(aa), message.token.combatant);
                     }
                 }
             }
 
         } else if (messageType(message, 'damage-roll')) {
             if (hasReaction(message.actor.combatant)) {
-                if (actorFeat(message.actor, "cleave") && message?.item?.isMelee) {
+                let aa = actorFeat(message.actor, "cleave");
+                if (aa && message?.item?.isMelee) {
                     if (message.target.actor.system.attributes.hp.value <= parseInt(message.content)) {
 
                         var adjEnemies = game.combat.turns.filter(a => !isActorCharacter(a.actor))
@@ -1318,7 +1305,7 @@ export default function reactionHooks() {
                         .filter(a=>a.actor.system.attributes.hp.value>0);
 
                         if (adjEnemies.length > 0) {
-                            postInChatTemplate(cleave, message.actor.combatant);
+                            postInChatTemplate(_uuid(aa), message.actor.combatant);
                         }
                     }
                 }
@@ -1327,55 +1314,63 @@ export default function reactionHooks() {
             if(hasReaction(message?.target?.token?.combatant, "shield-block")) {
                 var dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a=>a.damageType);
                 if (dTypes.filter(a=> a== "bludgeoning" || a == "piercing" || a== "slashing").length > 0) {
-                    if (actorFeat(message?.target?.actor, "shield-block") && hasEffect(message.target.actor, "effect-raise-a-shield")) {
-                        postInChatTemplate(shield_block, message.target.token.combatant, "shield-block");
+                    let aa = actorFeat(message?.target?.actor, "shield-block");
+                    if (aa && hasEffect(message.target.actor, "effect-raise-a-shield")) {
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant, "shield-block");
                     }
                 }
             }
             if(hasReaction(message?.target?.token?.combatant)) {
-                if (actorFeat(message?.target?.actor, "electric-counter") && hasEffect(message?.target?.actor, "stance-wild-winds-stance")) {
-                    postInChatTemplate(electric_counter, message?.target?.token?.combatant);
+                let aa = actorFeat(message?.target?.actor, "electric-counter");
+                if (aa && hasEffect(message?.target?.actor, "stance-wild-winds-stance")) {
+                    postInChatTemplate(_uuid(aa), message?.target?.token?.combatant);
                 }
-                if (actorFeat(message?.target?.actor, "all-in-my-head") && !message?.item?.traits.has("death")) {
-                    postInChatTemplate(all_in_my_head, message.target.token.combatant);
+                aa = actorFeat(message?.target?.actor, "all-in-my-head");
+                if (aa && !message?.item?.traits.has("death")) {
+                    postInChatTemplate(_uuid(aa), message.target.token.combatant);
                 }
-                if (actorFeat(message?.target?.actor,  "unexpected-shift")) {
-                    postInChatTemplate(unexpected_shift, message.target.token.combatant);
+                aa = actorFeat(message?.target?.actor,  "unexpected-shift");
+                if (aa) {
+                    postInChatTemplate(_uuid(aa), message.target.token.combatant);
                 }
 
                 var dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a=>a.damageType);
-
-
                 if (dTypes.filter(a=> a== "sonic").length > 0) {
-                    if (actorFeat(message?.target?.actor, "resounding-finale")) {
-                        postInChatTemplate(resounding_finale, message.target.token.combatant);
+                    aa = actorFeat(message?.target?.actor, "resounding-finale");
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant);
                     }
-                    if (actorFeat(message?.target?.actor, "reverberate") && message.item.type == "spell") {
-                        postInChatTemplate(reverberate, message.target.token.combatant);
+                    aa = actorFeat(message?.target?.actor, "reverberate");
+                    if (aa && message.item.type == "spell") {
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant);
                     }
                 }
 
-                if (actorFeat(message?.target?.actor, "verdant-presence")) {
-                    postInChatTemplate(verdant_presence, message.target.token.combatant);
+                aa = actorFeat(message?.target?.actor, "verdant-presence");
+                if (aa) {
+                    postInChatTemplate(_uuid(aa), message.target.token.combatant);
                 }
-                if (actorAction(message?.target?.actor, "amulets-abeyance") && hasEffect(message.actor, "effect-exploit-vulnerability")) {
-                    postInChatTemplate(amulets_abeyance, message?.target?.token?.combatant);
+                aa = actorAction(message?.target?.actor, "amulets-abeyance");
+                if (aa && hasEffect(message.actor, "effect-exploit-vulnerability")) {
+                    postInChatTemplate(_uuid(aa), message?.target?.token?.combatant);
                 }
 
                 if (dTypes.filter(a=> a== "bludgeoning" || a == "piercing" || a== "slashing").length > 0) {
-                    if (actorFeat(message?.target?.actor, "sacrifice-armor")) {
-                        postInChatTemplate(sacrifice_armor, message.target.token.combatant);
+                    aa = actorFeat(message?.target?.actor, "sacrifice-armor");
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant);
                     }
                 }
 
                 if (dTypes.filter(a=> ["acid", "cold", "electricity", "fire", 'poison'].includes(a)).length > 0) {
-                    if (actorFeat(message?.target?.actor, "reactive-transformation")) {
-                        postInChatTemplate(reactive_transformation, message.target.token.combatant);
+                    aa = actorFeat(message?.target?.actor, "reactive-transformation");
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant);
                     }
                 }
-
-                if (message?.item?.isMelee && actorFeat(message?.target?.actor, "embrace-the-pain")) {
-                    postInChatTemplate(embrace_the_pain, message.target.token.combatant);
+                aa = actorFeat(message?.target?.actor, "embrace-the-pain");
+                if (message?.item?.isMelee && aa) {
+                    postInChatTemplate(_uuid(aa), message.target.token.combatant);
                 }
                 if (adjacentEnemy(message.target.token, message.token)) {
                     var rg = actorAction(message?.target?.actor, "reactive-gnaw");
@@ -1385,19 +1380,22 @@ export default function reactionHooks() {
                     var rc = actorFeat(message?.target?.actor, "retaliatory-cleansing");
                     if (rc) {
                         if (actorHeldWeapon(message?.target?.actor).filter(a=>a.slug=="holy-water" || (a.weaponTraits.filter(b=>b.name == "bomb").length > 0 && a.weaponTraits.filter(b=>b.name == "positive").length > 0)).length > 0) {
-                            postInChatTemplate(retaliatory_cleansing, message.target.token.combatant);
+                            postInChatTemplate(_uuid(rc), message.target.token.combatant);
                         }
                     }
                 //15 ft damage you
                 } else if (getEnemyDistance(message?.target.token, message.token) <= 15) {
-                    if (actorAction(message?.target?.actor, "iron-command")) {
-                        postInChatTemplate(iron_command, message.target.token.combatant);
+                    aa = actorAction(message?.target?.actor, "iron-command");
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant);
                     }
-                    if (actorAction(message?.target?.actor, "selfish-shield")) {
-                        postInChatTemplate(selfish_shield, message.target.token.combatant);
+                    aa = actorAction(message?.target?.actor, "selfish-shield");
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant);
                     }
-                    if (actorAction(message?.target?.actor, "destructive-vengeance")) {
-                        postInChatTemplate(destructive_vengeance, message.target.token.combatant);
+                    aa = actorAction(message?.target?.actor, "destructive-vengeance");
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message.target.token.combatant);
                     }
                 }
             }
@@ -1406,57 +1404,68 @@ export default function reactionHooks() {
             .filter(a=>a.actorId != message?.target?.actor._id)
             .forEach(cc => {
                 if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15) {
-                    if (actorAction(cc.actor, "glimpse-of-redemption")) {
-                        postTargetInChatTemplate(glimpse_of_redemption, cc);
+                    let aa = actorAction(cc.actor, "glimpse-of-redemption");
+                    if (aa) {
+                        postTargetInChatTemplate(_uuid(aa), cc);
                     }
-                    if (actorAction(cc.actor, "liberating-step")) {
-                        postTargetInChatTemplate(liberating_step, cc);
+                    aa = actorAction(cc.actor, "liberating-step");
+                    if (aa) {
+                        postTargetInChatTemplate(_uuid(aa), cc);
                     }
-                    if (actorAction(cc.actor, "retributive-strike")) {
-                        postTargetInChatTemplate(cc.actor.type == "npc" ? retributive_strike_npc: retributive_strike, cc);
+                    aa = actorAction(cc.actor, "retributive-strike");
+                    if (aa) {
+                        postTargetInChatTemplate(_uuid(aa), cc);
                     }
                 }
                 if (getEnemyDistance(message.target.token, cc.token) <= 15 && hasEffect(message.actor, "effect-exploit-vulnerability")) {
-                    if (actorAction(cc.actor, "amulets-abeyance")) {
-                        postTargetInChatTemplate(amulets_abeyance, cc);
+                    let aab = actorAction(cc.actor, "amulets-abeyance");
+                    if (aab) {
+                        postTargetInChatTemplate(_uuid(aab), cc);
                     }
                 }
                 if (getEnemyDistance(message.target.token, cc.token) <= 30) {
-                    if (actorFeat(cc.actor, "denier-of-destruction")) {
-                        postTargetInChatTemplate(denier_of_destruction, cc);
+                    let dod = actorAction(cc.actor, "denier-of-destruction");
+                    if (dod) {
+                        postTargetInChatTemplate(_uuid(dod), cc);
                     }
                 }
             })
         } else if (messageType(message, "saving-throw")) {
             var origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
             if (hasReaction(message?.token?.combatant)) {
-                if (actorFeat(message.actor, "charmed-life")) {
+                let aa = actorFeat(message.actor, "charmed-life");
+                if (aa) {
                     if (message?.flags?.pf2e?.modifiers?.find(a=>a.slug=="charmed-life" && a.enabled)) {
                         decreaseReaction(message.token.combatant)
-                        reactionWasUsedChat(charmed_life, message.token.combatant);
+                        reactionWasUsedChat(_uuid(aa), message.token.combatant);
                     }
                 }
                 if (anyFailureMessageOutcome(message)) {
-                    if (actorFeat(message.actor, "premonition-of-clarity") && origin?.traits?.has("mental")) {
-                        postInChatTemplate(premonition_of_clarity, message.token.combatant);
+                    aa = actorFeat(message.actor, "premonition-of-clarity")
+                    if (aa && origin?.traits?.has("mental")) {
+                        postInChatTemplate(_uuid(aa), message.token.combatant);
                     }
-                    if (actorFeat(message.actor, "grit-and-tenacity")) {
-                        postInChatTemplate(grit_and_tenacity, message.token.combatant);
+                    aa = actorFeat(message.actor, "grit-and-tenacity");
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message.token.combatant);
                     }
-                    if (actorFeat(message?.actor, "emergency-targe") && message?.flags?.pf2e?.origin?.type  == 'spell') {
-                        postInChatTemplate(emergency_targe, message.token.combatant);
+                    aa = actorFeat(message?.actor, "emergency-targe")
+                    if (aa && message?.flags?.pf2e?.origin?.type  == 'spell') {
+                        postInChatTemplate(_uuid(aa), message.token.combatant);
                     }
                 }
                 if (criticalFailureMessageOutcome(message)) {
-                    if (actorSpell(message.actor, "schadenfreude")) {
-                        postInChatTemplate(schadenfreude, message.token.combatant)
+                    aa = actorSpell(message.actor, "schadenfreude");
+                    if (aa) {
+                        postInChatTemplate(_uuid(aa), message.token.combatant)
                     }
                 }
 
-                if (actorAction(message?.actor, "ring-bell")
+                aa = actorAction(message?.actor, "ring-bell")
+                if (aa
                         && getEnemyDistance(message.token, origin?.actor?.token)<=30
                         && hasEffect(origin?.actor, "effect-exploit-vulnerability")) {
-                        postInChatTemplate(ring_bell, message?.actor?.combatant);
+                        postInChatTemplate(_uuid(aa), message?.actor?.combatant);
                 }
 
             }
@@ -1464,17 +1473,20 @@ export default function reactionHooks() {
                 characterWithReaction()
                 .filter(a=>a.actorId != message?.actor._id)
                 .forEach(cc => {
-                    if (actorAction(cc?.actor, "ring-bell")
+                    let rb = actorAction(cc?.actor, "ring-bell")
+                    if (rb
                         && getEnemyDistance(cc?.token, origin?.actor?.token)<=30
-                        && hasEffect(origin?.actor, "effect-exploit-vulnerability")) {
-                        postTargetInChatTemplate(ring_bell, cc);
+                        && hasEffect(origin?.actor, "effect-exploit-vulnerability")
+                    ) {
+                        postTargetInChatTemplate(_uuid(rb), cc);
                     }
                 })
             }
             if (hasReaction(origin?.actor?.combatant)) {
                 if (successMessageOutcome(message)) {
-                    if (actorFeat(origin?.actor, "convincing-illusion") && origin?.traits?.has("illusion")) {
-                        postInChatTemplate(convincing_illusion, origin?.actor?.combatant);
+                    let aa = actorFeat(origin?.actor, "convincing-illusion");
+                    if (aa && origin?.traits?.has("illusion")) {
+                        postInChatTemplate(_uuid(aa), origin?.actor?.combatant);
                     }
                 }
             }
@@ -1735,7 +1747,6 @@ export default function reactionHooks() {
 
                     characterWithReaction()
                     .filter(a=>a.tokenId != token.id)
-                    .filter(a=>actorFeat(a.actor, "everdistant-defense"))
                     .filter(a=>a.actor.auras.size > 0)
                     .forEach(cc => {
                         let radius = Math.max(...Array.from(cc.actor.auras.values()).map(a=>a.radius));
