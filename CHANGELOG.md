@@ -8,7 +8,7 @@
 ## Version 0.2.25,26
 
 ### Bug fixes
--   Fix issue with enconter turn
+-   Fix issue with encounter turn
 
 ## Version 0.2.24
 
