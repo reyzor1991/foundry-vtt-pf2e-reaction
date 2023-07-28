@@ -1,3 +1,26 @@
+const identifySkills = new Map([
+    ["aberration", ["occultism"]],
+    ["animal", ["nature"]],
+    ["astral", ["occultism"]],
+    ["beast", ["arcana", "nature"]],
+    ["celestial", ["religion"]],
+    ["construct", ["arcana", "crafting"]],
+    ["dragon", ["arcana"]],
+    ["elemental", ["arcana", "nature"]],
+    ["ethereal", ["occultism"]],
+    ["fey", ["nature"]],
+    ["fiend", ["religion"]],
+    ["fungus", ["nature"]],
+    ["humanoid", ["society"]],
+    ["monitor", ["religion"]],
+    ["ooze", ["occultism"]],
+    ["plant", ["nature"]],
+    ["spirit", ["occultism"]],
+    ["undead", ["religion"]],
+]);
+
+const filteredTraits = ["evil", "chaotic", "neutral", "lawful", "good"]
+
 function addRecallButton(html, sheet, skill, dc, isLore=false) {
     var loc_skill= isLore? skill.replaceAll("-", " ").replaceAll(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()) :game.i18n.localize("PF2E.Skill"+skill.replace(/^\w/, (c) => c.toUpperCase()))
     var rec=game.i18n.localize("PF2E.RecallKnowledge.Label")

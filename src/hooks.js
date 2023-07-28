@@ -5,29 +5,6 @@ const hit_the_dirt = "Compendium.pf2e.feats-srd.Item.6LFBPpPPJjDq07fg"
 const reactionWasUsedEffect = "Compendium.pf2e-reaction.reaction-effects.Item.Dvi4ewimR9t5723U"
 const moduleName = 'pf2e-reaction';
 
-const identifySkills = new Map([
-    ["aberration", ["occultism"]],
-    ["animal", ["nature"]],
-    ["astral", ["occultism"]],
-    ["beast", ["arcana", "nature"]],
-    ["celestial", ["religion"]],
-    ["construct", ["arcana", "crafting"]],
-    ["dragon", ["arcana"]],
-    ["elemental", ["arcana", "nature"]],
-    ["ethereal", ["occultism"]],
-    ["fey", ["nature"]],
-    ["fiend", ["religion"]],
-    ["fungus", ["nature"]],
-    ["humanoid", ["society"]],
-    ["monitor", ["religion"]],
-    ["ooze", ["occultism"]],
-    ["plant", ["nature"]],
-    ["spirit", ["occultism"]],
-    ["undead", ["religion"]],
-]);
-
-const filteredTraits = ["evil", "chaotic", "neutral", "lawful", "good"]
-
 function adjustDegreeByDieValue(dieResult, degree) {
         if (dieResult === 20) {
             return degree + 1;
@@ -340,12 +317,18 @@ function checkCourageousOpportunity(message) {
         });
 }
 
+function hasLoadedFirearmOrCrossbow(actor) {
+    return actor.system?.actions?.filter(a=>a.ready).filter(a=>a?.item?.baseType?.includes("crossbow") || a?.item?.group == "firearm").filter(a=>a.item.ammo)
+}
+
 function spellWithTrait(spell, trait) {
     return spell?.traits?.has(trait) || spell?.castingTraits?.includes(trait)
 }
 
 function messageWithTrait(message, trait) {
-    return message?.item?.system?.traits?.value?.includes(trait) || message?.item?.castingTraits?.includes(trait)
+    return message?.item?.system?.traits?.value?.includes(trait)
+            || message?.item?.castingTraits?.includes(trait)
+            || message?.flags?.pf2e?.context?.traits?.find(a=>a.name==trait)
 }
 
 function messageWithAnyTrait(message, traits) {
@@ -903,6 +886,21 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
                     }
                 }
             })
+
+            characterWithReaction()
+            .filter(a=>a.actorId != message?.actor?._id)
+            .forEach(cc => {
+                var fake_out = actorFeat(cc?.actor, "fake-out");
+                if (fake_out) {
+                    var weapon = hasLoadedFirearmOrCrossbow(cc.actor);
+                    if (weapon.length > 0) {
+                        var range = Math.max(...weapon.map(a=>a.item.rangeIncrement))
+                        if (getEnemyDistance(cc?.token, message.target.token) <= range) {
+                            postInChatTemplate(_uuid(fake_out), cc);
+                        }
+                    }
+                }
+            })
         } else {
             characterWithReaction()
             .filter(a=>a.actorId != message?.target?.actor._id)
@@ -1033,19 +1031,38 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
             }
         }
     } else if (messageType(message, 'skill-check')) {
-        if (isTargetCharacter(message) && anySuccessMessageOutcome(message)) {
-            characterWithReaction()
-            .filter(a=>a.actorId != message?.target?.actor._id)
-            .forEach(cc => {
-                if (message?.flags?.pf2e?.context?.options.find(bb=>bb=="action:grapple")) {
-                    if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15){
-                        var liberating_step = actorAction(cc.actor, "liberating-step")
-                        if (liberating_step) {
-                            postTargetInChatTemplate(_uuid(liberating_step), cc);
+        if (isTargetCharacter(message)) {
+            if (anySuccessMessageOutcome(message)) {
+                characterWithReaction()
+                .filter(a=>a.actorId != message?.target?.actor._id)
+                .forEach(cc => {
+                    if (message?.flags?.pf2e?.context?.options.find(bb=>bb=="action:grapple")) {
+                        if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15){
+                            var liberating_step = actorAction(cc.actor, "liberating-step")
+                            if (liberating_step) {
+                                postTargetInChatTemplate(_uuid(liberating_step), cc);
+                            }
                         }
                     }
-                }
-            })
+                })
+            }
+        } else {
+            if (messageWithTrait(message, "attack")) {
+                characterWithReaction()
+                    .filter(a=>a.actorId != message?.actor?._id)
+                    .forEach(cc => {
+                        var fake_out = actorFeat(cc?.actor, "fake-out");
+                        if (fake_out) {
+                            var weapon = hasLoadedFirearmOrCrossbow(cc.actor);
+                            if (weapon.length > 0) {
+                                var range = Math.max(...weapon.map(a=>a.item.rangeIncrement))
+                                if (getEnemyDistance(cc?.token, message.target.token) <= range) {
+                                    postInChatTemplate(_uuid(fake_out), cc);
+                                }
+                            }
+                        }
+                    })
+            }
         }
 
         if (hasReaction(message?.token?.combatant)) {

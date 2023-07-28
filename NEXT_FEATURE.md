@@ -8,7 +8,6 @@
 - Inspiring Resilience
 - Premonition of Avoidance
 - Shield of Reckoning
-- Fake Out
 - Deflecting Shot
 - Redirecting Shot
 - No! No! I Created You!

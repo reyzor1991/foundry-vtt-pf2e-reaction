@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.27
+
+### New feature
+-   Add Fake Out reaction check
+
 ## Version 0.2.24
 
 ### New feature
