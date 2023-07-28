@@ -5,6 +5,11 @@
 ### New feature
 -   Add Fake Out reaction check
 
+## Version 0.2.25,26
+
+### Bug fixes
+-   Fix issue with enconter turn
+
 ## Version 0.2.24
 
 ### New feature
