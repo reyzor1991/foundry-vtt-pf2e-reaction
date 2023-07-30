@@ -314,7 +314,7 @@ function checkCourageousOpportunity(message) {
         .filter(a=>hasEffect(a.actor, "spell-effect-inspire-courage"))
         .forEach(cc => {
             const courageous_opportunity = actorFeat(cc.actor, "courageous-opportunity");
-            if (aa) {
+            if (courageous_opportunity) {
                 postInChatTemplate(_uuid(courageous_opportunity), cc);
             }
         });
@@ -616,7 +616,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
         } else {
             if (hasReaction(message?.token?.combatant)) {
                 const wounded_rage = actorFeat(message?.actor, "wounded-rage");
-                if (aa && !hasCondition(message?.actor,"encumbered") && !hasEffect(message.actor, "effect-rage")) {
+                if (wounded_rage && !hasCondition(message?.actor,"encumbered") && !hasEffect(message.actor, "effect-rage")) {
                     postInChatTemplate(_uuid(wounded_rage), message?.token?.combatant);
                 }
                 const negate_damage = actorFeat(message?.actor, "negate-damage");
@@ -1325,7 +1325,7 @@ Hooks.on("targetToken", (_user, token, isTargeted, opts) => {
                 if (rs && !hasEffect(token.actor, "effect-raise-a-shield")) {
                     sendNotification(_user, token, rs);
                 }
-                const rs = actorFeat(token.actor, "crane-flutter");
+                const cf = actorFeat(token.actor, "crane-flutter");
                 if (rs && hasEffect(token.actor, "stance-crane-stance")) {
                     sendNotification(_user, token, rs);
                 }
