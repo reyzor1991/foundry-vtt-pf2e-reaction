@@ -407,13 +407,15 @@ $(document).on('click', '.reaction-check', async function () {
                         'flags.pf2e-reaction.reactions': reactions - 1
                     };
 
-                    if (mes.permission === 3) {
+                    //Left == here, I *think* it's a bug. Should probably be ```mes.permission === "granted"```
+                    if (mes.permission == 3) {
                         await mes.update(data, { noHook: true})
                     } else {
                         socket.socketlibSocket._sendRequest("updateItem", [mes.uuid, data], 0)
                     }
                 } else {
-                    if (mes.permission === 3) {
+                    //Left == here, I *think* it's a bug. Should probably be ```mes.permission === "granted"```
+                    if (mes.permission == 3) {
                         mes.delete()
                     } else {
                         socket.socketlibSocket._sendRequest("deleteItem", [mes.uuid], 0)
