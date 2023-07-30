@@ -1205,36 +1205,38 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
             }
         }
         //ally damaged
-        (isActorCharacter(message?.target?.actor) ? characterWithReaction() : npcWithReaction())
-        .filter(a=>a.actorId !== message?.target?.actor._id)
-        .forEach(cc => {
-            if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15) {
-                const gor = actorAction(cc.actor, "glimpse-of-redemption");
-                if (gor) {
-                    postTargetInChatTemplate(_uuid(gor), cc);
+        if (message?.target) {
+            (isActorCharacter(message?.target?.actor) ? characterWithReaction() : npcWithReaction())
+            .filter(a=>a.actorId !== message?.target?.actor._id)
+            .forEach(cc => {
+                if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15) {
+                    const gor = actorAction(cc.actor, "glimpse-of-redemption");
+                    if (gor) {
+                        postTargetInChatTemplate(_uuid(gor), cc);
+                    }
+                    const liberatingstep = actorAction(cc.actor, "liberating-step");
+                    if (liberatingstep) {
+                        postTargetInChatTemplate(_uuid(liberatingstep), cc);
+                    }
+                    const retributivestrike = actorAction(cc.actor, "retributive-strike");
+                    if (retributivestrike) {
+                        postTargetInChatTemplate(_uuid(retributivestrike), cc);
+                    }
                 }
-                const liberatingstep = actorAction(cc.actor, "liberating-step");
-                if (liberatingstep) {
-                    postTargetInChatTemplate(_uuid(liberatingstep), cc);
+                if (getEnemyDistance(message.target.token, cc.token) <= 15 && hasExploitVulnerabilityEffect(message.actor)) {
+                    const aab = actorAction(cc.actor, "amulets-abeyance");
+                    if (aab) {
+                        postTargetInChatTemplate(_uuid(aab), cc);
+                    }
                 }
-                const retributivestrike = actorAction(cc.actor, "retributive-strike");
-                if (retributivestrike) {
-                    postTargetInChatTemplate(_uuid(retributivestrike), cc);
+                if (getEnemyDistance(message.target.token, cc.token) <= 30) {
+                    const dod = actorAction(cc.actor, "denier-of-destruction");
+                    if (dod) {
+                        postTargetInChatTemplate(_uuid(dod), cc);
+                    }
                 }
-            }
-            if (getEnemyDistance(message.target.token, cc.token) <= 15 && hasExploitVulnerabilityEffect(message.actor)) {
-                const aab = actorAction(cc.actor, "amulets-abeyance");
-                if (aab) {
-                    postTargetInChatTemplate(_uuid(aab), cc);
-                }
-            }
-            if (getEnemyDistance(message.target.token, cc.token) <= 30) {
-                const dod = actorAction(cc.actor, "denier-of-destruction");
-                if (dod) {
-                    postTargetInChatTemplate(_uuid(dod), cc);
-                }
-            }
-        })
+            })
+        }
     } else if (messageType(message, "saving-throw")) {
         const origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
         if (hasReaction(message?.token?.combatant)) {
