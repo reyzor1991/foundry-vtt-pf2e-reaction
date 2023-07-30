@@ -39,8 +39,8 @@ class HomebrewReactionRequirement {
   }
 
   static fromObj(obj) {
-    var h = new HomebrewReactionRequirement();
-    Object.assign(h, obj);
+      const h = new HomebrewReactionRequirement();
+      Object.assign(h, obj);
     h.choices = Requirement;
     return h;
   }
@@ -58,8 +58,8 @@ class HomebrewReactionTrigger {
   }
 
   static fromObj(obj) {
-    var h = new HomebrewReactionTrigger();
-    Object.assign(h, obj);
+      const h = new HomebrewReactionTrigger();
+      Object.assign(h, obj);
     h.choices = Trigger;
     return h;
   }
@@ -75,8 +75,8 @@ class HomebrewReaction {
   }
 
   static fromObj(obj) {
-    var h = new HomebrewReaction();
-    Object.assign(h, obj);
+      const h = new HomebrewReaction();
+      Object.assign(h, obj);
     h.triggers = h.triggers.map(a=>HomebrewReactionTrigger.fromObj(a));
     h.requirements = h.requirements.map(a=>HomebrewReactionRequirement.fromObj(a));
     return h;
@@ -92,7 +92,7 @@ export default class ReactionHomebrewSettings extends FormApplication {
     constructor(obj) {
 
         super();
-        var _e = game.settings.get("pf2e-reaction", "homebrewReactions");
+        const _e = game.settings.get("pf2e-reaction", "homebrewReactions");
         if (_e) {
             this.homebrewReactions = _e.map(a=>HomebrewReaction.fromObj(a));
             this.updateIndexes();
@@ -171,14 +171,14 @@ export default class ReactionHomebrewSettings extends FormApplication {
     async updateHomebrewReactions(key, value) {
         if (!key.startsWith("homebrewReaction."))return;
 
-        var hr_key = key.replace("homebrewReaction.", "");
-        var hr_key_parts = hr_key.split(".");
-        var hIdx = hr_key_parts[0];
-        var keyPart = hr_key_parts[1];
+        const hr_key = key.replace("homebrewReaction.", "");
+        const hr_key_parts = hr_key.split(".");
+        const hIdx = hr_key_parts[0];
+        const keyPart = hr_key_parts[1];
 
         if (keyPart == "triggers" || keyPart == "requirements") {
-            var trigIdx = hr_key_parts[2];
-            var trigField = hr_key_parts[3];
+            const trigIdx = hr_key_parts[2];
+            const trigField = hr_key_parts[3];
 
             this.homebrewReactions[hIdx][keyPart][trigIdx][trigField] = value;
         } else {
@@ -204,21 +204,21 @@ export default class ReactionHomebrewSettings extends FormApplication {
     }
 
     updateIndexes() {
-        for (var i=0; i < this.homebrewReactions.length; i++) {
+        for (let i=0; i < this.homebrewReactions.length; i++) {
             this.homebrewReactions[i].idx = i;
 
-            for (var j=0; j < this.homebrewReactions[i].triggers.length; j++) {
+            for (let j=0; j < this.homebrewReactions[i].triggers.length; j++) {
                 this.homebrewReactions[i].triggers[j].idx = j;
             }
-            for (var l=0; l < this.homebrewReactions[i].requirements.length; l++) {
+            for (let l=0; l < this.homebrewReactions[i].requirements.length; l++) {
                 this.homebrewReactions[i].requirements[l].idx = l;
             }
         }
     }
 
     rawValue() {
-        var res = [];
-        for (var i=0; i < this.homebrewReactions.length; i++) {
+        const res = [];
+        for (let i=0; i < this.homebrewReactions.length; i++) {
             res.push(
                 {
                     slug: this.homebrewReactions[i].slug,
@@ -274,14 +274,14 @@ export default class ReactionHomebrewSettings extends FormApplication {
         html.find('.add-reaction-trigger').click(async (event) => {
             this.updateForm(event);
 
-            var i = $(event.currentTarget).data().idx;
+            const i = $(event.currentTarget).data().idx;
             this.homebrewReactions[i].triggers.push(new HomebrewReactionTrigger(this.homebrewReactions[i].triggers.length));
             super.render()
         });
         html.find('.add-reaction-requirement').click(async (event) => {
             this.updateForm(event);
 
-            var i = $(event.currentTarget).data().idx;
+            const i = $(event.currentTarget).data().idx;
             this.homebrewReactions[i].requirements.push(new HomebrewReactionRequirement(this.homebrewReactions[i].requirements.length));
             super.render()
         });
@@ -316,8 +316,8 @@ async function handleHomebrewMessages(message) {
             .filter(a=>a.slug.length > 0 && a.uuid.length > 0 && a.triggers.length > 0)
             .filter(a=>a.triggers.filter(a=> a.name != "None").length > 0)
             .forEach(hr => {
-                var tt = hr.triggers.filter(a=> a.name != "None");
-                var requirements = hr.requirements.filter(a=> a.name != "None");
+                const tt = hr.triggers.filter(a => a.name != "None");
+                const requirements = hr.requirements.filter(a => a.name != "None");
                 if (!messageRequirements(message, requirements)) {
                     return;
                 }
@@ -395,7 +395,7 @@ function handleHomebrewTrigger(tr, message) {
 }
 
 function filterByDistance(t, tr, message) {
-    var r = t;
+    let r = t;
     if (tr.reach) {
         r = r.filter(cc=>canReachEnemy(message.token, cc.token, cc.actor));
     } else if (tr.adjacent) {
@@ -425,7 +425,7 @@ function messageRequirements(message, requirements) {
 }
 
 function combatantsForTriggers(tt, message) {
-    var res = [];
+    let res = [];
 
     tt.forEach(tr => {
         if (tr.name == 'EnemyUseRangedAttack' && messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll")) {

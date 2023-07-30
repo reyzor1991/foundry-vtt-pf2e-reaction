@@ -4,7 +4,7 @@ export function hasEffect(actor, eff) {
 
 export function heldItems(actor, item, trait=undefined) {
     if (!actor) return []
-    var items = Object.values(actor?.itemTypes).flat(1).filter(a=>a.handsHeld > 0).filter(a=>a.slug == item || a.category == item);
+    let items = Object.values(actor?.itemTypes).flat(1).filter(a => a.handsHeld > 0).filter(a => a.slug == item || a.category == item);
     if (trait && items.length>0) {
         items = items.filter(a=>a.traits.has(trait))
     }
@@ -43,10 +43,10 @@ export function hasOption(message, opt) {
 }
 
 export function canReachEnemy(attackerToken, defendToken, defendActor, specificWeapon=undefined) {
-    var distance = getEnemyDistance(attackerToken, defendToken);
+    const distance = getEnemyDistance(attackerToken, defendToken);
     if (isNPC(defendActor)) {
-        var baseWeapons = defendActor?.system?.actions
-            .filter(a=>a.ready);
+        let baseWeapons = defendActor?.system?.actions
+            .filter(a => a.ready);
 
         if (specificWeapon) {
             specificWeapon = specificWeapon.toLowerCase()
@@ -54,11 +54,11 @@ export function canReachEnemy(attackerToken, defendToken, defendActor, specificW
                 .filter(a=>a.label.toLowerCase() == specificWeapon || a?.weapon?.slug?.toLowerCase() == specificWeapon)
         }
 
-        var reachWs = baseWeapons
-            .map(a=>a.traits).flat()
-            .map(c=>c.name)
-            .filter(b=>b.startsWith("reach"))
-            .map(c=>c.split('-').slice(-1)[0]);
+        const reachWs = baseWeapons
+            .map(a => a.traits).flat()
+            .map(c => c.name)
+            .filter(b => b.startsWith("reach"))
+            .map(c => c.split('-').slice(-1)[0]);
 
         if (reachWs.length) {
             return distance <= Math.max(...reachWs)
