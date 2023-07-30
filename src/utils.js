@@ -4,7 +4,7 @@ export function hasEffect(actor, eff) {
 
 export function heldItems(actor, item, trait=undefined) {
     if (!actor) return []
-    let items = Object.values(actor?.itemTypes).flat(1).filter(a => a.handsHeld > 0).filter(a => a.slug == item || a.category == item);
+    let items = Object.values(actor?.itemTypes).flat(1).filter(a => a.handsHeld > 0).filter(a => a.slug === item || a.category === item);
     if (trait && items.length>0) {
         items = items.filter(a=>a.traits.has(trait))
     }
@@ -12,23 +12,23 @@ export function heldItems(actor, item, trait=undefined) {
 }
 
 export function messageType(message, type) {
-    return type == message?.flags?.pf2e?.context?.type;
+    return type === message?.flags?.pf2e?.context?.type;
 }
 
 export function failureMessageOutcome(message) {
-    return "failure" == message?.flags?.pf2e?.context?.outcome;
+    return "failure" === message?.flags?.pf2e?.context?.outcome;
 }
 
 export function criticalFailureMessageOutcome(message) {
-    return "criticalFailure" == message?.flags?.pf2e?.context?.outcome;
+    return "criticalFailure" === message?.flags?.pf2e?.context?.outcome;
 }
 
 export function successMessageOutcome(message) {
-    return "success" == message?.flags?.pf2e?.context?.outcome;
+    return "success" === message?.flags?.pf2e?.context?.outcome;
 }
 
 export function criticalSuccessMessageOutcome(message) {
-    return "criticalSuccess" == message?.flags?.pf2e?.context?.outcome;
+    return "criticalSuccess" === message?.flags?.pf2e?.context?.outcome;
 }
 
 export function anyFailureMessageOutcome(message) {
@@ -51,7 +51,7 @@ export function canReachEnemy(attackerToken, defendToken, defendActor, specificW
         if (specificWeapon) {
             specificWeapon = specificWeapon.toLowerCase()
             baseWeapons = baseWeapons
-                .filter(a=>a.label.toLowerCase() == specificWeapon || a?.weapon?.slug?.toLowerCase() == specificWeapon)
+                .filter(a=>a.label.toLowerCase() === specificWeapon || a?.weapon?.slug?.toLowerCase() === specificWeapon)
         }
 
         const reachWs = baseWeapons
@@ -90,8 +90,8 @@ export function actorHeldWeapon(actor) {
 export function hasReachWeapon(actor) {
     return actor?.system?.actions
         ?.filter(a=>a.ready)
-        ?.filter(a=>a?.weaponTraits?.find(b=>b.name=="reach"))
-        ?.length != 0
+        ?.filter(a=>a?.weaponTraits?.find(b=>b.name==="reach"))
+        ?.length !== 0
 }
 
 export function isTargetCharacter(message) {
@@ -99,11 +99,11 @@ export function isTargetCharacter(message) {
 }
 
 export function isActorCharacter(actor) {
-    return "character" == actor?.type || (actor?.type == "npc" && actor?.alliance == "party");
+    return "character" === actor?.type || (actor?.type === "npc" && actor?.alliance === "party");
 }
 
 export function isNPC(actor) {
-    return "npc" == actor?.type;
+    return "npc" === actor?.type;
 }
 
 export function _uuid(obj) {

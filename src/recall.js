@@ -73,16 +73,16 @@ function veryEasyLore(html, sheet, dc) {
 Hooks.on("renderActorSheet", (sheet, html, data)=>{
     if (game.user?.isGM && isNPC(sheet.actor) && sheet.token && Settings.recallKnowledge) {
         const recalls = html.find(".recall-knowledge .section-body .identification-skills");
-        if (recalls.length == 0) {
+        if (recalls.length === 0) {
             return;
         }
         if (Settings.recallKnowledgeHideDef){recalls.addClass('hidden')}
 
         const skills = Array.from(new Set(sheet.object.system.traits.value.flatMap((t) => identifySkills.get(t) ?? [])));
 
-        if (recalls.length == 1) {
+        if (recalls.length === 1) {
             const dcs = recalls.eq(0).text().trim().match(/\d+/g);
-            if (dcs.length == 2) {
+            if (dcs.length === 2) {
                 var [easyLoreDc, veryEasyLoreDc] = dcs;
                 easyLore(html, sheet, easyLoreDc)
                 veryEasyLore(html, sheet, veryEasyLoreDc);
@@ -92,7 +92,7 @@ Hooks.on("renderActorSheet", (sheet, html, data)=>{
                     addRecallButton(html, sheet, skill, dc)
                 })
             }
-        } else if (recalls.length == 2) {
+        } else if (recalls.length === 2) {
             var dc = recalls.eq(0).text().trim().match(/\d+/g)[0];
             var [easyLoreDc, veryEasyLoreDc] = recalls.eq(1).text().trim().match(/\d+/g);
 

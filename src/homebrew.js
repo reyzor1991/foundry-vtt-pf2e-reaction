@@ -152,7 +152,7 @@ export default class ReactionHomebrewSettings extends FormApplication {
 
     getData() {
         const templateData = Object.entries(ReactionHomebrewSettings.settings).filter(([key, setting])=>{
-            return key != "homebrewReactions"
+            return key !== "homebrewReactions"
         }).map(([key, setting]) => {
             const value = game.settings.get("pf2e-reaction", key);
             return {
@@ -176,7 +176,7 @@ export default class ReactionHomebrewSettings extends FormApplication {
         const hIdx = hr_key_parts[0];
         const keyPart = hr_key_parts[1];
 
-        if (keyPart == "triggers" || keyPart == "requirements") {
+        if (keyPart === "triggers" || keyPart === "requirements") {
             const trigIdx = hr_key_parts[2];
             const trigField = hr_key_parts[3];
 
@@ -288,7 +288,7 @@ export default class ReactionHomebrewSettings extends FormApplication {
         html.find('.homebrew-reaction-trigger').change(async (event) => {
             this.updateForm(event);
             this.homebrewReactions[$(event.currentTarget).data().parent].triggers[$(event.currentTarget).data().idx].name = $(event.currentTarget).val();
-            if ("EnemyUsesTrait" != $(event.currentTarget).val()) {
+            if ("EnemyUsesTrait" !== $(event.currentTarget).val()) {
                 this.homebrewReactions[$(event.currentTarget).data().parent].triggers[$(event.currentTarget).data().idx].trait = "";
             }
             super.render()
@@ -296,10 +296,10 @@ export default class ReactionHomebrewSettings extends FormApplication {
         html.find('.homebrew-reaction-requirement').change(async (event) => {
             this.updateForm(event);
             this.homebrewReactions[$(event.currentTarget).data().parent].requirements[$(event.currentTarget).data().idx].name = $(event.currentTarget).val();
-            if ("ActorHasEffect" != $(event.currentTarget).val() && "TargetHasEffect" != $(event.currentTarget).val()) {
+            if ("ActorHasEffect" !== $(event.currentTarget).val() && "TargetHasEffect" !== $(event.currentTarget).val()) {
                 this.homebrewReactions[$(event.currentTarget).data().parent].requirements[$(event.currentTarget).data().idx].effect = "";
             }
-            if ("ActorHoldsItem" != $(event.currentTarget).val() && "TargetHoldsItem" != $(event.currentTarget).val()) {
+            if ("ActorHoldsItem" !== $(event.currentTarget).val() && "TargetHoldsItem" !== $(event.currentTarget).val()) {
                 this.homebrewReactions[$(event.currentTarget).data().parent].requirements[$(event.currentTarget).data().idx].item = "";
                 this.homebrewReactions[$(event.currentTarget).data().parent].requirements[$(event.currentTarget).data().idx].trait = "";
             }
@@ -314,10 +314,10 @@ async function handleHomebrewMessages(message) {
     if (Settings.useHomebrew) {
         Settings.homebrewReactions
             .filter(a=>a.slug.length > 0 && a.uuid.length > 0 && a.triggers.length > 0)
-            .filter(a=>a.triggers.filter(a=> a.name != "None").length > 0)
+            .filter(a=>a.triggers.filter(a=> a.name !== "None").length > 0)
             .forEach(hr => {
-                const tt = hr.triggers.filter(a => a.name != "None");
-                const requirements = hr.requirements.filter(a => a.name != "None");
+                const tt = hr.triggers.filter(a => a.name !== "None");
+                const requirements = hr.requirements.filter(a => a.name !== "None");
                 if (!messageRequirements(message, requirements)) {
                     return;
                 }
@@ -325,7 +325,7 @@ async function handleHomebrewMessages(message) {
                     combatantsForTriggers(tt, message)
                         .filter(a=>actorFeat(a.actor, hr.slug) || actorAction(a.actor, hr.slug) || actorSpell(a.actor, hr.slug))
                         .forEach(cc => {
-                            postInChatTemplate(_uuid(hr), cc, undefined, tt.find(a=>a.name=="YouHPZero") != undefined);
+                            postInChatTemplate(_uuid(hr), cc, undefined, tt.find(a=>a.name==="YouHPZero") !== undefined);
                         })
                 }
             })
@@ -333,62 +333,62 @@ async function handleHomebrewMessages(message) {
 }
 
 function handleHomebrewTrigger(tr, message) {
-    if (tr.name == 'EnemyUseRangedAttack' && messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll")) {
+    if (tr.name === 'EnemyUseRangedAttack' && messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll")) {
         return true;
     }
-    if (tr.name == 'EnemyUseManipulateAction' && message?.item?.type == 'action' && message?.item?.system?.traits?.value.includes("manipulate")) {
+    if (tr.name === 'EnemyUseManipulateAction' && message?.item?.type === 'action' && message?.item?.system?.traits?.value.includes("manipulate")) {
         return true;
     }
-    if (tr.name == 'EnemyUseMoveAction' && message?.item?.type == 'action' && message?.item?.system?.traits?.value.includes("move")) {
+    if (tr.name === 'EnemyUseMoveAction' && message?.item?.type === 'action' && message?.item?.system?.traits?.value.includes("move")) {
         return true;
     }
-    if (tr.name == 'FailSavingThrow' && messageType(message, 'saving-throw') && anyFailureMessageOutcome(message)) {
+    if (tr.name === 'FailSavingThrow' && messageType(message, 'saving-throw') && anyFailureMessageOutcome(message)) {
         return true;
     }
-    if (tr.name == 'CriticalFailSavingThrow' && messageType(message, 'saving-throw') && criticalFailureMessageOutcome(message)) {
+    if (tr.name === 'CriticalFailSavingThrow' && messageType(message, 'saving-throw') && criticalFailureMessageOutcome(message)) {
         return true;
     }
-    if (tr.name == 'CriticalHitCreature' && messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
+    if (tr.name === 'CriticalHitCreature' && messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
         return true;
     }
-    if (tr.name == 'AllyTakeDamage' && messageType(message, 'damage-roll')) {
+    if (tr.name === 'AllyTakeDamage' && messageType(message, 'damage-roll')) {
         return true;
     }
-    if (tr.name == 'ActorTakeDamage' && messageType(message, 'damage-roll')) {
+    if (tr.name === 'ActorTakeDamage' && messageType(message, 'damage-roll')) {
         return true;
     }
-    if ((tr.name == 'YouHPZero' || tr.name == "AllyHPZero")
+    if ((tr.name === 'YouHPZero' || tr.name === "AllyHPZero")
         && message?.flags?.pf2e?.appliedDamage
         && !message?.flags?.pf2e?.appliedDamage?.isHealing
-        && message.actor.system?.attributes?.hp?.value == 0) {
+        && message.actor.system?.attributes?.hp?.value === 0) {
         return true;
     }
-    if (tr.name == 'EnemyUsesTrait'
+    if (tr.name === 'EnemyUsesTrait'
         && message?.item?.system?.traits?.value?.includes(tr.trait)) {
         return true;
     }
-    if (tr.name == 'EnemyCastSpell' && (message?.flags?.pf2e?.casting || messageType(message, 'spell-cast'))) {
+    if (tr.name === 'EnemyCastSpell' && (message?.flags?.pf2e?.casting || messageType(message, 'spell-cast'))) {
         return true;
     }
-    if (tr.name == 'EnemyHitsActor' && messageType(message, 'attack-roll')) {
+    if (tr.name === 'EnemyHitsActor' && messageType(message, 'attack-roll')) {
         return true;
     }
-    if (tr.name == 'EnemyCriticalFailHitsActor' && messageType(message, 'attack-roll') && criticalFailureMessageOutcome(message)) {
+    if (tr.name === 'EnemyCriticalFailHitsActor' && messageType(message, 'attack-roll') && criticalFailureMessageOutcome(message)) {
         return true;
     }
-    if (tr.name == 'EnemyCriticalHitsActor' && messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
+    if (tr.name === 'EnemyCriticalHitsActor' && messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
         return true;
     }
-    if (tr.name == 'EnemyFailHitsActor' && messageType(message, 'attack-roll') && anyFailureMessageOutcome(message)) {
+    if (tr.name === 'EnemyFailHitsActor' && messageType(message, 'attack-roll') && anyFailureMessageOutcome(message)) {
         return true;
     }
-    if (tr.name == 'ActorFailsHit' && messageType(message, 'attack-roll') && anyFailureMessageOutcome(message)) {
+    if (tr.name === 'ActorFailsHit' && messageType(message, 'attack-roll') && anyFailureMessageOutcome(message)) {
         return true;
     }
-    if (tr.name == 'CreatureAttacksAlly' && messageType(message, 'attack-roll')) {
+    if (tr.name === 'CreatureAttacksAlly' && messageType(message, 'attack-roll')) {
         return true;
     }
-    if (tr.name == 'ActorFailsSkillCheck' && messageType(message, 'skill-check') && anyFailureMessageOutcome(message)) {
+    if (tr.name === 'ActorFailsSkillCheck' && messageType(message, 'skill-check') && anyFailureMessageOutcome(message)) {
         return true;
     }
     return false;
@@ -408,16 +408,16 @@ function filterByDistance(t, tr, message) {
 
 function messageRequirements(message, requirements) {
     return requirements.every(a=>{
-        if (a.name == 'TargetHasEffect' && hasEffect(message?.target?.actor, a.effect)) {
+        if (a.name === 'TargetHasEffect' && hasEffect(message?.target?.actor, a.effect)) {
             return true;
         }
-        if (a.name == 'ActorHasEffect' && hasEffect(message?.actor, a.effect)) {
+        if (a.name === 'ActorHasEffect' && hasEffect(message?.actor, a.effect)) {
             return true;
         }
-        if (a.name == 'ActorHoldsItem' && heldItems(message?.actor, a.item, a.trait).length > 0) {
+        if (a.name === 'ActorHoldsItem' && heldItems(message?.actor, a.item, a.trait).length > 0) {
             return true;
         }
-        if (a.name == 'TargetHoldsItem' && heldItems(message?.target?.actor, a.item, a.trait).length > 0) {
+        if (a.name === 'TargetHoldsItem' && heldItems(message?.target?.actor, a.item, a.trait).length > 0) {
             return true;
         }
         return false;
@@ -428,92 +428,92 @@ function combatantsForTriggers(tt, message) {
     let res = [];
 
     tt.forEach(tr => {
-        if (tr.name == 'EnemyUseRangedAttack' && messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll")) {
+        if (tr.name === 'EnemyUseRangedAttack' && messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll")) {
             var t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
             res = res.concat(t);
         }
-        if (tr.name == 'EnemyUseManipulateAction' && message?.item?.type == 'action' && message?.item?.system?.traits?.value.includes("manipulate")) {
+        if (tr.name === 'EnemyUseManipulateAction' && message?.item?.type === 'action' && message?.item?.system?.traits?.value.includes("manipulate")) {
             var t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
             res = res.concat(t);
         }
-        if (tr.name == 'EnemyUseMoveAction' && message?.item?.type == 'action' && message?.item?.system?.traits?.value.includes("move")) {
+        if (tr.name === 'EnemyUseMoveAction' && message?.item?.type === 'action' && message?.item?.system?.traits?.value.includes("move")) {
             var t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
             res = res.concat(t);
         }
-        if (tr.name == 'FailSavingThrow' && messageType(message, 'saving-throw') && anyFailureMessageOutcome(message)) {
+        if (tr.name === 'FailSavingThrow' && messageType(message, 'saving-throw') && anyFailureMessageOutcome(message)) {
             var t = filterByDistance([message?.token?.combatant], tr, message);
             res = res.concat(t);
         }
-        if (tr.name == 'CriticalFailSavingThrow' && messageType(message, 'saving-throw') && criticalFailureMessageOutcome(message)) {
+        if (tr.name === 'CriticalFailSavingThrow' && messageType(message, 'saving-throw') && criticalFailureMessageOutcome(message)) {
             var t = filterByDistance([message?.token?.combatant], tr, message);
             res = res.concat(t);
         }
-        if (tr.name == 'CriticalHitCreature' && messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
+        if (tr.name === 'CriticalHitCreature' && messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
             var t = filterByDistance([message?.token?.combatant], tr, message);
             res = res.concat(t);
         }
-        if (tr.name == 'AllyTakeDamage' && messageType(message, 'damage-roll')) {
+        if (tr.name === 'AllyTakeDamage' && messageType(message, 'damage-roll')) {
             var t = filterByDistance((isActorCharacter(message?.target?.actor) ? characterWithReaction() : npcWithReaction())
-            .filter(a=>a.actorId != message?.target?.actor._id), tr, message);
+            .filter(a=>a.actorId !== message?.target?.actor._id), tr, message);
             res = res.concat(t);
         }
-        if (tr.name == 'ActorTakeDamage' && messageType(message, 'damage-roll')) {
+        if (tr.name === 'ActorTakeDamage' && messageType(message, 'damage-roll')) {
             var t = filterByDistance([message?.target?.token?.combatant], tr, message);
             res = res.concat(t);
         }
-        if ((tr.name == 'YouHPZero')
+        if ((tr.name === 'YouHPZero')
             && message?.flags?.pf2e?.appliedDamage
             && !message?.flags?.pf2e?.appliedDamage?.isHealing
-            && message.actor.system?.attributes?.hp?.value == 0) {
+            && message.actor.system?.attributes?.hp?.value === 0) {
 
             var t = filterByDistance([message?.token?.combatant], tr, message);
             res = res.concat(t);
         }
-        if ((tr.name == "AllyHPZero")
+        if ((tr.name === "AllyHPZero")
             && message?.flags?.pf2e?.appliedDamage
             && !message?.flags?.pf2e?.appliedDamage?.isHealing
-            && message.actor.system?.attributes?.hp?.value == 0) {
+            && message.actor.system?.attributes?.hp?.value === 0) {
 
             var t = filterByDistance((isActorCharacter(message?.target?.actor) ? characterWithReaction() : npcWithReaction())
-                .filter(a=>a.actorId != message?.actor?._id), tr, message);
+                .filter(a=>a.actorId !== message?.actor?._id), tr, message);
             res = res.concat(t);
         }
-        if (tr.name == 'EnemyUsesTrait'
+        if (tr.name === 'EnemyUsesTrait'
             && message?.item?.system?.traits?.value?.includes(tr.trait)) {
 
             var t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
             res = res.concat(t);
         }
-        if (tr.name == 'EnemyCastSpell' && (message?.flags?.pf2e?.casting || messageType(message, 'spell-cast'))) {
+        if (tr.name === 'EnemyCastSpell' && (message?.flags?.pf2e?.casting || messageType(message, 'spell-cast'))) {
             var t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
             res = res.concat(t);
         }
-        if (tr.name == 'EnemyHitsActor' && messageType(message, 'attack-roll')) {
+        if (tr.name === 'EnemyHitsActor' && messageType(message, 'attack-roll')) {
             var t = filterByDistance([message?.target?.token?.combatant], tr, message);
             res = res.concat(t);
         }
-        if (tr.name == 'EnemyCriticalFailHitsActor' && messageType(message, 'attack-roll') && criticalFailureMessageOutcome(message)) {
+        if (tr.name === 'EnemyCriticalFailHitsActor' && messageType(message, 'attack-roll') && criticalFailureMessageOutcome(message)) {
             var t = filterByDistance([message?.target?.token?.combatant], tr, message);
             res = res.concat(t);
         }
-        if (tr.name == 'EnemyCriticalHitsActor' && messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
+        if (tr.name === 'EnemyCriticalHitsActor' && messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
             var t = filterByDistance([message?.target?.token?.combatant], tr, message);
             res = res.concat(t);
         }
-        if (tr.name == 'EnemyFailHitsActor' && messageType(message, 'attack-roll') && anyFailureMessageOutcome(message)) {
+        if (tr.name === 'EnemyFailHitsActor' && messageType(message, 'attack-roll') && anyFailureMessageOutcome(message)) {
             var t = filterByDistance([message?.target?.token?.combatant], tr, message);
             res = res.concat(t);
         }
-        if (tr.name == 'ActorFailsHit' && messageType(message, 'attack-roll') && anyFailureMessageOutcome(message)) {
+        if (tr.name === 'ActorFailsHit' && messageType(message, 'attack-roll') && anyFailureMessageOutcome(message)) {
             var t = filterByDistance([message?.token?.combatant], tr, message);
             res = res.concat(t);
         }
-        if (tr.name == 'CreatureAttacksAlly' && messageType(message, 'attack-roll')) {
+        if (tr.name === 'CreatureAttacksAlly' && messageType(message, 'attack-roll')) {
             var t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction())
-                .filter(a=>a.actorId != message?.target?.actor._id), tr, message);
+                .filter(a=>a.actorId !== message?.target?.actor._id), tr, message);
             res = res.concat(t);
         }
-        if (tr.name == 'ActorFailsSkillCheck' && messageType(message, 'skill-check') && anyFailureMessageOutcome(message)) {
+        if (tr.name === 'ActorFailsSkillCheck' && messageType(message, 'skill-check') && anyFailureMessageOutcome(message)) {
             var t = filterByDistance([message?.token?.combatant], tr, message);
             res = res.concat(t);
         }
