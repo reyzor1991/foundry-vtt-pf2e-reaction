@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.2.28
+
+### New feature
+-   Add Shield spell reaction check
+-   ([xdy](https://github.com/xdy/)) Fixes a couple of bugs in the code 
+
 ## Version 0.2.27
 
 ### New feature

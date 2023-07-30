@@ -338,8 +338,12 @@ function messageWithAnyTrait(message, traits) {
     return traits.some(a=>messageWithTrait(message, a))
 }
 
+function hasExploitVulnerabilityEffect(actor) {
+    return hasEffect(actor, "effect-exploit-vulnerability");
+}
+
 function checkImplementsInterruption(message) {
-    if (!isActorCharacter(message.actor) && hasEffect(message.actor, "effect-exploit-vulnerability")) {
+    if (!isActorCharacter(message.actor) && hasExploitVulnerabilityEffect(message.actor)) {
         characterWithReaction()
         .forEach(cc => {
             const implements_interruption = actorAction(cc.actor, "implements-interruption");
@@ -357,11 +361,11 @@ function checkImplementsInterruption(message) {
 async function decreaseReaction(combatant, actionName=undefined) {
     updateCombatantReactionState(combatant, false, actionName);
     if (Settings.addReactionEffect && countAllReaction(combatant) <= 1) {
-        setEffectToActor(combatant.actor, combatant.token, reactionWasUsedEffect);
+        setReactionEffectToActor(combatant.actor, combatant.token, reactionWasUsedEffect);
     }
 }
 
-async function setEffectToActor(actor, token, eff) {
+async function setReactionEffectToActor(actor, token, eff) {
     const source = (await fromUuid(eff)).toObject();
     source.flags = mergeObject(source.flags ?? {}, { core: { sourceId: eff } });
     source.system.context = mergeObject(source.system.context ?? {}, {
@@ -373,6 +377,10 @@ async function setEffectToActor(actor, token, eff) {
         "target": null
     });
     source.system.start.initiative = null;
+
+    if (game.combat.turn > game.combat.turns.findIndex( a => a._id === token.combatant._id )) {
+        source.system.duration.value = 1;
+    }
 
     await actor.createEmbeddedDocuments("Item", [source]);
 }
@@ -407,15 +415,14 @@ $(document).on('click', '.reaction-check', async function () {
                         'flags.pf2e-reaction.reactions': reactions - 1
                     };
 
-                    //Left == here, I *think* it's a bug. Should probably be ```mes.permission === "granted"```
-                    if (mes.permission == 3) {
+                    if (mes.permission === 3 || game.user?.isGM) {
                         await mes.update(data, { noHook: true})
                     } else {
                         socket.socketlibSocket._sendRequest("updateItem", [mes.uuid, data], 0)
                     }
                 } else {
                     //Left == here, I *think* it's a bug. Should probably be ```mes.permission === "granted"```
-                    if (mes.permission == 3) {
+                    if (mes.permission === 3 || game.user?.isGM) {
                         mes.delete()
                     } else {
                         socket.socketlibSocket._sendRequest("deleteItem", [mes.uuid], 0)
@@ -433,7 +440,7 @@ $(document).on('click', '.reaction-cancel', function () {
     const mid = $(this).parent().parent().parent().data('message-id');
     if (mid) {
         const mes = game.messages.get(mid);
-        if (mes.permission === 3) {
+        if (mes.permission === 3 || game.user?.isGM) {
             mes.delete()
         } else {
             socket.socketlibSocket._sendRequest("deleteItem", [game.messages.get(mid)?.uuid], 0)
@@ -740,7 +747,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
             const ring_bell = actorAction(message?.target?.actor, "ring-bell");
             if (ring_bell
                     && getEnemyDistance(message.token, message.target.token)<=30
-                    && hasEffect(message.actor, "effect-exploit-vulnerability")) {
+                    && hasExploitVulnerabilityEffect(message.actor)) {
                     postInChatTemplate(_uuid(ring_bell), message.target.token.combatant);
             }
             const you_failed_to = actorFeat(message?.target?.actor, "you-failed-to-account-for-this");
@@ -769,7 +776,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
                 const ring_bell_ = actorAction(cc?.actor, "ring-bell");
                 if (ring_bell_
                     && getEnemyDistance(cc?.token, message.token)<=30
-                    && hasEffect(message.actor, "effect-exploit-vulnerability")) {
+                    && hasExploitVulnerabilityEffect(message.actor)) {
                     postInChatTemplate(_uuid(ring_bell_), cc);
                 }
             })
@@ -824,7 +831,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
                 const ring_bell = actorAction(message?.target?.actor, "ring-bell")
                 if (ring_bell
                     && getEnemyDistance(message.token, message.target.token)<=30
-                    && hasEffect(message.actor, "effect-exploit-vulnerability")) {
+                    && hasExploitVulnerabilityEffect(message.actor)) {
                     postInChatTemplate(_uuid(ring_bell), message.target.token.combatant);
                 }
                 if (hasOption(message, "hit-the-dirt") && hasOption(message, "item:ranged")) {
@@ -916,7 +923,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
                 const ring_bell = actorAction(cc?.actor, "ring-bell");
                 if (ring_bell
                     && getEnemyDistance(cc?.token, message.token)<=30
-                    && hasEffect(message.actor, "effect-exploit-vulnerability")) {
+                    && hasExploitVulnerabilityEffect(message.actor)) {
                     postInChatTemplate(_uuid(ring_bell), cc);
                 }
             })
@@ -1149,7 +1156,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
                 postInChatTemplate(_uuid(verdantp), message.target.token.combatant);
             }
             const amulets_abeyance = actorAction(message?.target?.actor, "amulets-abeyance");
-            if (amulets_abeyance && hasEffect(message.actor, "effect-exploit-vulnerability")) {
+            if (amulets_abeyance && hasExploitVulnerabilityEffect(message.actor)) {
                 postInChatTemplate(_uuid(amulets_abeyance), message?.target?.token?.combatant);
             }
 
@@ -1215,7 +1222,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
                     postTargetInChatTemplate(_uuid(retributivestrike), cc);
                 }
             }
-            if (getEnemyDistance(message.target.token, cc.token) <= 15 && hasEffect(message.actor, "effect-exploit-vulnerability")) {
+            if (getEnemyDistance(message.target.token, cc.token) <= 15 && hasExploitVulnerabilityEffect(message.actor)) {
                 const aab = actorAction(cc.actor, "amulets-abeyance");
                 if (aab) {
                     postTargetInChatTemplate(_uuid(aab), cc);
@@ -1262,7 +1269,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
             const rb__ = actorAction(message?.actor, "ring-bell");
             if (rb__
                     && getEnemyDistance(message.token, origin?.actor?.token)<=30
-                    && hasEffect(origin?.actor, "effect-exploit-vulnerability")) {
+                    && hasExploitVulnerabilityEffect(origin?.actor)) {
                     postInChatTemplate(_uuid(rb__), message?.actor?.combatant);
             }
 
@@ -1274,7 +1281,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
                 const rb = actorAction(cc?.actor, "ring-bell");
                 if (rb
                     && getEnemyDistance(cc?.token, origin?.actor?.token)<=30
-                    && hasEffect(origin?.actor, "effect-exploit-vulnerability")
+                    && hasExploitVulnerabilityEffect(origin?.actor)
                 ) {
                     postTargetInChatTemplate(_uuid(rb), cc);
                 }
@@ -1326,8 +1333,8 @@ Hooks.on("targetToken", (_user, token, isTargeted, opts) => {
                     sendNotification(_user, token, rs);
                 }
                 const cf = actorFeat(token.actor, "crane-flutter");
-                if (rs && hasEffect(token.actor, "stance-crane-stance")) {
-                    sendNotification(_user, token, rs);
+                if (cf && hasEffect(token.actor, "stance-crane-stance")) {
+                    sendNotification(_user, token, cf);
                 }
 
                 characterWithReaction()
