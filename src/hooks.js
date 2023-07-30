@@ -665,7 +665,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
                 });
         }
     } else if (message?.flags?.pf2e?.origin?.type === 'spell' && !messageType(message, "saving-throw")) {
-        var origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
+        const origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
         if (spellWithTrait(origin, "manipulate")) {
             checkCombatantTriggerAttackOfOpportunity(message.actor, message.actor._id, message.token);
             checkImplementsInterruption(message);
@@ -737,7 +737,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
 
     } else if (messageType(message, "spell-attack-roll")) {
         if (hasReaction(message?.target?.token?.combatant)) {
-            var ring_bell = actorAction(message?.target?.actor, "ring-bell");
+            const ring_bell = actorAction(message?.target?.actor, "ring-bell");
             if (ring_bell
                     && getEnemyDistance(message.token, message.target.token)<=30
                     && hasEffect(message.actor, "effect-exploit-vulnerability")) {
@@ -747,11 +747,11 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
             if (you_failed_to) {
                 postInChatTemplate(_uuid(you_failed_to), message.target.token.combatant);
             }
-            var foresee_danger = actorFeat(message?.target?.actor, "foresee-danger");
+            const foresee_danger = actorFeat(message?.target?.actor, "foresee-danger");
             if (foresee_danger) {
                 postInChatTemplate(_uuid(foresee_danger), message.target.token.combatant);
             }
-            var suspect_of_opportunity = actorFeat(message?.target?.actor, "suspect-of-opportunity");
+            const suspect_of_opportunity = actorFeat(message?.target?.actor, "suspect-of-opportunity");
             if (suspect_of_opportunity) {
                 postInChatTemplate(_uuid(suspect_of_opportunity), message.target.token.combatant);
             }
@@ -781,11 +781,11 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
                 if (ou_failed_to_account) {
                     postInChatTemplate(_uuid(ou_failed_to_account), message.target.token.combatant);
                 }
-                var suspect_of_opportunity = actorFeat(message?.target?.actor, "suspect-of-opportunity");
+                const suspect_of_opportunity = actorFeat(message?.target?.actor, "suspect-of-opportunity");
                 if (suspect_of_opportunity) {
                     postInChatTemplate(_uuid(suspect_of_opportunity), message.target.token.combatant);
                 }
-                var foresee_danger = actorFeat(message?.target?.actor, "foresee-danger")
+                const foresee_danger = actorFeat(message?.target?.actor, "foresee-danger")
                 if (foresee_danger) {
                     postInChatTemplate(_uuid(foresee_danger), message.target.token.combatant);
                 }
@@ -821,7 +821,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
                 ) {
                     postInChatTemplate(_uuid(knights_retaliation), message.target.token.combatant);
                 }
-                var ring_bell = actorAction(message?.target?.actor, "ring-bell")
+                const ring_bell = actorAction(message?.target?.actor, "ring-bell")
                 if (ring_bell
                     && getEnemyDistance(message.token, message.target.token)<=30
                     && hasEffect(message.actor, "effect-exploit-vulnerability")) {
@@ -852,12 +852,12 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
         }
         if (criticalFailureMessageOutcome(message) && hasReaction(message?.target?.token?.combatant, "opportune-riposte")) {
             if (isNPC(message.actor)) {
-                var opportune_riposte = actorFeat(message?.target?.actor, "opportune-riposte");
+                const opportune_riposte = actorFeat(message?.target?.actor, "opportune-riposte");
                 if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && opportune_riposte) {
                     postInChatTemplate(_uuid(opportune_riposte), message.target.token.combatant, "opportune-riposte");
                 }
             } else {
-                var opportune_riposte = actorAction(message?.target?.actor, "opportune-riposte");
+                const opportune_riposte = actorAction(message?.target?.actor, "opportune-riposte");
                 if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && opportune_riposte) {
                     postInChatTemplate(_uuid(opportune_riposte), message.target.token.combatant, "opportune-riposte");
                 }
@@ -939,7 +939,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
                         postInChatTemplate(_uuid(wicked_thorns), message.target.token.combatant);
                     }
                 }
-                var emergency_targe = actorFeat(message?.target?.actor, "emergency-targe");
+                const emergency_targe = actorFeat(message?.target?.actor, "emergency-targe");
                 if (emergency_targe && message?.item?.isMelee) {
                     postInChatTemplate(_uuid(emergency_targe), message.target.token.combatant);
                 }
@@ -1021,17 +1021,17 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
     } else if (messageType(message, 'perception-check')) {
         if (failureMessageOutcome(message)) {
             if (hasReaction(message?.token?.combatant)) {
-                var spiritual_guides = actorFeat(message?.actor, "spiritual-guides")
+                const spiritual_guides = actorFeat(message?.actor, "spiritual-guides")
                 if (spiritual_guides) {
                     postInChatTemplate(_uuid(spiritual_guides), message.token.combatant);
                 }
             }
         }
         if (message?.flags?.pf2e?.origin?.uuid) {
-            var origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
+            const origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
             if (hasReaction(origin?.actor?.combatant)) {
                 if (successMessageOutcome(message)) {
-                    var convincing_illusion = actorFeat(origin?.actor, "convincing-illusion");
+                    const convincing_illusion = actorFeat(origin?.actor, "convincing-illusion");
                     if (convincing_illusion && origin?.traits?.has("illusion")) {
                         postInChatTemplate(_uuid(convincing_illusion), origin?.actor?.combatant);
                     }
@@ -1075,7 +1075,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
 
         if (hasReaction(message?.token?.combatant)) {
             if (failureMessageOutcome(message)) {
-                var spiritual_guides = actorFeat(message?.actor, "spiritual-guides");
+                const spiritual_guides = actorFeat(message?.actor, "spiritual-guides");
                 if (spiritual_guides) {
                     postInChatTemplate(_uuid(spiritual_guides), message.token.combatant);
                 }
@@ -1110,7 +1110,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
         }
 
         if(hasReaction(message?.target?.token?.combatant, "shield-block")) {
-            var dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a=>a.damageType);
+            const dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a=>a.damageType);
             if (dTypes.filter(a=> a=== "bludgeoning" || a === "piercing" || a=== "slashing").length > 0) {
                 const sblock = actorFeat(message?.target?.actor, "shield-block");
                 if (sblock && hasEffect(message.target.actor, "effect-raise-a-shield")) {
@@ -1132,7 +1132,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
                 postInChatTemplate(_uuid(unexpecteds), message.target.token.combatant);
             }
 
-            var dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a=>a.damageType);
+            const dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a=>a.damageType);
             if (dTypes.filter(a=> a=== "sonic").length > 0) {
                 const resounding = actorFeat(message?.target?.actor, "resounding-finale");
                 if (resounding) {
@@ -1229,7 +1229,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
             }
         })
     } else if (messageType(message, "saving-throw")) {
-        var origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
+        const origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
         if (hasReaction(message?.token?.combatant)) {
             const charmedlife = actorFeat(message.actor, "charmed-life");
             if (charmedlife) {
@@ -1247,7 +1247,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
                 if (gat) {
                     postInChatTemplate(_uuid(gat), message.token.combatant);
                 }
-                var emergency_targe = actorFeat(message?.actor, "emergency-targe")
+                const emergency_targe = actorFeat(message?.actor, "emergency-targe")
                 if (emergency_targe && message?.flags?.pf2e?.origin?.type  === 'spell') {
                     postInChatTemplate(_uuid(emergency_targe), message.token.combatant);
                 }
@@ -1282,7 +1282,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
         }
         if (hasReaction(origin?.actor?.combatant)) {
             if (successMessageOutcome(message)) {
-                var convincing_illusion = actorFeat(origin?.actor, "convincing-illusion");
+                const convincing_illusion = actorFeat(origin?.actor, "convincing-illusion");
                 if (convincing_illusion && origin?.traits?.has("illusion")) {
                     postInChatTemplate(_uuid(convincing_illusion), origin?.actor?.combatant);
                 }
@@ -1309,7 +1309,7 @@ Hooks.on("targetToken", (_user, token, isTargeted, opts) => {
     if (Settings.notification && game?.combats?.active && isTargeted && hasReaction(token?.combatant)) {
         if (game.user.isGM || token.combatant.players.find(a=>a.id===game.user.id)) {
             if (isActorCharacter(token?.actor)) {
-                var nd = actorFeat(token.actor, "nimble-dodge");
+                const nd = actorFeat(token.actor, "nimble-dodge");
                 if (nd && !hasCondition(token.actor, "encumbered")) {
                     sendNotification(_user, token, nd);
                 }
@@ -1321,11 +1321,11 @@ Hooks.on("targetToken", (_user, token, isTargeted, opts) => {
                 if (pir && hasEffect(token.actor, "stance-masquerade-of-seasons-stance")) {
                     sendNotification(_user, token, pir);
                 }
-                var rs = actorFeat(token.actor, "reactive-shield");
+                const rs = actorFeat(token.actor, "reactive-shield");
                 if (rs && !hasEffect(token.actor, "effect-raise-a-shield")) {
                     sendNotification(_user, token, rs);
                 }
-                var rs = actorFeat(token.actor, "crane-flutter");
+                const rs = actorFeat(token.actor, "crane-flutter");
                 if (rs && hasEffect(token.actor, "stance-crane-stance")) {
                     sendNotification(_user, token, rs);
                 }
@@ -1342,7 +1342,7 @@ Hooks.on("targetToken", (_user, token, isTargeted, opts) => {
                     }
                 })
             } else {
-                var nd = actorAction(token.actor, "nimble-dodge");
+                const nd = actorAction(token.actor, "nimble-dodge");
                 if (nd && !hasCondition(token.actor, "encumbered")) {
                     sendNotification(_user, token, nd);
                 }

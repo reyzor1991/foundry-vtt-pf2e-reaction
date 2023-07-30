@@ -189,7 +189,7 @@ export default class ReactionHomebrewSettings extends FormApplication {
     async _updateObject(_event, data) {
         for (const key of Object.keys(data)) {
             if (key.startsWith("homebrewReaction."))continue;
-            var _v = data[key];
+            let _v = data[key];
             if (_v === null || _v === "null") {
                 _v = "";
             }
@@ -197,7 +197,7 @@ export default class ReactionHomebrewSettings extends FormApplication {
         }
         for (const key of Object.keys(data)) {
             if (!key.startsWith("homebrewReaction."))continue;
-            var _v = data[key];
+            const _v = data[key];
             this.updateHomebrewReactions(key, _v)
         }
         await game.settings.set("pf2e-reaction", "homebrewReactions", this.rawValue());
@@ -429,36 +429,36 @@ function combatantsForTriggers(tt, message) {
 
     tt.forEach(tr => {
         if (tr.name === 'EnemyUseRangedAttack' && messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll")) {
-            var t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
+            const t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'EnemyUseManipulateAction' && message?.item?.type === 'action' && message?.item?.system?.traits?.value.includes("manipulate")) {
-            var t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
+            const t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'EnemyUseMoveAction' && message?.item?.type === 'action' && message?.item?.system?.traits?.value.includes("move")) {
-            var t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
+            const t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'FailSavingThrow' && messageType(message, 'saving-throw') && anyFailureMessageOutcome(message)) {
-            var t = filterByDistance([message?.token?.combatant], tr, message);
+            const t = filterByDistance([message?.token?.combatant], tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'CriticalFailSavingThrow' && messageType(message, 'saving-throw') && criticalFailureMessageOutcome(message)) {
-            var t = filterByDistance([message?.token?.combatant], tr, message);
+            const t = filterByDistance([message?.token?.combatant], tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'CriticalHitCreature' && messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
-            var t = filterByDistance([message?.token?.combatant], tr, message);
+            const t = filterByDistance([message?.token?.combatant], tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'AllyTakeDamage' && messageType(message, 'damage-roll')) {
-            var t = filterByDistance((isActorCharacter(message?.target?.actor) ? characterWithReaction() : npcWithReaction())
+            const t = filterByDistance((isActorCharacter(message?.target?.actor) ? characterWithReaction() : npcWithReaction())
             .filter(a=>a.actorId !== message?.target?.actor._id), tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'ActorTakeDamage' && messageType(message, 'damage-roll')) {
-            var t = filterByDistance([message?.target?.token?.combatant], tr, message);
+            const t = filterByDistance([message?.target?.token?.combatant], tr, message);
             res = res.concat(t);
         }
         if ((tr.name === 'YouHPZero')
@@ -466,7 +466,7 @@ function combatantsForTriggers(tt, message) {
             && !message?.flags?.pf2e?.appliedDamage?.isHealing
             && message.actor.system?.attributes?.hp?.value === 0) {
 
-            var t = filterByDistance([message?.token?.combatant], tr, message);
+            const t = filterByDistance([message?.token?.combatant], tr, message);
             res = res.concat(t);
         }
         if ((tr.name === "AllyHPZero")
@@ -474,47 +474,47 @@ function combatantsForTriggers(tt, message) {
             && !message?.flags?.pf2e?.appliedDamage?.isHealing
             && message.actor.system?.attributes?.hp?.value === 0) {
 
-            var t = filterByDistance((isActorCharacter(message?.target?.actor) ? characterWithReaction() : npcWithReaction())
+            const t = filterByDistance((isActorCharacter(message?.target?.actor) ? characterWithReaction() : npcWithReaction())
                 .filter(a=>a.actorId !== message?.actor?._id), tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'EnemyUsesTrait'
             && message?.item?.system?.traits?.value?.includes(tr.trait)) {
 
-            var t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
+            const t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'EnemyCastSpell' && (message?.flags?.pf2e?.casting || messageType(message, 'spell-cast'))) {
-            var t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
+            const t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'EnemyHitsActor' && messageType(message, 'attack-roll')) {
-            var t = filterByDistance([message?.target?.token?.combatant], tr, message);
+            const t = filterByDistance([message?.target?.token?.combatant], tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'EnemyCriticalFailHitsActor' && messageType(message, 'attack-roll') && criticalFailureMessageOutcome(message)) {
-            var t = filterByDistance([message?.target?.token?.combatant], tr, message);
+            const t = filterByDistance([message?.target?.token?.combatant], tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'EnemyCriticalHitsActor' && messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
-            var t = filterByDistance([message?.target?.token?.combatant], tr, message);
+            const t = filterByDistance([message?.target?.token?.combatant], tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'EnemyFailHitsActor' && messageType(message, 'attack-roll') && anyFailureMessageOutcome(message)) {
-            var t = filterByDistance([message?.target?.token?.combatant], tr, message);
+            const t = filterByDistance([message?.target?.token?.combatant], tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'ActorFailsHit' && messageType(message, 'attack-roll') && anyFailureMessageOutcome(message)) {
-            var t = filterByDistance([message?.token?.combatant], tr, message);
+            const t = filterByDistance([message?.token?.combatant], tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'CreatureAttacksAlly' && messageType(message, 'attack-roll')) {
-            var t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction())
+            const t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction())
                 .filter(a=>a.actorId !== message?.target?.actor._id), tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'ActorFailsSkillCheck' && messageType(message, 'skill-check') && anyFailureMessageOutcome(message)) {
-            var t = filterByDistance([message?.token?.combatant], tr, message);
+            const t = filterByDistance([message?.token?.combatant], tr, message);
             res = res.concat(t);
         }
     });

@@ -83,18 +83,18 @@ Hooks.on("renderActorSheet", (sheet, html, data)=>{
         if (recalls.length === 1) {
             const dcs = recalls.eq(0).text().trim().match(/\d+/g);
             if (dcs.length === 2) {
-                var [easyLoreDc, veryEasyLoreDc] = dcs;
+                const [easyLoreDc, veryEasyLoreDc] = dcs;
                 easyLore(html, sheet, easyLoreDc)
                 veryEasyLore(html, sheet, veryEasyLoreDc);
             } else {
-                var dc = dcs[0];
+                const dc = dcs[0];
                  skills.forEach(skill => {
                     addRecallButton(html, sheet, skill, dc)
                 })
             }
         } else if (recalls.length === 2) {
-            var dc = recalls.eq(0).text().trim().match(/\d+/g)[0];
-            var [easyLoreDc, veryEasyLoreDc] = recalls.eq(1).text().trim().match(/\d+/g);
+            const dc = recalls.eq(0).text().trim().match(/\d+/g)[0];
+            const [easyLoreDc, veryEasyLoreDc] = recalls.eq(1).text().trim().match(/\d+/g);
 
             skills.forEach(skill => {
                 addRecallButton(html, sheet, skill, dc)
