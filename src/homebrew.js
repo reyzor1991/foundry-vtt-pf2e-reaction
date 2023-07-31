@@ -68,7 +68,6 @@ class HomebrewReactionTrigger {
 class HomebrewReaction {
   constructor(idx) {
     this.idx = idx;
-    this.slug = "";
     this.uuid = "";
     this.triggers = [new HomebrewReactionTrigger(0)]
     this.requirements = []
@@ -221,7 +220,6 @@ export default class ReactionHomebrewSettings extends FormApplication {
         for (let i=0; i < this.homebrewReactions.length; i++) {
             res.push(
                 {
-                    slug: this.homebrewReactions[i].slug,
                     uuid: this.homebrewReactions[i].uuid,
                     triggers: this.homebrewReactions[i].triggers.map(a=>{
                         return {"name":a.name,"reachValue":a.reachValue,"reach":a.reach,"adjacent":a.adjacent,"trait":a.trait};
@@ -313,7 +311,7 @@ export default class ReactionHomebrewSettings extends FormApplication {
 async function handleHomebrewMessages(message) {
     if (Settings.useHomebrew) {
         Settings.homebrewReactions
-            .filter(a=>a.slug.length > 0 && a.uuid.length > 0 && a.triggers.length > 0)
+            .filter(a=>a.uuid.length > 0 && a.triggers.length > 0)
             .filter(a=>a.triggers.filter(a=> a.name !== "None").length > 0)
             .forEach(hr => {
                 const tt = hr.triggers.filter(a => a.name !== "None");
@@ -323,7 +321,7 @@ async function handleHomebrewMessages(message) {
                 }
                 if (tt.some(a=>handleHomebrewTrigger(a, message))) {
                     combatantsForTriggers(tt, message)
-                        .filter(a=>actorFeat(a.actor, hr.slug) || actorAction(a.actor, hr.slug) || actorSpell(a.actor, hr.slug))
+                        .filter(a=>actorFeatBySource(a.actor, hr.uuid) || actorActionBySource(a.actor, hr.uuid) || actorSpellBySource(a.actor, hr.uuid))
                         .forEach(cc => {
                             postInChatTemplate(_uuid(hr), cc, undefined, tt.find(a=>a.name==="YouHPZero") !== undefined);
                         })

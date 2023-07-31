@@ -42,6 +42,18 @@ export function hasOption(message, opt) {
     return message?.flags?.pf2e?.context?.options?.includes(opt);
 }
 
+function actorActionBySource(actor, action) {
+    return actor?.itemTypes?.action?.find((c => action === c.sourceId))
+}
+
+function actorSpellBySource(actor, spell) {
+    return actor?.itemTypes?.spell?.find((c => spell === c.sourceId))
+}
+
+function actorFeatBySource(actor, feat) {
+    return actor?.itemTypes?.feat?.find((c => feat === c.sourceId))
+}
+
 export function canReachEnemy(attackerToken, defendToken, defendActor, specificWeapon=undefined) {
     const distance = getEnemyDistance(attackerToken, defendToken);
     if (isNPC(defendActor)) {
