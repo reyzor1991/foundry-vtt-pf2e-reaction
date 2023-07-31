@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.29
+
+### New feature
+-   Optimize homebrew
+
 ## Version 0.2.28
 
 ### New feature
