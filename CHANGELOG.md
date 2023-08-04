@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.30
+
+### Bug fixes
+-   Fix issue with showing message
+
 ## Version 0.2.29
 
 ### New feature

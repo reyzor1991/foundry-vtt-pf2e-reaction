@@ -418,14 +418,14 @@ $(document).on('click', '.reaction-check', async function () {
                     if (mes.permission === 3 || game.user?.isGM) {
                         await mes.update(data, { noHook: true})
                     } else {
-                        socket.socketlibSocket._sendRequest("updateItem", [mes.uuid, data], 0)
+                        socketlibSocket._sendRequest("updateItem", [mes.uuid, data], 0)
                     }
                 } else {
                     //Left == here, I *think* it's a bug. Should probably be ```mes.permission === "granted"```
                     if (mes.permission === 3 || game.user?.isGM) {
                         mes.delete()
                     } else {
-                        socket.socketlibSocket._sendRequest("deleteItem", [mes.uuid], 0)
+                        socketlibSocket._sendRequest("deleteItem", [mes.uuid], 0)
                     }
                 }
                 if (Settings.postMessage && uuid) {
@@ -443,7 +443,7 @@ $(document).on('click', '.reaction-cancel', function () {
         if (mes.permission === 3 || game.user?.isGM) {
             mes.delete()
         } else {
-            socket.socketlibSocket._sendRequest("deleteItem", [game.messages.get(mid)?.uuid], 0)
+            socketlibSocket._sendRequest("deleteItem", [game.messages.get(mid)?.uuid], 0)
         }
     }
 });
@@ -506,10 +506,15 @@ Hooks.on('createCombatant', async combatant => {
 });
 
 Hooks.on('renderChatMessage', (app, html, msg) => {
-    if (msg.user.isGM || Settings.showToPlayers) {
+    if (msg.user.isGM) {
         return
     }
-    if (app?.flags?.["reaction-check"]) {
+    const comb = game.combat.turns.find(a=> a.id === app.getFlag(moduleName, "cId"));
+    if (Settings.showToPlayers && comb && comb.players.includes(game.user)) {
+        return
+    }
+
+    if (app?.flags?.[moduleName]) {
         html.addClass('hide-reaction-check');
         html.hide();
     }
