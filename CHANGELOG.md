@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.31
+
+### Bug fixes
+-   Fix issue with rapid response
+
 ## Version 0.2.30
 
 ### Bug fixes

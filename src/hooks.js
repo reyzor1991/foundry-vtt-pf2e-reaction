@@ -619,7 +619,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
                 characterWithReaction()
                 .filter(a=>a.actorId !== message?.actor?._id)
                 .forEach(cc => {
-                    const rapid_response = actorFeat(a.actor, "rapid-response");
+                    const rapid_response = actorFeat(cc.actor, "rapid-response");
                     if (rapid_response) {
                         postInChatTemplate(_uuid(rapid_response), cc);
                     }
