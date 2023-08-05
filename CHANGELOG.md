@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.32
+
+### Bug fixes
+-   Fix issue with fake out
+
 ## Version 0.2.31
 
 ### Bug fixes

@@ -897,7 +897,6 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
 
         if (!isTargetCharacter(message)) {
             npcWithReaction()
-            .filter(a=>a.actorId !== message?.target?.actor._id)
             .forEach(cc => {
                 if (adjacentEnemy(message.token, cc.token)) {
                     const ab = actorAction(cc.actor, "avenging-bite");
@@ -906,33 +905,35 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
                     }
                 }
             })
+        }
 
+        if (isActorCharacter(message?.actor)) {
             characterWithReaction()
-            .filter(a=>a.actorId !== message?.actor?._id)
-            .forEach(cc => {
-                const fake_out = actorFeat(cc?.actor, "fake-out");
-                if (fake_out) {
-                    const weapon = hasLoadedFirearmOrCrossbow(cc.actor);
-                    if (weapon.length > 0) {
-                        const range = Math.max(...weapon.map(a => a.item.rangeIncrement));
-                        if (getEnemyDistance(cc?.token, message.target.token) <= range) {
-                            postInChatTemplate(_uuid(fake_out), cc);
+                .filter(a=>a.actorId !== message?.actor?._id)
+                .forEach(cc => {
+                    const fake_out = actorFeat(cc?.actor, "fake-out");
+                    if (fake_out) {
+                        const weapon = hasLoadedFirearmOrCrossbow(cc.actor);
+                        if (weapon.length > 0) {
+                            const range = Math.max(...weapon.map(a => a.item.rangeIncrement));
+                            if (getEnemyDistance(cc?.token, message.target.token) <= range) {
+                                postInChatTemplate(_uuid(fake_out), cc);
+                            }
                         }
                     }
-                }
-            })
-        } else {
+                })
+        }
+
+        if (hasExploitVulnerabilityEffect(message.actor) && isTargetCharacter(message)) {
             characterWithReaction()
-            .filter(a=>a.actorId !== message?.target?.actor._id)
             .forEach(cc => {
                 const ring_bell = actorAction(cc?.actor, "ring-bell");
-                if (ring_bell
-                    && getEnemyDistance(cc?.token, message.token)<=30
-                    && hasExploitVulnerabilityEffect(message.actor)) {
+                if (ring_bell && getEnemyDistance(cc?.token, message.token)<=30) {
                     postInChatTemplate(_uuid(ring_bell), cc);
                 }
             })
         }
+
 
         //Hit by
         if (anySuccessMessageOutcome(message)) {
