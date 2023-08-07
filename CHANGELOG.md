@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.33
+
+### Bug fixes
+-   Fix issue with cleave
+
 ## Version 0.2.32
 
 ### Bug fixes

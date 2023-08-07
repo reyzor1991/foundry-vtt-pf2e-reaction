@@ -1105,7 +1105,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
         }
 
     } else if (messageType(message, 'damage-roll')) {
-        if (hasReaction(message.actor.combatant)) {
+        if (hasReaction(message?.actor?.combatant)) {
             const cleave = actorFeat(message.actor, "cleave");
             if (cleave && message?.item?.isMelee) {
                 if (message.target.actor.system.attributes.hp.value <= parseInt(message.content)) {
