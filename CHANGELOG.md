@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.2.34
+
+### New feature
+-   Add Mental Static reaction check
+-   Add No!!! reaction check
+
 ## Version 0.2.33
 
 ### Bug fixes

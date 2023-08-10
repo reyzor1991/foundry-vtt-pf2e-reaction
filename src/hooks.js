@@ -368,18 +368,11 @@ async function decreaseReaction(combatant, actionName=undefined) {
 async function setReactionEffectToActor(actor, token, eff) {
     const source = (await fromUuid(eff)).toObject();
     source.flags = mergeObject(source.flags ?? {}, { core: { sourceId: eff } });
-    source.system.context = mergeObject(source.system.context ?? {}, {
-        "origin": {
-            "actor": actor.uuid,
-            "token": token.uuid
-        },
-        "roll": null,
-        "target": null
-    });
-    source.system.start.initiative = null;
 
-    if (game.combat.turn > game.combat.turns.findIndex( a => a._id === token.combatant._id )) {
+    if (game.combat.combatant.initiative < actor.combatant.initiative) {
         source.system.duration.value = 1;
+    } else {
+        source.system.duration.value = 0;
     }
 
     await actor.createEmbeddedDocuments("Item", [source]);
@@ -622,6 +615,10 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
                     const rapid_response = actorFeat(cc.actor, "rapid-response");
                     if (rapid_response) {
                         postInChatTemplate(_uuid(rapid_response), cc);
+                    }
+                    const no = actorFeat(cc.actor, "no");
+                    if (no && message?.actor?.combatant && getEnemyDistance(message.token, cc.token) <= 60) {
+                        postInChatTemplate(_uuid(no), cc);
                     }
                 });
             }
@@ -1279,6 +1276,13 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
                     && getEnemyDistance(message.token, origin?.actor?.token)<=30
                     && hasExploitVulnerabilityEffect(origin?.actor)) {
                     postInChatTemplate(_uuid(rb__), message?.actor?.combatant);
+            }
+
+            if (criticalSuccessMessageOutcome(message)) {
+                const mStatic = actorFeat(message.actor, "mental-static")
+                if (mStatic && hasOption(message, "check:statistic:will") && hasOption(message, "item:trait:mental")) {
+                    postTargetInChatTemplate(_uuid(mStatic), message?.actor?.combatant);
+                }
             }
 
         }

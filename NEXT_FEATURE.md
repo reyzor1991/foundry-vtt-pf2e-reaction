@@ -35,9 +35,6 @@
 -
 -
 -
-- Mental Static
-- No!!!
--
 - Disrupt Prey
 - Relentless Stalker
 - Roll with It (Ranger)

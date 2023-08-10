@@ -86,3 +86,5 @@
 85. Unexpected Shift
 86. Counter Thought
 87. Fake Out
+88. Mental Static
+89. No!!!
