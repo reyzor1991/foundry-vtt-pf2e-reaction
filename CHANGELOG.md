@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.2.35
+
+### New feature
+-   Reaction checking optimization
+-   Add I'm Not Crying reaction check
+
 ## Version 0.2.34
 
 ### New feature

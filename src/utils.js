@@ -1,8 +1,8 @@
-export function hasEffect(actor, eff) {
+function hasEffect(actor, eff) {
     return actor && actor?.itemTypes?.effect?.find((c => eff === c.slug))
 }
 
-export function heldItems(actor, item, trait=undefined) {
+function heldItems(actor, item, trait=undefined) {
     if (!actor) return []
     let items = Object.values(actor?.itemTypes).flat(1).filter(a => a.handsHeld > 0).filter(a => a.slug === item || a.category === item);
     if (trait && items.length>0) {
@@ -11,34 +11,34 @@ export function heldItems(actor, item, trait=undefined) {
     return items;
 }
 
-export function messageType(message, type) {
+function messageType(message, type) {
     return type === message?.flags?.pf2e?.context?.type;
 }
 
-export function failureMessageOutcome(message) {
+function failureMessageOutcome(message) {
     return "failure" === message?.flags?.pf2e?.context?.outcome;
 }
 
-export function criticalFailureMessageOutcome(message) {
+function criticalFailureMessageOutcome(message) {
     return "criticalFailure" === message?.flags?.pf2e?.context?.outcome;
 }
 
-export function successMessageOutcome(message) {
+function successMessageOutcome(message) {
     return "success" === message?.flags?.pf2e?.context?.outcome;
 }
 
-export function criticalSuccessMessageOutcome(message) {
+function criticalSuccessMessageOutcome(message) {
     return "criticalSuccess" === message?.flags?.pf2e?.context?.outcome;
 }
 
-export function anyFailureMessageOutcome(message) {
+function anyFailureMessageOutcome(message) {
     return failureMessageOutcome(message) || criticalFailureMessageOutcome(message);
 }
 
-export function anySuccessMessageOutcome(message) {
+function anySuccessMessageOutcome(message) {
     return successMessageOutcome(message) || criticalSuccessMessageOutcome(message);
 }
-export function hasOption(message, opt) {
+function hasOption(message, opt) {
     return message?.flags?.pf2e?.context?.options?.includes(opt);
 }
 
@@ -54,7 +54,7 @@ function actorFeatBySource(actor, feat) {
     return actor?.itemTypes?.feat?.find((c => feat === c.sourceId))
 }
 
-export function canReachEnemy(attackerToken, defendToken, defendActor, specificWeapon=undefined) {
+function canReachEnemy(attackerToken, defendToken, defendActor, specificWeapon=undefined) {
     const distance = getEnemyDistance(attackerToken, defendToken);
     if (isNPC(defendActor)) {
         let baseWeapons = defendActor?.system?.actions
@@ -83,41 +83,41 @@ export function canReachEnemy(attackerToken, defendToken, defendActor, specificW
     }
 }
 
-export function adjacentEnemy(attackerToken, defendToken) {
+function adjacentEnemy(attackerToken, defendToken) {
     return getEnemyDistance(attackerToken, defendToken) <= 5
 }
 
-export function getEnemyDistance(token, target) {
+function getEnemyDistance(token, target) {
     return token.object.distanceTo(target.object);
 }
 
-export function nonReach(arr) {
+function nonReach(arr) {
     return !arr.find(b=>b.startsWith("reach"))
 }
 
-export function actorHeldWeapon(actor) {
+function actorHeldWeapon(actor) {
     return actor?.system?.actions?.filter(a=>a.ready)
 }
 
-export function hasReachWeapon(actor) {
+function hasReachWeapon(actor) {
     return actor?.system?.actions
         ?.filter(a=>a.ready)
         ?.filter(a=>a?.weaponTraits?.find(b=>b.name==="reach"))
         ?.length !== 0
 }
 
-export function isTargetCharacter(message) {
+function isTargetCharacter(message) {
     return isActorCharacter(message?.target?.actor);
 }
 
-export function isActorCharacter(actor) {
-    return "character" === actor?.type || (actor?.type === "npc" && actor?.alliance === "party");
+function isActorCharacter(actor) {
+    return ["character", "npc"].includes(actor?.type) && actor?.alliance === "party";
 }
 
-export function isNPC(actor) {
+function isNPC(actor) {
     return "npc" === actor?.type;
 }
 
-export function _uuid(obj) {
+function _uuid(obj) {
     return obj.uuid;
 }

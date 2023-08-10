@@ -82,7 +82,7 @@ class HomebrewReaction {
   }
 }
 
-export default class ReactionHomebrewSettings extends FormApplication {
+class ReactionHomebrewSettings extends FormApplication {
 
     static namespace = "homebrewSettings";
 
