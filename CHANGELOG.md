@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.36
+
+### Bug fixes
+-   Fix issue with emergency targe
+
 ## Version 0.2.35
 
 ### New feature

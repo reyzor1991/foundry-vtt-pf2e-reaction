@@ -72,7 +72,6 @@ const allReactionsMap = {
     'attack-of-opportunity': attackOfOpportunity,
     'fast-swallow': fastSwallow,
     'wicked-thorns': wickedThorns,
-    'emergency-targe': emergencyTarge,
     'impossible-technique': impossibleTechnique,
     'rippling-spin': ripplingSpin,
     'guardians-deflection-fighter': guardiansDeflectionFighter,

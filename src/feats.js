@@ -48,18 +48,6 @@ async function gritAndTenacity(message) {
     }
 };
 
-async function emergencyTarge(message) {
-    if (messageType(message, "saving-throw")) {
-        if (hasReaction(message?.token?.combatant) && anyFailureMessageOutcome(message)) {
-            const origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
-            const emergency_targe = actorFeat(message?.actor, "emergency-targe")
-            if (emergency_targe && message?.flags?.pf2e?.origin?.type  === 'spell') {
-                postInChatTemplate(_uuid(emergency_targe), message.token.combatant);
-            }
-        }
-    }
-};
-
 async function orcFerocity(message) {
     if (message?.flags?.pf2e?.appliedDamage && !message?.flags?.pf2e?.appliedDamage?.isHealing) {
         if (message.actor.system?.attributes?.hp?.value === 0 && hasReaction(message?.token?.combatant)) {
@@ -736,7 +724,15 @@ async function attackOfOpportunity(message) {
 };
 
 async function emergencyTarge(message) {
-    if (messageType(message, 'attack-roll') && anySuccessMessageOutcome(message)) {
+    if (messageType(message, "saving-throw")) {
+        if (hasReaction(message?.token?.combatant) && anyFailureMessageOutcome(message)) {
+            const origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
+            const emergency_targe = actorFeat(message?.actor, "emergency-targe")
+            if (emergency_targe && message?.flags?.pf2e?.origin?.type  === 'spell') {
+                postInChatTemplate(_uuid(emergency_targe), message.token.combatant);
+            }
+        }
+    } else if (messageType(message, 'attack-roll') && anySuccessMessageOutcome(message)) {
         if (hasReaction(message?.target?.token?.combatant)) {
             const emergency_targe = actorFeat(message?.target?.actor, "emergency-targe");
             if (emergency_targe && message?.item?.isMelee) {
