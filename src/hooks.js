@@ -45,9 +45,10 @@ function setInexhaustibleCountermoves(combatants, val) {
 }
 
 async function updateCombatantReactionState(combatant, newState, actionName=undefined) {
+    if (!combatant) {return}
     if (!newState) {
         if (!hasReaction(combatant, actionName) && game.user.isGM) {
-            ui.notifications.warn(`${combatant.name} does not have reaction anymore`);
+            ui.notifications.warn(`${combatant?.actor?.name} does not have reaction anymore`);
             return;
         }
         if (actionName === "attack-of-opportunity") {
@@ -284,6 +285,7 @@ function hasExploitVulnerabilityEffect(actor) {
 }
 
 async function decreaseReaction(combatant, actionName=undefined) {
+    if (!combatant) {return}
     updateCombatantReactionState(combatant, false, actionName);
     if (Settings.addReactionEffect && countAllReaction(combatant) <= 1) {
         setReactionEffectToActor(combatant.actor, combatant.token, reactionWasUsedEffect);
@@ -434,7 +436,7 @@ Hooks.on('createCombatant', async (combatant, test) => {
     if (game.user?.isGM) {
         updateCombatantReactionState(combatant, true)
     }
-    if (game.combat.started) {
+    if (game.combat?.started) {
         const availableReactions = game.combat.getFlag(moduleName, "availableReactions");
         const keys = Object.keys(allReactionsMap)
         keys.forEach(k => {
@@ -490,29 +492,31 @@ Hooks.on('preUpdateToken', (tokenDoc, data, deep, id) => {
     if (game?.combats?.active && (data.x > 0 || data.y > 0)) {
         const message = {"actor" : tokenDoc.actor, "token": tokenDoc, "item": createTrait("move")};
 
-        const courageousOpportunity = (game.combat.getFlag(moduleName, 'availableReactions') ?? {})['courageous-opportunity']
-        if (courageousOpportunity) {
-            courageousOpportunity.call(this, message);
-        }
-        const implementsInterruption = (game.combat.getFlag(moduleName, 'availableReactions') ?? {})['implements-interruption']
-        if (implementsInterruption) {
-            implementsInterruption.call(this, message);
-        }
-        const attackOfOpportunity = (game.combat.getFlag(moduleName, 'availableReactions') ?? {})['attack-of-opportunity']
-        if (attackOfOpportunity) {
-            attackOfOpportunity.call(this, message);
-        }
-        const standStill = (game.combat.getFlag(moduleName, 'availableReactions') ?? {})['stand-still']
-        if (standStill) {
-            standStill.call(this, message);
-        }
-        const noEscape = (game.combat.getFlag(moduleName, 'availableReactions') ?? {})['no-escape']
-        if (noEscape) {
-            noEscape.call(this, message);
-        }
-        const verdistantDefense = (game.combat.getFlag(moduleName, 'availableReactions') ?? {})['verdistant-defense']
-        if (verdistantDefense) {
-            verdistantDefense.call(this, message);
+        if (game.combat) {
+            const courageousOpportunity = (game.combat.getFlag(moduleName, 'availableReactions') ?? {})['courageous-opportunity']
+            if (courageousOpportunity) {
+                courageousOpportunity.call(this, message);
+            }
+            const implementsInterruption = (game.combat.getFlag(moduleName, 'availableReactions') ?? {})['implements-interruption']
+            if (implementsInterruption) {
+                implementsInterruption.call(this, message);
+            }
+            const attackOfOpportunity = (game.combat.getFlag(moduleName, 'availableReactions') ?? {})['attack-of-opportunity']
+            if (attackOfOpportunity) {
+                attackOfOpportunity.call(this, message);
+            }
+            const standStill = (game.combat.getFlag(moduleName, 'availableReactions') ?? {})['stand-still']
+            if (standStill) {
+                standStill.call(this, message);
+            }
+            const noEscape = (game.combat.getFlag(moduleName, 'availableReactions') ?? {})['no-escape']
+            if (noEscape) {
+                noEscape.call(this, message);
+            }
+            const verdistantDefense = (game.combat.getFlag(moduleName, 'availableReactions') ?? {})['verdistant-defense']
+            if (verdistantDefense) {
+                verdistantDefense.call(this, message);
+            }
         }
     }
 });
@@ -535,9 +539,11 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
         }
     }
 
-    Object.values(game.combat.getFlag(moduleName, 'availableReactions')).forEach(func => {
-        func.call(this, message);
-    })
+    if (game.combat) {
+        Object.values(game.combat.getFlag(moduleName, 'availableReactions')).forEach(func => {
+            func.call(this, message);
+        })
+    }
 });
 
 function sendNotification(_user, token, feat) {
