@@ -437,7 +437,7 @@ Hooks.on('createCombatant', async (combatant, test) => {
         updateCombatantReactionState(combatant, true)
     }
     if (game.combat?.started) {
-        const availableReactions = game.combat.getFlag(moduleName, "availableReactions");
+        const availableReactions = game.combat.getFlag(moduleName, "availableReactions") ?? {};
         const keys = Object.keys(allReactionsMap)
         keys.forEach(k => {
             if (actorAction(combatant.actor, k) || actorFeat(combatant.actor, k) || actorSpell(combatant.actor, k)) {
@@ -540,7 +540,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
     }
 
     if (game.combat) {
-        Object.values(game.combat.getFlag(moduleName, 'availableReactions')).forEach(func => {
+        Object.values(game.combat.getFlag(moduleName, 'availableReactions') ?? {}).forEach(func => {
             func.call(this, message);
         })
     }
