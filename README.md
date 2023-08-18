@@ -10,8 +10,7 @@
 ![](https://img.shields.io/github/downloads-pre/reyzor1991/foundry-vtt-pf2e-reaction/latest/total?label=Latest%20version)
 [![Forge Installs ULR]][Forge Installs Download]
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/W7W2LF8UA)
-
+[Support me on Patreon](https://www.patreon.com/reyzor1991)
 
 Module to notify that actor can use reaction:
 
