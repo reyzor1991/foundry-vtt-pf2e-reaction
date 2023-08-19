@@ -360,7 +360,7 @@ async function reactiveTransformation(message) {
 
 async function fakeOut(message) {
     if ((messageType(message, 'skill-check') && isActorCharacter(message?.actor) && messageWithTrait(message, "attack"))
-        || messageType(message, 'attack-roll')
+        || (messageType(message, 'attack-roll') && isActorCharacter(message?.actor))
     ) {
         characterWithReaction()
             .filter(a=>a.actorId !== message?.actor?._id)
