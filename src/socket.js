@@ -1,7 +1,7 @@
 let socketlibSocket = undefined;
 
 async function deleteItem(id) {
-    (await fromUuid(id)).delete()
+    await (await fromUuid(id)).delete()
 }
 
 async function updateItem(id, data) {

@@ -21,7 +21,7 @@ const identifySkills = new Map([
 
 const filteredTraits = ["evil", "chaotic", "neutral", "lawful", "good"]
 
-function addRecallButton(html, sheet, skill, dc, isLore=false) {
+async function addRecallButton(html, sheet, skill, dc, isLore=false) {
     const loc_skill = isLore ? skill.replaceAll("-", " ").replaceAll(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()) : game.i18n.localize("PF2E.Skill" + skill.replace(/^\w/, (c) => c.toUpperCase()));
     const rec = game.i18n.localize("PF2E.RecallKnowledge.Label");
     const but = document.createElement('div');
@@ -32,7 +32,7 @@ function addRecallButton(html, sheet, skill, dc, isLore=false) {
     a.onclick = function () {
         let content = 'To Recall Knowledge, roll:';
         content += '<br>@Check[type:'+skill+'|dc:'+dc+'|traits:secret,action:recall-knowledge]';
-        ChatMessage.create({
+        await ChatMessage.create({
             content: TextEditor.enrichHTML(content, { async: false }),
             flavor: '',
             user: null,

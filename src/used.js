@@ -9,7 +9,7 @@ async function reactionWasUsedChat(uuid, combatant) {
         whispers = whispers.concat(combatant.players.map((u) => u.id));
     }
 
-    ChatMessage.create({
+    await ChatMessage.create({
         flavor: '',
         user: null,
         speaker: {
@@ -26,7 +26,7 @@ async function reactionWasUsedChat(uuid, combatant) {
 
 
 
-Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
+Hooks.on('preCreateChatMessage', async (message, user, _options, userId)=>{
     if (!game?.combats?.active) {return}
 
     if (messageType(message, 'attack-roll')) {

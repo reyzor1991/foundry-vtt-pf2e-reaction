@@ -25,21 +25,21 @@ function calculateDegreeOfSuccess(dc, rollTotal, dieResult) {
     return adjustDegreeByDieValue(dieResult, 1);
 }
 
-function updateInexhaustibleCountermoves(combatant) {
+async function updateInexhaustibleCountermoves(combatant) {
     if (!combatant) {
         return
     }
     if (isNPC(combatant.actor)) {
-        setInexhaustibleCountermoves(game.combat.combatants.filter(a=>isActorCharacter(a.actor)), 1)
+        await setInexhaustibleCountermoves(game.combat.combatants.filter(a=>isActorCharacter(a.actor)), 1)
     } else {
-        setInexhaustibleCountermoves(game.combat.combatants.filter(a=>isActorCharacter(a.actor)), 0)
+        await setInexhaustibleCountermoves(game.combat.combatants.filter(a=>isActorCharacter(a.actor)), 0)
     }
 }
 
-function setInexhaustibleCountermoves(combatants, val) {
+async function setInexhaustibleCountermoves(combatants, val) {
     combatants.forEach(cc=> {
         if (actorFeat(cc.actor, "inexhaustible-countermoves")) {
-            cc.setFlag(moduleName, 'inexhaustible-countermoves', val);
+            await cc.setFlag(moduleName, 'inexhaustible-countermoves', val);
         }
     })
 }
@@ -181,7 +181,7 @@ function actorFeats(actor, feats) {
 }
 
 async function postTargetInChatTemplate(uuid, combatant) {
-    postInChatTemplate(uuid, combatant, undefined, false, true)
+    await postInChatTemplate(uuid, combatant, undefined, false, true)
 }
 
 async function postInChatTemplate(uuid, combatant, actionName=undefined, skipDeath=false, needTarget=false) {
@@ -248,7 +248,7 @@ async function postInChatTemplate(uuid, combatant, actionName=undefined, skipDea
     }
 }
 
-function checkRingmasterIntroduction(combatant) {
+async function checkRingmasterIntroduction(combatant) {
     if (isActorCharacter(combatant?.actor)) {
         characterWithReaction()
             .filter(a=>a.tokenId !== combatant.tokenId)
@@ -256,7 +256,7 @@ function checkRingmasterIntroduction(combatant) {
             .forEach(cc => {
                 const ringmasters_introduction = actorFeat(cc.actor, "ringmasters-introduction");
                 if (ringmasters_introduction) {
-                    postInChatTemplate(_uuid(ringmasters_introduction), cc);
+                    await postInChatTemplate(_uuid(ringmasters_introduction), cc);
                 }
             })
     }
@@ -286,9 +286,9 @@ function hasExploitVulnerabilityEffect(actor) {
 
 async function decreaseReaction(combatant, actionName=undefined) {
     if (!combatant) {return}
-    updateCombatantReactionState(combatant, false, actionName);
+    await updateCombatantReactionState(combatant, false, actionName);
     if (Settings.addReactionEffect && countAllReaction(combatant) <= 1) {
-        setReactionEffectToActor(combatant.actor, combatant.token, reactionWasUsedEffect);
+        await setReactionEffectToActor(combatant.actor, combatant.token, reactionWasUsedEffect);
     }
 }
 
@@ -318,7 +318,7 @@ $(document).on('click', '.reaction-check', async function () {
         if (t) {
             const combatant = game.combat.turns.find(a => a._id === t);
             if (combatant) {
-                decreaseReaction(combatant, actionName);
+                await decreaseReaction(combatant, actionName);
                 if (reactions > 1 && count > 1) {
                     let text = game.i18n.format("pf2e-reaction.ask", {uuid: uuid, name: combatant.token.name});
                     if (count-1 > 1) {
@@ -343,25 +343,25 @@ $(document).on('click', '.reaction-check', async function () {
                 } else {
                     //Left == here, I *think* it's a bug. Should probably be ```mes.permission === "granted"```
                     if (mes.permission === 3 || game.user?.isGM) {
-                        mes.delete()
+                        await mes.delete()
                     } else {
                         socketlibSocket._sendRequest("deleteItem", [mes.uuid], 0)
                     }
                 }
                 if (Settings.postMessage && uuid) {
-                    (await fromUuid(uuid))?.toMessage()
+                    await (await fromUuid(uuid))?.toMessage()
                 }
             }
         }
     }
 });
 
-$(document).on('click', '.reaction-cancel', function () {
+$(document).on('click', '.reaction-cancel', async function () {
     const mid = $(this).parent().parent().parent().data('message-id');
     if (mid) {
         const mes = game.messages.get(mid);
         if (mes.permission === 3 || game.user?.isGM) {
-            mes.delete()
+            await mes.delete()
         } else {
             socketlibSocket._sendRequest("deleteItem", [game.messages.get(mid)?.uuid], 0)
         }
@@ -370,43 +370,43 @@ $(document).on('click', '.reaction-cancel', function () {
 
 Hooks.on('combatTurn', async (combat, updateData, updateOptions) => {
     const _combatant = combat.nextCombatant;
-    updateCombatantReactionState(_combatant, true);
-    updateInexhaustibleCountermoves(_combatant);
+    await updateCombatantReactionState(_combatant, true);
+    await updateInexhaustibleCountermoves(_combatant);
     if (isActorCharacter(_combatant?.actor)) {
         npcWithReaction()
             .forEach(cc => {
                 const pg = actorAction(cc.actor, "petrifying-glance");
                 if (pg && getEnemyDistance(_combatant.token, cc.token <= 30)) {
-                    postInChatTemplate(_uuid(pg), cc);
+                    await postInChatTemplate(_uuid(pg), cc);
                 }
             })
     }
     const sps = actorFeat(_combatant?.actor, "scapegoat-parallel-self");
     if (sps) {
-        postInChatTemplate(_uuid(sps), _combatant);
+        await postInChatTemplate(_uuid(sps), _combatant);
     }
     if (combat.round === 1) {
-        checkRingmasterIntroduction(_combatant)
+        await checkRingmasterIntroduction(_combatant)
     }
 });
 
 Hooks.on('combatRound', async (combat, updateData, updateOptions) => {
     if (combat.turns.length >= 1) {
         const _combatant = combat.turns[0];
-        updateCombatantReactionState(_combatant, true);
-        updateInexhaustibleCountermoves(_combatant);
+        await updateCombatantReactionState(_combatant, true);
+        await updateInexhaustibleCountermoves(_combatant);
         if (isActorCharacter(_combatant?.actor)) {
             npcWithReaction()
                 .forEach(cc => {
                     const pg = actorAction(cc.actor, "petrifying-glance");
                     if (pg && getEnemyDistance(_combatant.token, cc.token <= 30)) {
-                        postInChatTemplate(_uuid(pg), cc);
+                        await postInChatTemplate(_uuid(pg), cc);
                     }
                 })
         }
         const sps = actorFeat(_combatant?.actor, "scapegoat-parallel-self");
         if (sps) {
-            postInChatTemplate(_uuid(sps), _combatant);
+            await postInChatTemplate(_uuid(sps), _combatant);
         }
     }
 });
@@ -417,7 +417,7 @@ Hooks.on('combatStart', async combat => {
     const keys = Object.keys(allReactionsMap)
 
     combat.turns.forEach(cc =>{
-        updateCombatantReactionState(cc, true)
+        await updateCombatantReactionState(cc, true)
 
         keys.forEach(k => {
             if (actorAction(cc.actor, k) || actorFeat(cc.actor, k) || actorSpell(cc.actor, k)) {
@@ -426,8 +426,8 @@ Hooks.on('combatStart', async combat => {
         })
     });
 
-    updateInexhaustibleCountermoves(combat.turns[0]);
-    checkRingmasterIntroduction(combat.turns[0]);
+    await updateInexhaustibleCountermoves(combat.turns[0]);
+    await checkRingmasterIntroduction(combat.turns[0]);
 
     await combat.setFlag(moduleName, "availableReactions", availableReactions)
 });
@@ -463,7 +463,7 @@ Hooks.on('renderChatMessage', (app, html, msg) => {
     }
 });
 
-Hooks.on('createItem', (effect, data, id) => {
+Hooks.on('createItem', async (effect, data, id) => {
     if ("effect-raise-a-shield" === effect.slug && isActorCharacter(effect.actor)) {
         const currCom = game.combat.turns.find(a => a.actorId === effect.actor.id);
         const withShield = game.combat.turns.filter(a => isActorCharacter(a.actor))
@@ -473,7 +473,7 @@ Hooks.on('createItem', (effect, data, id) => {
             const adjacent = withShield
                 .filter(a => adjacentEnemy(a.token, currCom.token));
             if (adjacent.length > 1) {
-                postInChatTemplate(_uuid(shield_wall), currCom);
+                await postInChatTemplate(_uuid(shield_wall), currCom);
             }
         }
         withShield.filter(a=>hasReaction(a))
@@ -482,40 +482,40 @@ Hooks.on('createItem', (effect, data, id) => {
         .forEach(cc => {
             const shield_wall_ = actorFeat(a.actor, "shield-wall");
             if (shield_wall_) {
-                postInChatTemplate(_uuid(shield_wall_), cc);
+                await postInChatTemplate(_uuid(shield_wall_), cc);
             }
         });
     }
 });
 
-Hooks.on('preUpdateToken', (tokenDoc, data, deep, id) => {
+Hooks.on('preUpdateToken', async (tokenDoc, data, deep, id) => {
     if (game?.combats?.active && (data.x > 0 || data.y > 0)) {
         const message = {"actor" : tokenDoc.actor, "token": tokenDoc, "item": createTrait("move")};
 
         if (game.combat) {
             const courageousOpportunity = (game.combat.getFlag(moduleName, 'availableReactions') ?? {})['courageous-opportunity']
             if (courageousOpportunity) {
-                courageousOpportunity.call(this, message);
+                await courageousOpportunity.call(this, message);
             }
             const implementsInterruption = (game.combat.getFlag(moduleName, 'availableReactions') ?? {})['implements-interruption']
             if (implementsInterruption) {
-                implementsInterruption.call(this, message);
+                await implementsInterruption.call(this, message);
             }
             const attackOfOpportunity = (game.combat.getFlag(moduleName, 'availableReactions') ?? {})['attack-of-opportunity']
             if (attackOfOpportunity) {
-                attackOfOpportunity.call(this, message);
+                await attackOfOpportunity.call(this, message);
             }
             const standStill = (game.combat.getFlag(moduleName, 'availableReactions') ?? {})['stand-still']
             if (standStill) {
-                standStill.call(this, message);
+                await standStill.call(this, message);
             }
             const noEscape = (game.combat.getFlag(moduleName, 'availableReactions') ?? {})['no-escape']
             if (noEscape) {
-                noEscape.call(this, message);
+                await noEscape.call(this, message);
             }
             const verdistantDefense = (game.combat.getFlag(moduleName, 'availableReactions') ?? {})['verdistant-defense']
             if (verdistantDefense) {
-                verdistantDefense.call(this, message);
+                await verdistantDefense.call(this, message);
             }
         }
     }
@@ -534,7 +534,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
         ) {
             const ImNotCrying = actorActionBySource(message?.target?.actor, "Item.ncKVztM6EL4i98dL");
             if (ImNotCrying && adjacentEnemy(message.target.token, message.token)) {
-                postInChatTemplate(_uuid(ImNotCrying), message.target.token.combatant);
+                await postInChatTemplate(_uuid(ImNotCrying), message.target.token.combatant);
             }
         }
     }
