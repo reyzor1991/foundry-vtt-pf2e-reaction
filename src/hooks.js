@@ -589,8 +589,7 @@ Hooks.on("targetToken", (_user, token, isTargeted, opts) => {
                     const radius = Math.max(...Array.from(cc.actor.auras.values()).map(a => a.radius));
                     if (getEnemyDistance(token.document, cc.token) <= radius) {
                         const ed = actorFeat(cc.actor, "everdistant-defense");
-                        const text = game.i18n.format("pf2e-reaction.notify", {uuid: ed.name, name: cc.name});
-                        ui.notifications.info(`${_user.name} targets ${token.name}. ${text}`);
+                        sendNotification(_user, token, nd)
                     }
                 })
             } else {
