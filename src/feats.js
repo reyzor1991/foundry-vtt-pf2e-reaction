@@ -207,14 +207,14 @@ async function mageHunter(message) {
                 if (canReachEnemy(message.token, cc.token, cc.actor)) {
                     const mage_hunter = actorFeat(cc.actor, "mage-hunter");
                     if (mage_hunter) {
-                        await postInChatTemplate(_uuid(mage_hunter), cc);
+                        postInChatTemplate(_uuid(mage_hunter), cc);
                     }
                 }
 
                 if (getEnemyDistance(message.token, cc.token) <= 30) {
                     const counter_thought = actorFeat(cc.actor, "counter-thought");
                     if (counter_thought && spellWithTrait(message?.item, "mental")) {
-                        await postInChatTemplate(_uuid(counter_thought), cc);
+                        postInChatTemplate(_uuid(counter_thought), cc);
                     }
                 }
             })
@@ -231,7 +231,7 @@ async function accompany(message) {
                     .forEach(cc => {
                         const accompany = actorFeat(cc.actor, "accompany");
                         if (accompany) {
-                            await postInChatTemplate(_uuid(accompany), cc);
+                            postInChatTemplate(_uuid(accompany), cc);
                         }
                     })
             }
@@ -251,7 +251,7 @@ async function spellRelay(message) {
                 .forEach(cc => {
                     const spell_relay = actorFeat(cc.actor, "spell-relay");
                     if (spell_relay) {
-                        await postInChatTemplate(_uuid(spell_relay), cc);
+                        postInChatTemplate(_uuid(spell_relay), cc);
                     }
                 })
         }
@@ -371,7 +371,7 @@ async function fakeOut(message) {
                     if (weapon.length > 0) {
                         const range = Math.max(...weapon.map(a => a.item.rangeIncrement));
                         if (getEnemyDistance(cc?.token, message.target.token) <= range) {
-                            await postInChatTemplate(_uuid(fake_out), cc);
+                            postInChatTemplate(_uuid(fake_out), cc);
                         }
                     }
                 }
@@ -402,7 +402,7 @@ async function rapidResponse(message) {
                 .forEach(cc => {
                     const rapid_response = actorFeat(cc.actor, "rapid-response");
                     if (rapid_response) {
-                        await postInChatTemplate(_uuid(rapid_response), cc);
+                        postInChatTemplate(_uuid(rapid_response), cc);
                     }
                 });
             }
@@ -420,7 +420,7 @@ async function no(message) {
                 .forEach(cc => {
                     const no = actorFeat(cc.actor, "no");
                     if (no && message?.actor?.combatant && getEnemyDistance(message.token, cc.token) <= 60) {
-                        await postInChatTemplate(_uuid(no), cc);
+                        postInChatTemplate(_uuid(no), cc);
                     }
                 });
             }
@@ -457,7 +457,7 @@ async function distractingExplosion(message) {
             .forEach(cc => {
                 const distracting_explosion = actorFeat(cc.actor, "distracting-explosion");
                 if (distracting_explosion) {
-                    await postInChatTemplate(_uuid(distracting_explosion), cc);
+                    postInChatTemplate(_uuid(distracting_explosion), cc);
                 }
             });
     }
@@ -692,7 +692,7 @@ async function courageousOpportunity(message) {
             .forEach(cc => {
                 const courageous_opportunity = actorFeat(cc.actor, "courageous-opportunity");
                 if (courageous_opportunity) {
-                    await postInChatTemplate(_uuid(courageous_opportunity), cc);
+                    postInChatTemplate(_uuid(courageous_opportunity), cc);
                 }
             });
     }
@@ -716,7 +716,7 @@ async function attackOfOpportunity(message) {
                         }
                     }
                     if (canReachEnemy(message.token, cc.token, cc.actor, specificWeapon)) {
-                        await postInChatTemplate(_uuid(aoo), cc, "attack-of-opportunity");
+                        postInChatTemplate(_uuid(aoo), cc, "attack-of-opportunity");
                     }
                 }
             })
@@ -783,7 +783,7 @@ async function guardiansDeflectionFighter(message) {
                     .forEach(cc => {
                         const guardians_def = actorFeat(cc.actor, "guardians-deflection-fighter");
                         if (guardians_def) {
-                            await postInChatTemplate(_uuid(guardians_def), cc);
+                            postInChatTemplate(_uuid(guardians_def), cc);
                         }
                     })
             }
@@ -804,7 +804,7 @@ async function guardiansDeflectionSwashbuckler(message) {
                     .forEach(cc => {
                         const guardians_def = actorFeat(cc.actor, "guardians-deflection-swashbuckler");
                         if (guardians_def) {
-                            await postInChatTemplate(_uuid(guardians_def), cc);
+                            postInChatTemplate(_uuid(guardians_def), cc);
                         }
                     })
             }
@@ -818,7 +818,7 @@ async function standStill(message) {
             .forEach(cc => {
                 const stand_still = actorFeat(cc.actor, "stand-still");
                 if (stand_still && canReachEnemy(message?.token, cc.token, cc.actor)) {
-                    await postInChatTemplate(_uuid(stand_still), cc);
+                    postInChatTemplate(_uuid(stand_still), cc);
                 }
             });
     }
@@ -830,7 +830,7 @@ async function noEscape(message) {
             .forEach(cc => {
                 const no_escape = actorFeat(cc.actor, "no-escape");
                 if (no_escape && canReachEnemy(message?.token, cc.token, cc.actor)) {
-                    await postInChatTemplate(_uuid(no_escape), cc);
+                    postInChatTemplate(_uuid(no_escape), cc);
                 }
             });
     }
@@ -845,7 +845,7 @@ async function verdistantDefense(message) {
                 if (everdistant_defense) {
                     const radius = Math.max(...Array.from(cc.actor.auras.values()).map(a => a.radius));
                     if (getEnemyDistance(tokenDoc, cc.token) <= radius) {
-                        await postInChatTemplate(_uuid(everdistant_defense), cc);
+                        postInChatTemplate(_uuid(everdistant_defense), cc);
                     }
                 }
             })

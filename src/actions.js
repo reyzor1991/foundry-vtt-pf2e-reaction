@@ -13,7 +13,7 @@ async function ringBell(message) {
             .forEach(cc => {
                 const ring_bell_ = actorAction(cc?.actor, "ring-bell");
                 if (ring_bell_ && getEnemyDistance(cc?.token, message.token)<=30) {
-                    await postInChatTemplate(_uuid(ring_bell_), cc);
+                    postInChatTemplate(_uuid(ring_bell_), cc);
                 }
             })
         }
@@ -37,7 +37,7 @@ async function ringBell(message) {
                     && getEnemyDistance(cc?.token, origin?.actor?.token)<=30
                     && hasExploitVulnerabilityEffect(origin?.actor)
                 ) {
-                    await postTargetInChatTemplate(_uuid(rb), cc);
+                    postTargetInChatTemplate(_uuid(rb), cc);
                 }
             })
         }
@@ -94,7 +94,7 @@ async function amuletsAbeyance(message) {
                 if (getEnemyDistance(message.target.token, cc.token) <= 15 && hasExploitVulnerabilityEffect(message.actor)) {
                     const aab = actorAction(cc.actor, "amulets-abeyance");
                     if (aab) {
-                        await postTargetInChatTemplate(_uuid(aab), cc);
+                        postTargetInChatTemplate(_uuid(aab), cc);
                     }
                 }
             })
@@ -112,7 +112,7 @@ async function retributiveStrike(message) {
                 if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15) {
                     const retributivestrike = actorAction(cc.actor, "retributive-strike");
                     if (retributivestrike) {
-                        await postTargetInChatTemplate(_uuid(retributivestrike), cc);
+                        postTargetInChatTemplate(_uuid(retributivestrike), cc);
                     }
                 }
             })
@@ -130,7 +130,7 @@ async function denierOfDestruction(message) {
                 if (getEnemyDistance(message.target.token, cc.token) <= 30) {
                     const dod = actorAction(cc.actor, "denier-of-destruction");
                     if (dod) {
-                        await postTargetInChatTemplate(_uuid(dod), cc);
+                        postTargetInChatTemplate(_uuid(dod), cc);
                     }
                 }
             })
@@ -148,7 +148,7 @@ async function glimpseOfRedemption(message) {
                 if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15) {
                     const gor = actorAction(cc.actor, "glimpse-of-redemption");
                     if (gor) {
-                        await postTargetInChatTemplate(_uuid(gor), cc);
+                        postTargetInChatTemplate(_uuid(gor), cc);
                     }
                 }
             })
@@ -166,7 +166,7 @@ async function liberatingStep(message) {
                 if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15) {
                     const liberatingstep = actorAction(cc.actor, "liberating-step");
                     if (liberatingstep) {
-                        await postTargetInChatTemplate(_uuid(liberatingstep), cc);
+                        postTargetInChatTemplate(_uuid(liberatingstep), cc);
                     }
                 }
             })
@@ -180,7 +180,7 @@ async function liberatingStep(message) {
                     if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15){
                         const liberating_step = actorAction(cc.actor, "liberating-step");
                         if (liberating_step) {
-                            await postTargetInChatTemplate(_uuid(liberating_step), cc);
+                            postTargetInChatTemplate(_uuid(liberating_step), cc);
                         }
                     }
                 }
@@ -254,7 +254,7 @@ async function avengingBite(message) {
                 if (adjacentEnemy(message.token, cc.token)) {
                     const ab = actorAction(cc.actor, "avenging-bite");
                     if (ab) {
-                        await postInChatTemplate(_uuid(ab), cc?.token?.combatant);
+                        postInChatTemplate(_uuid(ab), cc?.token?.combatant);
                     }
                 }
             })
@@ -275,7 +275,7 @@ async function implementsInterruption(message) {
                     || (getEnemyDistance(message.token, cc.token) <=10 && actorHeldWeapon(cc.actor).filter(a=>a?.item?.isRanged).length >= 1)
                 )
             ) {
-                await postInChatTemplate(_uuid(implements_interruption), cc);
+                postInChatTemplate(_uuid(implements_interruption), cc);
             }
         });
     }

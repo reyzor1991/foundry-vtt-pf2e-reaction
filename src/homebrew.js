@@ -323,7 +323,7 @@ async function handleHomebrewMessages(message) {
                     combatantsForTriggers(tt, message)
                         .filter(a=>actorFeatBySource(a.actor, hr.uuid) || actorActionBySource(a.actor, hr.uuid) || actorSpellBySource(a.actor, hr.uuid))
                         .forEach(cc => {
-                            await postInChatTemplate(_uuid(hr), cc, undefined, tt.find(a=>a.name==="YouHPZero") !== undefined);
+                            postInChatTemplate(_uuid(hr), cc, undefined, tt.find(a=>a.name==="YouHPZero") !== undefined);
                         })
                 }
             })

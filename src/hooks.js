@@ -39,7 +39,7 @@ async function updateInexhaustibleCountermoves(combatant) {
 async function setInexhaustibleCountermoves(combatants, val) {
     combatants.forEach(cc=> {
         if (actorFeat(cc.actor, "inexhaustible-countermoves")) {
-            await cc.setFlag(moduleName, 'inexhaustible-countermoves', val);
+            cc.setFlag(moduleName, 'inexhaustible-countermoves', val);
         }
     })
 }
@@ -256,7 +256,7 @@ async function checkRingmasterIntroduction(combatant) {
             .forEach(cc => {
                 const ringmasters_introduction = actorFeat(cc.actor, "ringmasters-introduction");
                 if (ringmasters_introduction) {
-                    await postInChatTemplate(_uuid(ringmasters_introduction), cc);
+                    postInChatTemplate(_uuid(ringmasters_introduction), cc);
                 }
             })
     }
@@ -377,7 +377,7 @@ Hooks.on('combatTurn', async (combat, updateData, updateOptions) => {
             .forEach(cc => {
                 const pg = actorAction(cc.actor, "petrifying-glance");
                 if (pg && getEnemyDistance(_combatant.token, cc.token <= 30)) {
-                    await postInChatTemplate(_uuid(pg), cc);
+                    postInChatTemplate(_uuid(pg), cc);
                 }
             })
     }
@@ -400,7 +400,7 @@ Hooks.on('combatRound', async (combat, updateData, updateOptions) => {
                 .forEach(cc => {
                     const pg = actorAction(cc.actor, "petrifying-glance");
                     if (pg && getEnemyDistance(_combatant.token, cc.token <= 30)) {
-                        await postInChatTemplate(_uuid(pg), cc);
+                        postInChatTemplate(_uuid(pg), cc);
                     }
                 })
         }
@@ -417,7 +417,7 @@ Hooks.on('combatStart', async combat => {
     const keys = Object.keys(allReactionsMap)
 
     combat.turns.forEach(cc =>{
-        await updateCombatantReactionState(cc, true)
+        updateCombatantReactionState(cc, true)
 
         keys.forEach(k => {
             if (actorAction(cc.actor, k) || actorFeat(cc.actor, k) || actorSpell(cc.actor, k)) {
@@ -482,7 +482,7 @@ Hooks.on('createItem', async (effect, data, id) => {
         .forEach(cc => {
             const shield_wall_ = actorFeat(a.actor, "shield-wall");
             if (shield_wall_) {
-                await postInChatTemplate(_uuid(shield_wall_), cc);
+                postInChatTemplate(_uuid(shield_wall_), cc);
             }
         });
     }

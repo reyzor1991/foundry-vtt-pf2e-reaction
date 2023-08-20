@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.39
+
+### New feature
+-   Reaction checking optimization
+
 ## Version 0.2.38
 
 ### Bug fixes

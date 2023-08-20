@@ -32,7 +32,7 @@ async function addRecallButton(html, sheet, skill, dc, isLore=false) {
     a.onclick = function () {
         let content = 'To Recall Knowledge, roll:';
         content += '<br>@Check[type:'+skill+'|dc:'+dc+'|traits:secret,action:recall-knowledge]';
-        await ChatMessage.create({
+        ChatMessage.create({
             content: TextEditor.enrichHTML(content, { async: false }),
             flavor: '',
             user: null,
