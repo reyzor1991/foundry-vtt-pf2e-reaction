@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.40
+
+### New feature
+-   ([liyu](https://github.com/LiyuNodream)) Add Chinese Translation 
+
 ## Version 0.2.39
 
 ### New feature
