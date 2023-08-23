@@ -50,7 +50,7 @@
 	"pf2e-reaction.recall-knowledge-veryEasyLore.name": "简单等级的回忆知识",
 	"pf2e-reaction.recall-knowledge-veryEasyLore.hint": "向 NPC 角色卡中添加'非常简单'困难等级的回忆知识模块",
 	"pf2e-reaction.weaponRange.name": "基础触及",
-	"pf2e-reaction.weaponRange.hint": "用来检定借机攻击时，武器默认的触及范围",
+	"pf2e-reaction.weaponRange.hint": "检定借机攻击时，武器默认的触及范围",
 	"pf2e-reaction.notify": "{name} 拥有 {uuid}。请务必注意！",
 	"pf2e-reaction.ask": "{name} 可以使用 @UUID[{uuid}]。是否使用该反应动作？",
 	"pf2e-reaction.askMultiple": "{name} 可以使用 @UUID[{uuid}]，共计触发 {count} 次。是否使用该反应动作？",
