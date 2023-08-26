@@ -231,7 +231,7 @@ async function postInChatTemplate(uuid, combatant, actionName=undefined, skipDea
             'flags.pf2e-reaction.reactions': countReaction(combatant, actionName)
         }, { noHook: true})
     } else {
-        await ChatMessage.create({
+        ChatMessage.create({
             flavor: '',
             user: null,
             speaker: {
@@ -244,6 +244,13 @@ async function postInChatTemplate(uuid, combatant, actionName=undefined, skipDea
             content: content,
             whisper: whispers,
             flags: {'pf2e-reaction': check}
+        }).then(m=>{
+            const tt = game.settings.get("pf2e-reaction", "timeoutDelete")
+            if (tt > 0) {
+                setTimeout(function() {
+                    m.delete()
+                }, tt*1000)
+            }
         });
     }
 }
@@ -412,18 +419,14 @@ Hooks.on('combatRound', async (combat, updateData, updateOptions) => {
 });
 
 Hooks.on('combatStart', async combat => {
-    const availableReactions = {};
+    const availableReactions = [];
 
     const keys = Object.keys(allReactionsMap)
 
     combat.turns.forEach(cc =>{
         updateCombatantReactionState(cc, true)
 
-        keys.forEach(k => {
-            if (actorAction(cc.actor, k) || actorFeat(cc.actor, k) || actorSpell(cc.actor, k)) {
-                availableReactions[k] = allReactionsMap[k];
-            }
-        })
+        availableReactions.push(...keys.filter(k=>actorAction(cc.actor, k) || actorFeat(cc.actor, k) || actorSpell(cc.actor, k)));
     });
 
     await updateInexhaustibleCountermoves(combat.turns[0]);
@@ -437,13 +440,9 @@ Hooks.on('createCombatant', async (combatant, test) => {
         updateCombatantReactionState(combatant, true)
     }
     if (game.combat?.started) {
-        const availableReactions = game.combat.getFlag(moduleName, "availableReactions") ?? {};
-        const keys = Object.keys(allReactionsMap)
-        keys.forEach(k => {
-            if (actorAction(combatant.actor, k) || actorFeat(combatant.actor, k) || actorSpell(combatant.actor, k)) {
-                availableReactions[k] = allReactionsMap[k];
-            }
-        })
+        const availableReactions = game.combat.getFlag(moduleName, "availableReactions") ?? [];
+        availableReactions.push(...keys.filter(k=>actorAction(combatant.actor, k) || actorFeat(combatant.actor, k) || actorSpell(combatant.actor, k)));
+
         await game.combat.setFlag(moduleName, "availableReactions", availableReactions)
     }
 });
@@ -493,28 +492,24 @@ Hooks.on('preUpdateToken', async (tokenDoc, data, deep, id) => {
         const message = {"actor" : tokenDoc.actor, "token": tokenDoc, "item": createTrait("move")};
 
         if (game.combat) {
-            const courageousOpportunity = (game.combat.getFlag(moduleName, 'availableReactions') ?? {})['courageous-opportunity']
-            if (courageousOpportunity) {
+            const availableReactions = game.combat.getFlag(moduleName, 'availableReactions') ?? []
+
+            if (availableReactions.includes('courageous-opportunity')) {
                 await courageousOpportunity.call(this, message);
             }
-            const implementsInterruption = (game.combat.getFlag(moduleName, 'availableReactions') ?? {})['implements-interruption']
-            if (implementsInterruption) {
+            if (availableReactions.includes('implements-interruption')) {
                 await implementsInterruption.call(this, message);
             }
-            const attackOfOpportunity = (game.combat.getFlag(moduleName, 'availableReactions') ?? {})['attack-of-opportunity']
-            if (attackOfOpportunity) {
+            if (availableReactions.includes('attack-of-opportunity')) {
                 await attackOfOpportunity.call(this, message);
             }
-            const standStill = (game.combat.getFlag(moduleName, 'availableReactions') ?? {})['stand-still']
-            if (standStill) {
+            if (availableReactions.includes('stand-still')) {
                 await standStill.call(this, message);
             }
-            const noEscape = (game.combat.getFlag(moduleName, 'availableReactions') ?? {})['no-escape']
-            if (noEscape) {
+            if (availableReactions.includes('no-escape')) {
                 await noEscape.call(this, message);
             }
-            const verdistantDefense = (game.combat.getFlag(moduleName, 'availableReactions') ?? {})['verdistant-defense']
-            if (verdistantDefense) {
+            if (availableReactions.includes('verdistant-defense')) {
                 await verdistantDefense.call(this, message);
             }
         }
@@ -540,8 +535,10 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
     }
 
     if (game.combat) {
-        Object.values(game.combat.getFlag(moduleName, 'availableReactions') ?? {}).forEach(func => {
-            func.call(this, message);
+        Object.values(game.combat.getFlag(moduleName, 'availableReactions') ?? []).forEach(func => {
+            if (allReactionsMap[func]) {
+                allReactionsMap[func].call(this, message);
+            }
         })
     }
 });

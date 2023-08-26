@@ -104,6 +104,14 @@ class Settings {
             default: false,
             type: Boolean,
         });
+        game.settings.register("pf2e-reaction", "timeoutDelete", {
+            name: "Delete message after timeout(in seconds)",
+            hint: "0 means not delete",
+            scope: "world",
+            config: true,
+            default: 0,
+            type: Number,
+        });
     }
 
 }

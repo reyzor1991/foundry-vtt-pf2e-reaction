@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.43
+
+### New feature
+-   Add delete timeout
+
 ## Version 0.2.40
 
 ### New feature
