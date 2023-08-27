@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.44
+
+### New feature
+-   Checking conditions to determine that actor could use reaction
+
 ## Version 0.2.43
 
 ### New feature

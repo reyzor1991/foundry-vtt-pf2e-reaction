@@ -145,7 +145,10 @@ function countReaction(combatant, actionName=undefined) {
 }
 
 function hasReaction(combatant, actionName=undefined) {
-    return countReaction(combatant, actionName) > 0;
+    return countReaction(combatant, actionName) > 0
+    && !hasCondition(combatant.actor, "confused")
+    && !hasCondition(combatant.actor, "petrified")
+    && !hasCondition(combatant.actor, "unconscious");
 }
 
 function characterWithReaction() {
@@ -441,7 +444,7 @@ Hooks.on('createCombatant', async (combatant, test) => {
     }
     if (game.combat?.started) {
         const availableReactions = game.combat.getFlag(moduleName, "availableReactions") ?? [];
-        availableReactions.push(...keys.filter(k=>actorAction(combatant.actor, k) || actorFeat(combatant.actor, k) || actorSpell(combatant.actor, k)));
+        availableReactions.push(...Object.keys(allReactionsMap).filter(k=>actorAction(combatant.actor, k) || actorFeat(combatant.actor, k) || actorSpell(combatant.actor, k)));
 
         await game.combat.setFlag(moduleName, "availableReactions", availableReactions)
     }
