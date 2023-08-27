@@ -4,13 +4,14 @@ async function ringBell(message) {
             const ring_bell = actorAction(message?.target?.actor, "ring-bell");
             if (ring_bell
                     && getEnemyDistance(message.token, message.target.token)<=30
-                    && hasExploitVulnerabilityEffect(message.actor)) {
+                    && hasExploitVulnerabilityEffect(message.actor, message?.target?.actor)) {
                     await postInChatTemplate(_uuid(ring_bell), message.target.token.combatant);
             }
         }
-        if (isTargetCharacter(message) && hasExploitVulnerabilityEffect(message.actor)) {
+        if (isTargetCharacter(message)) {
             characterWithReaction()
             .forEach(cc => {
+                if (!hasExploitVulnerabilityEffect(message.actor, cc.actor)) {return;}
                 const ring_bell_ = actorAction(cc?.actor, "ring-bell");
                 if (ring_bell_ && getEnemyDistance(cc?.token, message.token)<=30) {
                     postInChatTemplate(_uuid(ring_bell_), cc);
@@ -23,7 +24,7 @@ async function ringBell(message) {
             const rb__ = actorAction(message?.actor, "ring-bell");
             if (rb__
                 && getEnemyDistance(message.token, origin?.actor?.token)<=30
-                && hasExploitVulnerabilityEffect(origin?.actor)
+                && hasExploitVulnerabilityEffect(origin?.actor, message.actor)
             ) {
                 await postInChatTemplate(_uuid(rb__), message?.actor?.combatant);
             }
@@ -35,7 +36,7 @@ async function ringBell(message) {
                 const rb = actorAction(cc?.actor, "ring-bell");
                 if (rb
                     && getEnemyDistance(cc?.token, origin?.actor?.token)<=30
-                    && hasExploitVulnerabilityEffect(origin?.actor)
+                    && hasExploitVulnerabilityEffect(origin?.actor, cc.actor)
                 ) {
                     postTargetInChatTemplate(_uuid(rb), cc);
                 }
@@ -81,7 +82,7 @@ async function amuletsAbeyance(message) {
     if (messageType(message, 'damage-roll')) {
         if (hasReaction(message?.target?.token?.combatant)) {
             const amulets_abeyance = actorAction(message?.target?.actor, "amulets-abeyance");
-            if (amulets_abeyance && hasExploitVulnerabilityEffect(message.actor)) {
+            if (amulets_abeyance && hasExploitVulnerabilityEffect(message.actor, message?.target?.actor)) {
                 await postInChatTemplate(_uuid(amulets_abeyance), message?.target?.token?.combatant);
             }
         }
@@ -91,7 +92,7 @@ async function amuletsAbeyance(message) {
             (isActorCharacter(message?.target?.actor) ? characterWithReaction() : npcWithReaction())
             .filter(a=>a.actorId !== message?.target?.actor._id)
             .forEach(cc => {
-                if (getEnemyDistance(message.target.token, cc.token) <= 15 && hasExploitVulnerabilityEffect(message.actor)) {
+                if (getEnemyDistance(message.target.token, cc.token) <= 15 && hasExploitVulnerabilityEffect(message.actor, cc.actor)) {
                     const aab = actorAction(cc.actor, "amulets-abeyance");
                     if (aab) {
                         postTargetInChatTemplate(_uuid(aab), cc);
@@ -264,18 +265,19 @@ async function avengingBite(message) {
 
 async function implementsInterruption(message) {
     if (!isActorCharacter(message.actor)
-        && hasExploitVulnerabilityEffect(message.actor)
         && messageWithAnyTrait(message, ["concentrate", "manipulate", "move"])
     ) {
         characterWithReaction()
         .forEach(cc => {
             const implements_interruption = actorAction(cc.actor, "implements-interruption");
-            if (implements_interruption
-                && (canReachEnemy(message.token, cc.token, cc.actor)
-                    || (getEnemyDistance(message.token, cc.token) <=10 && actorHeldWeapon(cc.actor).filter(a=>a?.item?.isRanged).length >= 1)
-                )
-            ) {
-                postInChatTemplate(_uuid(implements_interruption), cc);
+            if (implements_interruption) {
+                if (hasExploitVulnerabilityEffect(message.actor, cc.actor)) {
+                    if (canReachEnemy(message.token, cc.token, cc.actor)
+                        || (getEnemyDistance(message.token, cc.token) <=10 && actorHeldWeapon(cc.actor).filter(a=>a?.item?.isRanged).length >= 1)
+                    ) {
+                    postInChatTemplate(_uuid(implements_interruption), cc);
+                    }
+                }
             }
         });
     }

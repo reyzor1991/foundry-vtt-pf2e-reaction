@@ -1,5 +1,5 @@
 function hasEffect(actor, eff) {
-    return actor && actor?.itemTypes?.effect?.find((c => eff === c.slug))
+    return actor?.itemTypes?.effect?.find((c => eff === c.slug))
 }
 
 function heldItems(actor, item, trait=undefined) {

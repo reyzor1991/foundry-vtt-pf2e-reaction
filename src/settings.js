@@ -112,6 +112,14 @@ class Settings {
             default: 0,
             type: Number,
         });
+
+        game.keybindings.register("pf2e-reaction", "skipTriggerReaction", {
+            name: "V - not trigger move reactions",
+            hint: "Hotkey to press while moving to not trigger move reaction (for 1 step)",
+            editable: [{   key: "KeyV" }],
+            onDown: () => { _token.document.flags['skipMoveTrigger']=true; return true; },
+            onUp: () => { _token.document.flags['skipMoveTrigger']=false; return true; },
+        });
     }
 
 }

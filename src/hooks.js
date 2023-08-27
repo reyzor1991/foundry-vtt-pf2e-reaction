@@ -167,6 +167,10 @@ function hasEffectBySource(actor, eff) {
     return actor?.itemTypes?.effect?.find((c => eff === c.sourceId))
 }
 
+function hasEffectStart(actor, eff) {
+    return actor?.itemTypes?.effect?.find((c => c?.slug?.startsWith(eff)))
+}
+
 function actorAction(actor, action) {
     return actor?.itemTypes?.action?.find((c => action === c.slug))
 }
@@ -290,8 +294,24 @@ function messageWithAnyTrait(message, traits) {
     return traits.some(a=>messageWithTrait(message, a))
 }
 
-function hasExploitVulnerabilityEffect(actor) {
-    return hasEffect(actor, "effect-exploit-vulnerability");
+function hasExploitVulnerabilityEffect(actor, thaum) {
+    if (hasEffect(actor, "effect-exploit-vulnerability")) {
+        return true;
+    }
+
+    const mwtEff = hasEffectStart(actor, "mortal-weakness-target")
+    if (mwtEff && mwtEff?.flags['pf2e-thaum-vuln']?.['EffectOrigin'] === thaum.uuid) {
+        if (thaum.flags['pf2e-thaum-vuln']?.['primaryEVTarget'] === actor.uuid) {
+            return true;
+        }
+    }
+    const patEff = hasEffectStart(actor, "personal-antithesis-target")
+    if (patEff && patEff?.flags['pf2e-thaum-vuln']?.['EffectOrigin'] === thaum.uuid) {
+        if (thaum.flags['pf2e-thaum-vuln']?.['primaryEVTarget'] === actor.uuid) {
+            return true;
+        }
+    }
+    return false;
 }
 
 async function decreaseReaction(combatant, actionName=undefined) {
@@ -495,6 +515,8 @@ Hooks.on('preUpdateToken', async (tokenDoc, data, deep, id) => {
         const message = {"actor" : tokenDoc.actor, "token": tokenDoc, "item": createTrait("move")};
 
         if (game.combat) {
+            if (tokenDoc.flags['skipMoveTrigger']) {return}
+
             const availableReactions = game.combat.getFlag(moduleName, 'availableReactions') ?? []
 
             if (availableReactions.includes('courageous-opportunity')) {
