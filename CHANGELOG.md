@@ -4,7 +4,7 @@
 
 ### New feature
 -   Handle PF2e Exploit Vulnerability effects
--   Z - not trigger move reactions
+-   V - not trigger move reactions
 
 ## Version 0.2.44
 
