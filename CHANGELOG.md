@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.46
+
+### Bug fixes
+-   Fix issue with reach weapon
+
 ## Version 0.2.45
 
 ### New feature

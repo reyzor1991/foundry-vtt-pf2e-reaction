@@ -55,7 +55,6 @@ function actorFeatBySource(actor, feat) {
 }
 
 function canReachEnemy(attackerToken, defendToken, defendActor, specificWeapon=undefined) {
-    const distance = getEnemyDistance(attackerToken, defendToken);
     if (isNPC(defendActor)) {
         let baseWeapons = defendActor?.system?.actions
             .filter(a => a.ready);
@@ -72,14 +71,15 @@ function canReachEnemy(attackerToken, defendToken, defendActor, specificWeapon=u
             .filter(b => b.startsWith("reach"))
             .map(c => c.split('-').slice(-1)[0]);
 
+        const distance = getEnemyDistance(attackerToken, defendToken);
         if (reachWs.length) {
             return distance <= Math.max(...reachWs)
         } else {
             return distance <= defendActor.attributes.reach.base
         }
     } else {
-        return distance <= defendActor.attributes.reach.base
-            || (distance <= (defendActor.attributes.reach.base + 5) && hasReachWeapon(defendActor))
+        return getEnemyDistance(attackerToken, defendToken) <= defendActor.attributes.reach.base
+            || (hasReachWeapon(defendActor) && getEnemyDistance(attackerToken, defendToken, defendActor.attributes.reach.base + 5) <= (defendActor.attributes.reach.base + 5))
     }
 }
 
@@ -87,8 +87,8 @@ function adjacentEnemy(attackerToken, defendToken) {
     return getEnemyDistance(attackerToken, defendToken) <= 5
 }
 
-function getEnemyDistance(token, target) {
-    return token.object.distanceTo(target.object);
+function getEnemyDistance(token, target, reach=null) {
+    return token.object.distanceTo(target.object, {reach});
 }
 
 function nonReach(arr) {
