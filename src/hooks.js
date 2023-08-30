@@ -346,7 +346,7 @@ $(document).on('click', '.reaction-check', async function () {
         const actionName = mes.getFlag(moduleName, "actionName");
         const needTarget = mes.getFlag(moduleName, "needTarget") ?? false;
         if (t) {
-            const combatant = game.combat.turns.find(a => a._id === t);
+            const combatant = game.combat?.turns?.find(a => a._id === t);
             if (combatant) {
                 await decreaseReaction(combatant, actionName);
                 if (reactions > 1 && count > 1) {
@@ -474,7 +474,7 @@ Hooks.on('renderChatMessage', (app, html, msg) => {
     if (msg.user.isGM) {
         return
     }
-    const comb = game.combat.turns.find(a=> a.id === app.getFlag(moduleName, "cId"));
+    const comb = game.combat?.turns?.find(a=> a.id === app.getFlag(moduleName, "cId"));
     if (Settings.showToPlayers && comb && comb.players.includes(game.user)) {
         return
     }
@@ -487,8 +487,8 @@ Hooks.on('renderChatMessage', (app, html, msg) => {
 
 Hooks.on('createItem', async (effect, data, id) => {
     if ("effect-raise-a-shield" === effect.slug && isActorCharacter(effect.actor)) {
-        const currCom = game.combat.turns.find(a => a.actorId === effect.actor.id);
-        const withShield = game.combat.turns.filter(a => isActorCharacter(a.actor))
+        const currCom = game.combat?.turns?.find(a => a.actorId === effect.actor.id);
+        const withShield = game.combat?.turns?.filter(a => isActorCharacter(a.actor))
             .filter(a => hasEffect(a.actor, "effect-raise-a-shield"));
         const shield_wall = actorFeat(currCom.actor, "shield-wall");
         if (hasReaction(currCom) && shield_wall) {

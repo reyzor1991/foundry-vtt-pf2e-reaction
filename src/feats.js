@@ -77,7 +77,7 @@ async function cleave(message) {
             if (cleave && message?.item?.isMelee) {
                 if (message.target.actor.system.attributes.hp.value <= parseInt(message.content)) {
 
-                    const adjEnemies = game.combat.turns.filter(a => !isActorCharacter(a.actor))
+                    const adjEnemies = game.combat?.turns?.filter(a => !isActorCharacter(a.actor))
                         .filter(a => a.actorId !== message?.target?.actor._id)
                         .filter(a => adjacentEnemy(message.target.token, a.token))
                         .filter(a => a.actor.system.attributes.hp.value > 0);

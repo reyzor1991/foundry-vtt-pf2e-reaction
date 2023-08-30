@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.47
+
+### Bug fixes
+-   Fix issue with rendering message
+
 ## Version 0.2.46
 
 ### Bug fixes
