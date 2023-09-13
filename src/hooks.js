@@ -326,7 +326,7 @@ async function setReactionEffectToActor(actor, token, eff) {
     const source = (await fromUuid(eff)).toObject();
     source.flags = mergeObject(source.flags ?? {}, { core: { sourceId: eff } });
 
-    if (game.combat.combatant.initiative < actor.combatant.initiative) {
+    if (game.combat.combatant.initiative <= actor.combatant.initiative) {
         source.system.duration.value = 1;
     } else {
         source.system.duration.value = 0;
@@ -520,22 +520,22 @@ Hooks.on('preUpdateToken', async (tokenDoc, data, deep, id) => {
             const availableReactions = game.combat.getFlag(moduleName, 'availableReactions') ?? []
 
             if (availableReactions.includes('courageous-opportunity')) {
-                await courageousOpportunity.call(this, message);
+                await courageousOpportunity(message);
             }
             if (availableReactions.includes('implements-interruption')) {
-                await implementsInterruption.call(this, message);
+                await implementsInterruption(message);
             }
             if (availableReactions.includes('attack-of-opportunity')) {
-                await attackOfOpportunity.call(this, message);
+                await attackOfOpportunity(message);
             }
             if (availableReactions.includes('stand-still')) {
-                await standStill.call(this, message);
+                await standStill(message);
             }
             if (availableReactions.includes('no-escape')) {
-                await noEscape.call(this, message);
+                await noEscape(message);
             }
             if (availableReactions.includes('verdistant-defense')) {
-                await verdistantDefense.call(this, message);
+                await verdistantDefense(message);
             }
         }
     }
@@ -560,7 +560,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
     }
 
     if (game.combat) {
-        Object.values(game.combat.getFlag(moduleName, 'availableReactions') ?? []).forEach(func => {
+        new Set(Object.values(game.combat.getFlag(moduleName, 'availableReactions') ?? [])).forEach(func => {
             if (allReactionsMap[func]) {
                 allReactionsMap[func].call(this, message);
             }

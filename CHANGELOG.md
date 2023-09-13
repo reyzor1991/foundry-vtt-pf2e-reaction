@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.48
+
+### New feature
+-   Add Opportune Backstab
+
 ## Version 0.2.47
 
 ### Bug fixes

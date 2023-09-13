@@ -1,3 +1,17 @@
+async function opportuneBackstab(message) {
+    if (!messageType(message, 'damage-roll')) {return}
+    if (isTargetCharacter(message)) {return}
+
+    characterWithReaction()
+        .filter(a=>a.actorId !== message?.actor?._id)
+        .forEach(cc => {
+            const opportune_backstab = actorFeat(cc.actor, "opportune-backstab");
+            if (opportune_backstab && canReachEnemy(message.target.token, cc.token, cc.actor)) {
+                postInChatTemplate(_uuid(opportune_backstab), cc);
+            }
+        })
+}
+
 async function convincingIllusion(message) {
     if (messageType(message, 'perception-check') || messageType(message, "saving-throw")) {
         if (message?.flags?.pf2e?.origin?.uuid) {

@@ -1,4 +1,5 @@
 const allReactionsMap = {
+    'opportune-backstab': opportuneBackstab,
     'convincing-illusion': convincingIllusion,
     'ring-bell': ringBell,
     'mental-static': mentalStatic,
