@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.49
+
+### New feature
+-   Add Banshee Cry
+
 ## Version 0.2.48
 
 ### New feature
