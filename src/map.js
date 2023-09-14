@@ -14,6 +14,7 @@ const allReactionsMap = {
     'cheat-death': cheatDeath,
     'cleave': cleave,
     'shield-block': shieldBlock,
+    'banshee-cry': bansheeCry,
     'electric-counter': electricCounter,
     'all-in-my-head': allInMyHead,
     'unexpected-shift': unexpectedShift,

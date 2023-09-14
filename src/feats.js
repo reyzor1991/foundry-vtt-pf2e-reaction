@@ -1,6 +1,22 @@
+async function bansheeCry(message) {
+    if (message?.item?.type != 'spell') {return}
+    if (!message.item.components.verbal) {return}
+
+    (isActorCharacter(message?.target?.actor) ? npcWithReaction() : characterWithReaction())
+    .forEach(cc => {
+        if (getEnemyDistance(message.token, cc.token) <= 30) {
+            const bc = actorAction(cc.actor, "banshee-cry");
+            if (bc) {
+                postInChatTemplate(_uuid(bc), cc);
+            }
+        }
+    })
+}
+
 async function opportuneBackstab(message) {
     if (!messageType(message, 'damage-roll')) {return}
     if (isTargetCharacter(message)) {return}
+    if (!message.item?.isMelee) {return}
 
     characterWithReaction()
         .filter(a=>a.actorId !== message?.actor?._id)

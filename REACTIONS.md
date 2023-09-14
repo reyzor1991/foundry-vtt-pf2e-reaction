@@ -89,3 +89,5 @@
 88. Mental Static
 89. No!!!
 90. I'm Not Crying
+91. Opportune Backstab
+92. Banshee Cry(Spell only)
