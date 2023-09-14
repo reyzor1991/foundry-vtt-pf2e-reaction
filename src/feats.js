@@ -2,7 +2,7 @@ async function bansheeCry(message) {
     if (message?.item?.type != 'spell') {return}
     if (!message.item.components.verbal) {return}
 
-    (isActorCharacter(message?.target?.actor) ? npcWithReaction() : characterWithReaction())
+    (isActorCharacter(message.actor) ? npcWithReaction() : characterWithReaction())
     .forEach(cc => {
         if (getEnemyDistance(message.token, cc.token) <= 30) {
             const bc = actorAction(cc.actor, "banshee-cry");
