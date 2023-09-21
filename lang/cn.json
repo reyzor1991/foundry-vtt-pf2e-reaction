@@ -58,12 +58,12 @@
 	"pf2e-reaction.yes-target": "是（选择目标）",
 	"pf2e-reaction.no": "否",
 
-	"pf2e-reaction.hide": "Hide default recall knowledge labels",
-	"pf2e-reaction.post": "Post message to chat when press 'Yes'",
-	"pf2e-reaction.delete.name": "Delete message after timeout(in seconds)",
-	"pf2e-reaction.delete.hint": "0 means not delete",
-	"pf2e-reaction.hotkey-v.name": "V - not trigger move reactions",
-	"pf2e-reaction.hotkey-v.hint": "Hotkey to press while moving to not trigger move reaction (for 1 step)",
+	"pf2e-reaction.hide": "隐藏默认召回知识标签",
+	"pf2e-reaction.post": "按“是”时发布消息进行聊天",
+	"pf2e-reaction.delete.name": "超时后删除消息（以秒为单位）",
+	"pf2e-reaction.delete.hint": "0表示不删除",
+	"pf2e-reaction.hotkey-v.name": "V - 不触发移动反应",
+	"pf2e-reaction.hotkey-v.hint": "移动时按热键不触发移动反应（1 步）",
 
 	"pf2e-reaction.recall-knowledge.need-fix": "对目标回忆知识的模组结构有所改动，请更新mod"
 }
