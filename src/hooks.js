@@ -550,7 +550,7 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
 
     if (messageType(message, 'damage-roll') && hasReaction(message?.target?.token?.combatant)) {
         if (Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage})
-            .map(a=>a.damageType).find(a=> a === "slashing")
+            .map(a=>a?.damageType).find(a=> a === "slashing")
         ) {
             const ImNotCrying = actorActionBySource(message?.target?.actor, "Item.ncKVztM6EL4i98dL");
             if (ImNotCrying && adjacentEnemy(message.target.token, message.token)) {

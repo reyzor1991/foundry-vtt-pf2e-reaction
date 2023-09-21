@@ -53,7 +53,7 @@ class Settings {
             type: Boolean,
         });
         game.settings.register("pf2e-reaction", "recall-knowledge-hide-def", {
-            name: 'Hide default recall knowledge labels',
+            name: game.i18n.localize("pf2e-reaction.hide"),
             scope: "world",
             config: true,
             default: false,
@@ -98,15 +98,15 @@ class Settings {
             type: Boolean,
         });
         game.settings.register("pf2e-reaction", "postMessage", {
-            name: "Post message to chat when press 'Yes'",
+            name: game.i18n.localize("pf2e-reaction.post"),
             scope: "world",
             config: true,
             default: false,
             type: Boolean,
         });
         game.settings.register("pf2e-reaction", "timeoutDelete", {
-            name: "Delete message after timeout(in seconds)",
-            hint: "0 means not delete",
+            name: game.i18n.localize("pf2e-reaction.delete.name"),
+            hint: game.i18n.localize("pf2e-reaction.delete.hint"),
             scope: "world",
             config: true,
             default: 0,
@@ -114,8 +114,8 @@ class Settings {
         });
 
         game.keybindings.register("pf2e-reaction", "skipTriggerReaction", {
-            name: "V - not trigger move reactions",
-            hint: "Hotkey to press while moving to not trigger move reaction (for 1 step)",
+            name: game.i18n.localize("pf2e-reaction.hotkey-v.name"),
+            hint: game.i18n.localize("pf2e-reaction.hotkey-v.hint"),
             editable: [{   key: "KeyV" }],
             onDown: () => { _token.document.flags['skipMoveTrigger']=true; return true; },
             onUp: () => { _token.document.flags['skipMoveTrigger']=false; return true; },

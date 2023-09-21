@@ -124,7 +124,7 @@ async function cleave(message) {
 async function shieldBlock(message) {
     if (messageType(message, 'damage-roll')) {
         if (hasReaction(message?.target?.token?.combatant, "shield-block")) {
-            const dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a=>a.damageType);
+            const dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a=>a?.damageType);
             if (dTypes.filter(a=> a=== "bludgeoning" || a === "piercing" || a=== "slashing").length > 0) {
                 const sblock = actorFeat(message?.target?.actor, "shield-block");
                 if (sblock && hasEffect(message.target.actor, "effect-raise-a-shield")) {

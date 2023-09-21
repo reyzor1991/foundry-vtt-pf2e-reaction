@@ -58,5 +58,12 @@
 	"pf2e-reaction.yes-target": "Так (Виберіть ціль)",
 	"pf2e-reaction.no": "Ні",
 
+	"pf2e-reaction.hide": "Приховати мітки знань про відкликання за умовчанням",
+	"pf2e-reaction.post": "Опублікувати повідомлення в чаті, натиснувши \"Так\"",
+	"pf2e-reaction.delete.name": "Видалити повідомлення після тайм-ауту (у секундах)",
+	"pf2e-reaction.delete.hint": "0 означає не видаляти",
+	"pf2e-reaction.hotkey-v.name": "V - not trigger move reactions",
+	"pf2e-reaction.hotkey-v.hint": "Гаряча клавіша, яку потрібно натиснути під час руху, щоб не викликати реакцію на рух (на 1 крок)",
+
 	"pf2e-reaction.recall-knowledge.need-fix": "Structure of Recall Knowledge object was changed. Need to update module"
 }

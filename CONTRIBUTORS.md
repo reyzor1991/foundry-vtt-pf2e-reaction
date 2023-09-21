@@ -6,3 +6,4 @@ The list with a Discord username, possibly a link to a Github profile followed b
 * [xdy](https://github.com/xdy/) - Idea about grouping messages.
 * [apoapostolov](https://github.com/apoapostolov) - Idea about improve recall knowledge.
 * [liyu](https://github.com/LiyuNodream) - Add Chinese Translation.
+* [DoctorDankovsky](https://github.com/DoctorDankovsky) - Add Localization.
