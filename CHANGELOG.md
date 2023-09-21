@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.50
+
+### New feature
+-   [DoctorDankovsky](https://github.com/DoctorDankovsky) - Add Localization.
+
 ## Version 0.2.49
 
 ### New feature
