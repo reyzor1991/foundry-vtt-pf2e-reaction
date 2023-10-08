@@ -842,6 +842,42 @@ async function guardiansDeflectionSwashbuckler(message) {
     }
 };
 
+async function shieldWardenFighter(message) {
+    if (!messageType(message, 'damage-roll')) {return}
+    if (!isTargetCharacter(message)) {return}
+    const dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a=>a?.damageType);
+    if (dTypes.filter(a=> a=== "bludgeoning" || a === "piercing" || a=== "slashing").length === 0) {return;}
+
+    characterWithReaction()
+        .filter(a=>a.actorId !== message?.actor?._id)
+        .filter(a=>hasEffect(a.actor, "effect-raise-a-shield"))
+        .filter(a=>adjacentEnemy(message.target.token, a.token))
+        .forEach(cc => {
+            const shield_warden = actorFeat(cc.actor, "shield-warden-fighter");
+            if (shield_warden) {
+                postTargetInChatTemplate(_uuid(shield_warden), cc, undefined);
+            }
+        })
+};
+
+async function shieldWardenChampion(message) {
+    if (!messageType(message, 'damage-roll')) {return}
+    if (!isTargetCharacter(message)) {return}
+    const dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a=>a?.damageType);
+    if (dTypes.filter(a=> a=== "bludgeoning" || a === "piercing" || a=== "slashing").length === 0) {return;}
+
+    characterWithReaction()
+        .filter(a=>a.actorId !== message?.actor?._id)
+        .filter(a=>hasEffect(a.actor, "effect-raise-a-shield"))
+        .filter(a=>adjacentEnemy(message.target.token, a.token))
+        .forEach(cc => {
+            const shield_warden = actorFeat(cc.actor, "shield-warden-champion");
+            if (shield_warden) {
+                postTargetInChatTemplate(_uuid(shield_warden), cc);
+            }
+        })
+};
+
 async function standStill(message) {
     if (!isActorCharacter(message.actor) && messageWithTrait(message, "move")) {
         characterWithReaction()

@@ -81,4 +81,6 @@ const allReactionsMap = {
     'stand-still': standStill,
     'no-escape': noEscape,
     'verdistant-defense': verdistantDefense,
+    'shield-warden-fighter': shieldWardenFighter,
+    'shield-warden-champion': shieldWardenChampion,
 };

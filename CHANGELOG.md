@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.51
+
+### New feature
+-   Add Shield Warden.
+
 ## Version 0.2.50
 
 ### New feature
