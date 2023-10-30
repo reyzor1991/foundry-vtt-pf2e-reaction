@@ -451,8 +451,8 @@ function combatantsForTriggers(tt, message) {
             res = res.concat(t);
         }
         if (tr.name === 'AllyTakeDamage' && messageType(message, 'damage-roll')) {
-            const t = filterByDistance((isActorCharacter(message?.target?.actor) ? characterWithReaction() : npcWithReaction())
-            .filter(a=>a.actorId !== message?.target?.actor._id), tr, message);
+            const t = filterByDistance((isTargetCharacter(message) ? characterWithReaction() : npcWithReaction())
+            .filter(a=>a?.actor?.id != message?.target?.actor._id), tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'ActorTakeDamage' && messageType(message, 'damage-roll')) {
@@ -472,7 +472,7 @@ function combatantsForTriggers(tt, message) {
             && !message?.flags?.pf2e?.appliedDamage?.isHealing
             && message.actor.system?.attributes?.hp?.value === 0) {
 
-            const t = filterByDistance((isActorCharacter(message?.target?.actor) ? characterWithReaction() : npcWithReaction())
+            const t = filterByDistance((isTargetCharacter(message) ? characterWithReaction() : npcWithReaction())
                 .filter(a=>a.actorId !== message?.actor?._id), tr, message);
             res = res.concat(t);
         }
@@ -508,7 +508,7 @@ function combatantsForTriggers(tt, message) {
         }
         if (tr.name === 'CreatureAttacksAlly' && messageType(message, 'attack-roll')) {
             const t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction())
-                .filter(a=>a.actorId !== message?.target?.actor._id), tr, message);
+                .filter(a=>a?.actor?.id != message?.target?.actor._id), tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'ActorFailsSkillCheck' && messageType(message, 'skill-check') && anyFailureMessageOutcome(message)) {

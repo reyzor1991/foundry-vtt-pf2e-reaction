@@ -808,7 +808,7 @@ async function guardiansDeflectionFighter(message) {
 
             if (rr.degreeOfSuccess !== newR) {
                 characterWithReaction()
-                    .filter(a=>a.actorId !== message?.target?.actor._id)
+                    .filter(a=>a?.actor?.id != message?.target?.actor._id)
                     .filter(cc=>canReachEnemy(message?.target?.token, cc.token, cc.actor))
                     .forEach(cc => {
                         const guardians_def = actorFeat(cc.actor, "guardians-deflection-fighter");
@@ -829,7 +829,7 @@ async function guardiansDeflectionSwashbuckler(message) {
 
             if (rr.degreeOfSuccess !== newR) {
                 characterWithReaction()
-                    .filter(a=>a.actorId !== message?.target?.actor._id)
+                    .filter(a=>a?.actor?.id != message?.target?.actor._id)
                     .filter(cc=>canReachEnemy(message?.target?.token, cc.token, cc.actor))
                     .forEach(cc => {
                         const guardians_def = actorFeat(cc.actor, "guardians-deflection-swashbuckler");

@@ -89,8 +89,8 @@ async function amuletsAbeyance(message) {
 
         //ally damaged
         if (message?.target) {
-            (isActorCharacter(message?.target?.actor) ? characterWithReaction() : npcWithReaction())
-            .filter(a=>a.actorId !== message?.target?.actor._id)
+            (isTargetCharacter(message) ? characterWithReaction() : npcWithReaction())
+            .filter(a=>a?.actor?.id != message?.target?.actor._id)
             .forEach(cc => {
                 if (getEnemyDistance(message.target.token, cc.token) <= 15 && hasExploitVulnerabilityEffect(message.actor, cc.actor)) {
                     const aab = actorAction(cc.actor, "amulets-abeyance");
@@ -107,8 +107,8 @@ async function retributiveStrike(message) {
     if (messageType(message, 'damage-roll')) {
         //ally damaged
         if (message?.target) {
-            (isActorCharacter(message?.target?.actor) ? characterWithReaction() : npcWithReaction())
-            .filter(a=>a.actorId !== message?.target?.actor._id)
+            (isTargetCharacter(message) ? characterWithReaction() : npcWithReaction())
+            .filter(a=>a?.actor?.id != message?.target?.actor._id)
             .forEach(cc => {
                 if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15) {
                     const retributivestrike = actorAction(cc.actor, "retributive-strike");
@@ -125,8 +125,8 @@ async function denierOfDestruction(message) {
     if (messageType(message, 'damage-roll')) {
         //ally damaged
         if (message?.target) {
-            (isActorCharacter(message?.target?.actor) ? characterWithReaction() : npcWithReaction())
-            .filter(a=>a.actorId !== message?.target?.actor._id)
+            (isTargetCharacter(message) ? characterWithReaction() : npcWithReaction())
+            .filter(a=>a?.actor?.id != message?.target?.actor._id)
             .forEach(cc => {
                 if (getEnemyDistance(message.target.token, cc.token) <= 30) {
                     const dod = actorAction(cc.actor, "denier-of-destruction");
@@ -143,8 +143,8 @@ async function glimpseOfRedemption(message) {
     if (messageType(message, 'damage-roll')) {
         //ally damaged
         if (message?.target) {
-            (isActorCharacter(message?.target?.actor) ? characterWithReaction() : npcWithReaction())
-            .filter(a=>a.actorId !== message?.target?.actor._id)
+            (isTargetCharacter(message) ? characterWithReaction() : npcWithReaction())
+            .filter(a=>a?.actor?.id != message?.target?.actor._id)
             .forEach(cc => {
                 if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15) {
                     const gor = actorAction(cc.actor, "glimpse-of-redemption");
@@ -161,8 +161,8 @@ async function liberatingStep(message) {
     if (messageType(message, 'damage-roll')) {
         //ally damaged
         if (message?.target) {
-            (isActorCharacter(message?.target?.actor) ? characterWithReaction() : npcWithReaction())
-            .filter(a=>a.actorId !== message?.target?.actor._id)
+            (isTargetCharacter(message) ? characterWithReaction() : npcWithReaction())
+            .filter(a=>a?.actor?.id != message?.target?.actor._id)
             .forEach(cc => {
                 if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15) {
                     const liberatingstep = actorAction(cc.actor, "liberating-step");
@@ -175,7 +175,7 @@ async function liberatingStep(message) {
     } else if (messageType(message, 'skill-check')) {
         if (isTargetCharacter(message) && anySuccessMessageOutcome(message)) {
             characterWithReaction()
-            .filter(a=>a.actorId !== message?.target?.actor._id)
+            .filter(a=>a?.actor?.id != message?.target?.actor._id)
             .forEach(cc => {
                 if (message?.flags?.pf2e?.context?.options.find(bb=>bb==="action:grapple")) {
                     if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15){

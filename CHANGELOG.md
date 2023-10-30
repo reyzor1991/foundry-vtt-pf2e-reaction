@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.2.52
+- Small optimization
+
 ## Version 0.2.51
 
 ### New feature
