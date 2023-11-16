@@ -58,7 +58,10 @@ async function updateCombatantReactionState(combatant, newState, actionName=unde
             }
             if (combatant.getFlag(moduleName, 'combat-reflexes')) {
                 await combatant.setFlag(moduleName, 'combat-reflexes', combatant.getFlag(moduleName, 'combat-reflexes') - 1);
-
+                return;
+            }
+            if (combatant.getFlag(moduleName, 'tactical-reflexes')) {
+                await combatant.setFlag(moduleName, 'tactical-reflexes', combatant.getFlag(moduleName, 'tactical-reflexes') - 1);
                 return;
             }
             if (combatant.getFlag(moduleName, 'inexhaustible-countermoves')) {
@@ -72,7 +75,10 @@ async function updateCombatantReactionState(combatant, newState, actionName=unde
             }
             if (combatant.getFlag(moduleName, 'combat-reflexes')) {
                 await combatant.setFlag(moduleName, 'combat-reflexes', combatant.getFlag(moduleName, 'combat-reflexes') - 1);
-
+                return;
+            }
+            if (combatant.getFlag(moduleName, 'tactical-reflexes')) {
+                await combatant.setFlag(moduleName, 'tactical-reflexes', combatant.getFlag(moduleName, 'tactical-reflexes') - 1);
                 return;
             }
             if (combatant.getFlag(moduleName, 'inexhaustible-countermoves')) {
@@ -106,6 +112,9 @@ async function updateCombatantReactionState(combatant, newState, actionName=unde
             if (actorFeat(combatant.actor, "combat-reflexes")) {
                 await combatant.setFlag(moduleName, 'combat-reflexes', 1);
             }
+            if (actorFeat(combatant.actor, "tactical-reflexes")) {
+                await combatant.setFlag(moduleName, 'tactical-reflexes', 1);
+            }
             if (actorFeat(combatant.actor, "reflexive-riposte")) {
                 await combatant.setFlag(moduleName, 'reflexive-riposte', 1);
             }
@@ -129,6 +138,7 @@ function countAllReaction(combatant) {
 
         count += combatant.getFlag(moduleName, 'triple-opportunity') ?? 0;
         count += combatant.getFlag(moduleName, 'combat-reflexes') ?? 0;
+        count += combatant.getFlag(moduleName, 'tactical-reflexes') ?? 0;
         count += combatant.getFlag(moduleName, 'inexhaustible-countermoves') ?? 0;
 
         count += combatant.getFlag(moduleName, 'reflexive-riposte') ?? 0;
@@ -147,10 +157,12 @@ function countReaction(combatant, actionName=undefined) {
         if (actionName === "attack-of-opportunity") {
             count += combatant.getFlag(moduleName, 'triple-opportunity') ?? 0;
             count += combatant.getFlag(moduleName, 'combat-reflexes') ?? 0;
+            count += combatant.getFlag(moduleName, 'tactical-reflexes') ?? 0;
             count += combatant.getFlag(moduleName, 'inexhaustible-countermoves') ?? 0;
         } else if (actionName === "reactive-strike") {
             count += combatant.getFlag(moduleName, 'triple-opportunity') ?? 0;
             count += combatant.getFlag(moduleName, 'combat-reflexes') ?? 0;
+            count += combatant.getFlag(moduleName, 'tactical-reflexes') ?? 0;
             count += combatant.getFlag(moduleName, 'inexhaustible-countermoves') ?? 0;
         } else if (actionName === "opportune-riposte") {
             count += combatant.getFlag(moduleName, 'reflexive-riposte') ?? 0;
@@ -341,6 +353,12 @@ async function decreaseReaction(combatant, actionName=undefined) {
 }
 
 async function setReactionEffectToActor(actor, token, eff) {
+    let curr = hasEffectBySource(actor, reactionWasUsedEffect)
+    if (curr) {
+        await curr.increase();
+        return
+    }
+
     const source = (await fromUuid(eff)).toObject();
     source.flags = mergeObject(source.flags ?? {}, { core: { sourceId: eff } });
 

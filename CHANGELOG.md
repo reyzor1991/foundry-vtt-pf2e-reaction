@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.2.54
+- Remaster changes
+- Reaction effect counter
+
 ## Version 0.2.52
 - Small optimization
 
