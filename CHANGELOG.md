@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 0.2.54
+## Version 0.2.53
 - Remaster changes
 - Reaction effect counter
 
