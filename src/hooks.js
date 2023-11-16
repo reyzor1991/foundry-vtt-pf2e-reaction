@@ -65,6 +65,20 @@ async function updateCombatantReactionState(combatant, newState, actionName=unde
                 await combatant.setFlag(moduleName, 'inexhaustible-countermoves', combatant.getFlag(moduleName, 'inexhaustible-countermoves') - 1);
                 return;
             }
+        } else if (actionName === "reactive-strike") {
+            if (combatant.getFlag(moduleName, 'triple-opportunity')) {
+                await combatant.setFlag(moduleName, 'triple-opportunity', combatant.getFlag(moduleName, 'triple-opportunity') - 1);
+                return;
+            }
+            if (combatant.getFlag(moduleName, 'combat-reflexes')) {
+                await combatant.setFlag(moduleName, 'combat-reflexes', combatant.getFlag(moduleName, 'combat-reflexes') - 1);
+
+                return;
+            }
+            if (combatant.getFlag(moduleName, 'inexhaustible-countermoves')) {
+                await combatant.setFlag(moduleName, 'inexhaustible-countermoves', combatant.getFlag(moduleName, 'inexhaustible-countermoves') - 1);
+                return;
+            }
         } else if (actionName === "opportune-riposte") {
             if (combatant.getFlag(moduleName, 'reflexive-riposte')) {
                 await combatant.setFlag(moduleName, 'reflexive-riposte', combatant.getFlag(moduleName, 'reflexive-riposte') - 1);
@@ -131,6 +145,10 @@ function countReaction(combatant, actionName=undefined) {
             count += 1;
         }
         if (actionName === "attack-of-opportunity") {
+            count += combatant.getFlag(moduleName, 'triple-opportunity') ?? 0;
+            count += combatant.getFlag(moduleName, 'combat-reflexes') ?? 0;
+            count += combatant.getFlag(moduleName, 'inexhaustible-countermoves') ?? 0;
+        } else if (actionName === "reactive-strike") {
             count += combatant.getFlag(moduleName, 'triple-opportunity') ?? 0;
             count += combatant.getFlag(moduleName, 'combat-reflexes') ?? 0;
             count += combatant.getFlag(moduleName, 'inexhaustible-countermoves') ?? 0;
@@ -488,6 +506,7 @@ Hooks.on('renderChatMessage', (app, html, msg) => {
 Hooks.on('createItem', async (effect, data, id) => {
     if ("effect-raise-a-shield" === effect.slug && isActorCharacter(effect.actor)) {
         const currCom = game.combat?.turns?.find(a => a.actorId === effect.actor.id);
+        if (!currCom) {return}
         const withShield = game.combat?.turns?.filter(a => isActorCharacter(a.actor))
             .filter(a => hasEffect(a.actor, "effect-raise-a-shield"));
         const shield_wall = actorFeat(currCom.actor, "shield-wall");
@@ -527,6 +546,9 @@ Hooks.on('preUpdateToken', async (tokenDoc, data, deep, id) => {
             }
             if (availableReactions.includes('attack-of-opportunity')) {
                 await attackOfOpportunity(message);
+            }
+            if (availableReactions.includes('reactive-strike')) {
+                await reactiveStrike(message);
             }
             if (availableReactions.includes('stand-still')) {
                 await standStill(message);

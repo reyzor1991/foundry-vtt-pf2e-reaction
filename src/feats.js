@@ -753,6 +753,31 @@ async function attackOfOpportunity(message) {
     }
 };
 
+async function reactiveStrike(message) {
+    if (
+        (messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll"))
+        || messageWithAnyTrait(message, ["manipulate","move"])
+    ) {
+        (isActorCharacter(message.actor) ? npcWithReaction() : characterWithReaction())
+            .filter(c=> hasReaction(c, "reactive-strike"))
+            .forEach(cc => {
+                const aoo = actorAction(cc.actor, "reactive-strike") ?? actorFeat(cc.actor, "reactive-strike");
+                if (aoo) {
+                    let specificWeapon = undefined;
+                    if (isNPC(cc.actor)) {
+                        const match = aoo.name.match('\(([A-Za-z]{1,}) Only\)');
+                        if (match && match.length === 3) {
+                            specificWeapon=match[2]
+                        }
+                    }
+                    if (canReachEnemy(message.token, cc.token, cc.actor, specificWeapon)) {
+                        postInChatTemplate(_uuid(aoo), cc, "reactive-strike");
+                    }
+                }
+            })
+    }
+};
+
 async function emergencyTarge(message) {
     if (messageType(message, "saving-throw")) {
         if (hasReaction(message?.token?.combatant) && anyFailureMessageOutcome(message)) {

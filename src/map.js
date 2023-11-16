@@ -72,6 +72,7 @@ const allReactionsMap = {
     'courageous-opportunity': courageousOpportunity,
     'implements-interruption': implementsInterruption,
     'attack-of-opportunity': attackOfOpportunity,
+    'reactive-strike': reactiveStrike,
     'fast-swallow': fastSwallow,
     'wicked-thorns': wickedThorns,
     'impossible-technique': impossibleTechnique,

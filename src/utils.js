@@ -111,7 +111,7 @@ function isTargetCharacter(message) {
 }
 
 function isActorCharacter(actor) {
-    return ["character", "npc"].includes(actor?.type) && actor?.alliance === "party";
+    return ["character", "npc", "familiar"].includes(actor?.type) && actor?.alliance === "party";
 }
 
 function isNPC(actor) {
