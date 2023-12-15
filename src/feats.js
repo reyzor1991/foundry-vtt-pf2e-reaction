@@ -551,7 +551,7 @@ async function farabellusFlip(message) {
 };
 
 async function reactiveShield(message) {
-    if (messageType(message, 'attack-roll')) {
+    if (messageType(message, 'attack-roll') && anySuccessMessageOutcome(message)) {
         if (hasReaction(message?.target?.token?.combatant)) {
             const reactive_shield = actorFeat(message?.target?.actor, "reactive-shield");
             if (reactive_shield && !hasEffect(message?.target?.actor, "effect-raise-a-shield") && message?.item?.isMelee) {
@@ -573,7 +573,7 @@ async function pirouette(message) {
 };
 
 async function fieryRetort(message) {
-    if (messageType(message, 'attack-roll')) {
+    if (messageType(message, 'attack-roll') && anySuccessMessageOutcome(message)) {
         if (hasReaction(message?.target?.token?.combatant)) {
             const fiery_retort = actorFeat(message?.target?.actor, "fiery-retort");
             if (fiery_retort && adjacentEnemy(message.token, message.target.token)

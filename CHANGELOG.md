@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.2.54
+- Fix Reactive Shield
+
 ## Version 0.2.53
 - Remaster changes
 - Reaction effect counter

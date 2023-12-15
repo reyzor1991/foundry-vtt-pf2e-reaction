@@ -535,9 +535,7 @@ Hooks.on('preUpdateToken', (tokenDoc, data, deep, id) => {
                     }
                 }
             },
-            'actor': {
-                'type': tokenDoc.actor?.type
-            }
+            'actor': tokenDoc.actor
         })
     }
 });
