@@ -1,6 +1,9 @@
 # Changelog
 
 ## Version 0.2.54
+- Fix Disarming Block
+
+## Version 0.2.54
 - Fix Reactive Shield
 
 ## Version 0.2.53
