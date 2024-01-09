@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.2.57
+- Handle Effect: Hydra Heads
+
 ## Version 0.2.56
 - Add Available reactions (setting)
 

@@ -101,13 +101,24 @@ async function updateCombatantReactionState(combatant, newState, actionName=unde
                 return;
             }
         }
-        if (combatant.getFlag(moduleName, 'state')) {
+
+        if (combatant.getFlag(moduleName, 'hydra-heads')) {
+            await combatant.setFlag(moduleName, 'hydra-heads', combatant.getFlag(moduleName, 'hydra-heads') - 1);
+        } else if (combatant.getFlag(moduleName, 'state')) {
             await combatant.setFlag(moduleName, 'state', false);
         }
     } else {
         if (isNPC(combatant.actor)) {
             if (actorAction(combatant.actor, "triple-opportunity")) {
                 await combatant.setFlag(moduleName, 'triple-opportunity', 1);
+            }
+            let heads = hasEffect(combatant.actor, "effect-hydra-heads")
+            if (heads) {
+                if (heads?.system?.badge?.value > 1) {
+                    await combatant.setFlag(moduleName, 'hydra-heads', (heads?.system?.badge?.value - 1));
+                } else {
+                    await combatant.setFlag(moduleName, 'hydra-heads', 0);
+                }
             }
         } else {
             if (actorFeat(combatant.actor, "combat-reflexes")) {
@@ -145,6 +156,7 @@ function countAllReaction(combatant) {
         count += combatant.getFlag(moduleName, 'reflexive-riposte') ?? 0;
 
         count += combatant.getFlag(moduleName, 'quick-shield-block') ?? 0;
+        count += combatant.getFlag(moduleName, 'hydra-heads') ?? 0;
     }
     return count;
 }
@@ -155,6 +167,9 @@ function countReaction(combatant, actionName=undefined) {
         if (combatant.getFlag(moduleName, 'state')) {
             count += 1;
         }
+
+        count += combatant.getFlag(moduleName, 'hydra-heads') ?? 0;
+
         if (actionName === "attack-of-opportunity") {
             count += combatant.getFlag(moduleName, 'triple-opportunity') ?? 0;
             count += combatant.getFlag(moduleName, 'combat-reflexes') ?? 0;
@@ -441,8 +456,7 @@ $(document).on('click', '.reaction-cancel', async function () {
     }
 });
 
-Hooks.on('combatTurn', async (combat, updateData, updateOptions) => {
-    const _combatant = combat.nextCombatant;
+Hooks.on('pf2e.startTurn', async (_combatant) => {
     await updateCombatantReactionState(_combatant, true);
     await updateInexhaustibleCountermoves(_combatant);
     if (isActorCharacter(_combatant?.actor)) {
@@ -468,27 +482,6 @@ Hooks.on('combatTurn', async (combat, updateData, updateOptions) => {
         source.system.badge.value = countAllReaction(_combatant)
 
         await _combatant.actor.createEmbeddedDocuments("Item", [source]);
-    }
-});
-
-Hooks.on('combatRound', async (combat, updateData, updateOptions) => {
-    if (combat.turns.length >= 1) {
-        const _combatant = combat.turns[0];
-        await updateCombatantReactionState(_combatant, true);
-        await updateInexhaustibleCountermoves(_combatant);
-        if (isActorCharacter(_combatant?.actor)) {
-            npcWithReaction()
-                .forEach(cc => {
-                    const pg = actorAction(cc.actor, "petrifying-glance");
-                    if (pg && getEnemyDistance(_combatant.token, cc.token <= 30)) {
-                        postInChatTemplate(_uuid(pg), cc);
-                    }
-                })
-        }
-        const sps = actorFeat(_combatant?.actor, "scapegoat-parallel-self");
-        if (sps) {
-            await postInChatTemplate(_uuid(sps), _combatant);
-        }
     }
 });
 
