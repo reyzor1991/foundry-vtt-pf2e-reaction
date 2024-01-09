@@ -28,6 +28,18 @@ async function opportuneBackstab(message) {
         })
 }
 
+async function disarmingBlock(message) {
+    if ("appliedDamage" in message?.flags?.pf2e && !message?.flags?.pf2e?.appliedDamage?.isHealing) {
+        if (message?.content.includes("shield") && message?.content.includes("absorb")) {
+            const disarming_block = actorFeat(message.actor, "disarming-block");
+            let lastDamage = game.messages.contents.slice(-10).reverse().find(m=>messageType(m, 'damage-roll'))
+            if (disarming_block && lastDamage && lastDamage.item?.isMelee) {
+                postInChatTemplate(_uuid(disarming_block), message.actor?.combatant);
+            }
+        }
+    }
+}
+
 async function convincingIllusion(message) {
     if (messageType(message, 'perception-check') || messageType(message, "saving-throw")) {
         if (message?.flags?.pf2e?.origin?.uuid) {
