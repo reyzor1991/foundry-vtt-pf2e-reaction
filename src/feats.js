@@ -33,7 +33,7 @@ async function disarmingBlock(message) {
         if (message?.content.includes("shield") && message?.content.includes("absorb")) {
             const disarming_block = actorFeat(message.actor, "disarming-block");
             let lastDamage = game.messages.contents.slice(-10).reverse().find(m=>messageType(m, 'damage-roll'))
-            if (disarming_block && lastDamage && lastDamage.item?.isMelee) {
+            if (disarming_block && lastDamage && lastDamage.item?.isMelee && hasReaction(message?.actor?.combatant)) {
                 postInChatTemplate(_uuid(disarming_block), message.actor?.combatant);
             }
         }
@@ -745,8 +745,7 @@ async function attackOfOpportunity(message) {
         (messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll"))
         || messageWithAnyTrait(message, ["manipulate","move"])
     ) {
-        (isActorCharacter(message.actor) ? npcWithReaction() : characterWithReaction())
-            .filter(c=> hasReaction(c, "attack-of-opportunity"))
+        (isActorCharacter(message.actor) ? npcWithReaction("attack-of-opportunity") : characterWithReaction("attack-of-opportunity"))
             .forEach(cc => {
                 const aoo = actorAction(cc.actor, "attack-of-opportunity") ?? actorFeat(cc.actor, "attack-of-opportunity");
                 if (aoo) {
@@ -770,8 +769,7 @@ async function reactiveStrike(message) {
         (messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll"))
         || messageWithAnyTrait(message, ["manipulate","move"])
     ) {
-        (isActorCharacter(message.actor) ? npcWithReaction() : characterWithReaction())
-            .filter(c=> hasReaction(c, "reactive-strike"))
+        (isActorCharacter(message.actor) ? npcWithReaction("reactive-strike") : characterWithReaction("reactive-strike"))
             .forEach(cc => {
                 const aoo = actorAction(cc.actor, "reactive-strike") ?? actorFeat(cc.actor, "reactive-strike");
                 if (aoo) {

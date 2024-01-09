@@ -3,6 +3,7 @@ const crane_flutter = "Compendium.pf2e.feats-srd.Item.S14S52HjszTgIy4l"
 const hit_the_dirt = "Compendium.pf2e.feats-srd.Item.6LFBPpPPJjDq07fg"
 
 const reactionWasUsedEffect = "Compendium.pf2e-reaction.reaction-effects.Item.Dvi4ewimR9t5723U"
+const reactionsEffect = "Compendium.pf2e-reaction.reaction-effects.Item.Bq05rfSWsBjNzjwq"
 const moduleName = 'pf2e-reaction';
 
 function adjustDegreeByDieValue(dieResult, degree) {
@@ -181,12 +182,12 @@ function hasReaction(combatant, actionName=undefined) {
     && !hasCondition(combatant.actor, "unconscious");
 }
 
-function characterWithReaction() {
-    return game.combat.turns.filter(a => isActorCharacter(a.actor)).filter(a=>hasReaction(a));
+function characterWithReaction(actionName=undefined) {
+    return game.combat.turns.filter(a => isActorCharacter(a.actor)).filter(a=>hasReaction(a, actionName));
 }
 
-function npcWithReaction() {
-    return game.combat.turns.filter(a => !isActorCharacter(a.actor)).filter(a=>hasReaction(a));
+function npcWithReaction(actionName=undefined) {
+    return game.combat.turns.filter(a => !isActorCharacter(a.actor)).filter(a=>hasReaction(a, actionName));
 }
 
 function hasCondition(actor, con) {
@@ -350,6 +351,12 @@ async function decreaseReaction(combatant, actionName=undefined) {
     if (Settings.addReactionEffect && countAllReaction(combatant) <= 1) {
         await setReactionEffectToActor(combatant.actor, combatant.token, reactionWasUsedEffect);
     }
+    if (Settings.allReactionEffect) {
+        let curr = hasEffectBySource(combatant.actor, reactionsEffect)
+        if (curr) {
+            curr.update({"system.badge.value": countAllReaction(combatant)})
+        }
+    }
 }
 
 async function setReactionEffectToActor(actor, token, eff) {
@@ -453,6 +460,14 @@ Hooks.on('combatTurn', async (combat, updateData, updateOptions) => {
     }
     if (combat.round === 1) {
         await checkRingmasterIntroduction(_combatant)
+    }
+
+    if (Settings.allReactionEffect) {
+        const source = (await fromUuid(reactionsEffect)).toObject();
+        source.flags = mergeObject(source.flags ?? {}, { core: { sourceId: reactionsEffect } });
+        source.system.badge.value = countAllReaction(_combatant)
+
+        await _combatant.actor.createEmbeddedDocuments("Item", [source]);
     }
 });
 

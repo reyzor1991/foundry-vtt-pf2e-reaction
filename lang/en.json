@@ -41,6 +41,9 @@
 
 	"pf2e-reaction.addReactionEffect.name": "Add Reaction effect",
 	"pf2e-reaction.addReactionEffect.hint": "Add Reaction effect when An actor used all possible reactions",
+
+	"pf2e-reaction.allReactionEffect.name": "All Reaction effect",
+	"pf2e-reaction.allReactionEffect.hint": "Add All Reaction effect when An actor start turn",
 	"pf2e-reaction.show-to-players.name": "Show reaction message to players",
 	"pf2e-reaction.show-notification.name": "Show notification",
 	"pf2e-reaction.recall-knowledge.name": "Recall Knowledge",

@@ -1,7 +1,10 @@
 # Changelog
 
-## Version 0.2.54
-- Fix Disarming Block
+## Version 0.2.56
+- Add Available reactions (setting)
+
+## Version 0.2.55
+- Add Disarming Block
 
 ## Version 0.2.54
 - Fix Reactive Shield

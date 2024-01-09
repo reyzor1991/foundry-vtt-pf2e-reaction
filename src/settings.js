@@ -26,6 +26,9 @@ class Settings {
     static get addReactionEffect() {
         return game.settings.get("pf2e-reaction", "addReactionEffect");
     }
+    static get allReactionEffect() {
+        return game.settings.get("pf2e-reaction", "allReactionEffect");
+    }
     static get homebrewReactions() {
         return game.settings.get("pf2e-reaction", "homebrewReactions");
     }
@@ -92,6 +95,14 @@ class Settings {
         game.settings.register("pf2e-reaction", "addReactionEffect", {
             name: game.i18n.localize("pf2e-reaction.addReactionEffect.name"),
             hint: game.i18n.localize("pf2e-reaction.addReactionEffect.hint"),
+            scope: "world",
+            config: true,
+            default: false,
+            type: Boolean,
+        });
+        game.settings.register("pf2e-reaction", "allReactionEffect", {
+            name: game.i18n.localize("pf2e-reaction.allReactionEffect.name"),
+            hint: game.i18n.localize("pf2e-reaction.allReactionEffect.hint"),
             scope: "world",
             config: true,
             default: false,
