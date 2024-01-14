@@ -128,8 +128,18 @@ class Settings {
             name: game.i18n.localize("pf2e-reaction.hotkey-v.name"),
             hint: game.i18n.localize("pf2e-reaction.hotkey-v.hint"),
             editable: [{   key: "KeyV" }],
-            onDown: () => { _token.document.flags['skipMoveTrigger']=true; return true; },
-            onUp: () => { _token.document.flags['skipMoveTrigger']=false; return true; },
+            onDown: () => {
+                if (_token?.document) {
+                    _token.document.flags['skipMoveTrigger']=true;
+                }
+                return true;
+            },
+            onUp: () => {
+                if (_token?.document) {
+                    _token.document.flags['skipMoveTrigger']=false;
+                }
+                return true;
+            },
         });
     }
 
