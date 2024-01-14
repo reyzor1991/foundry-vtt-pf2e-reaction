@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.2.58
+- Fix Step keybindings logic
+
 ## Version 0.2.57
 - Handle Effect: Hydra Heads
 
