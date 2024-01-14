@@ -129,15 +129,11 @@ class Settings {
             hint: game.i18n.localize("pf2e-reaction.hotkey-v.hint"),
             editable: [{   key: "KeyV" }],
             onDown: () => {
-                if (_token?.document) {
-                    _token.document.flags['skipMoveTrigger']=true;
-                }
+                game.skipMoveTrigger = mergeObject(game.skipMoveTrigger ?? {}, {[game.userId]:true});
                 return true;
             },
             onUp: () => {
-                if (_token?.document) {
-                    _token.document.flags['skipMoveTrigger']=false;
-                }
+                game.skipMoveTrigger = mergeObject(game.skipMoveTrigger ?? {}, {[game.userId]:false});
                 return true;
             },
         });

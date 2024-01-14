@@ -560,7 +560,7 @@ Hooks.on('preUpdateToken', async (tokenDoc, data, deep, id) => {
         const message = {"actor" : tokenDoc.actor, "token": tokenDoc, "item": createTrait("move")};
 
         if (game.combat) {
-            if (tokenDoc.flags['skipMoveTrigger']) {return}
+            if (game?.skipMoveTrigger?.[id]) {return}
 
             const availableReactions = game.combat.getFlag(moduleName, 'availableReactions') ?? []
 
