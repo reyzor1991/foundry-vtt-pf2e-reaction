@@ -78,6 +78,11 @@ function canReachEnemy(attackerToken, defendToken, defendActor, specificWeapon=u
             return distance <= defendActor.attributes.reach.base
         }
     } else {
+        let reachAttack = Math.max(defendActor?.system?.actions?.filter(a=>a.ready).map(a=>a?.weaponTraits?.find(b=>b.name.startsWith("reach"))?.name?.replace('reach-', '') ).filter(a=>a).map(a=>Number(a)))
+        if (reachAttack) {
+            return getEnemyDistance(attackerToken, defendToken) <= reachAttack
+        }
+
         return getEnemyDistance(attackerToken, defendToken) <= defendActor.attributes.reach.base
             || (hasReachWeapon(defendActor) && getEnemyDistance(attackerToken, defendToken, defendActor.attributes.reach.base + 5) <= (defendActor.attributes.reach.base + 5))
     }

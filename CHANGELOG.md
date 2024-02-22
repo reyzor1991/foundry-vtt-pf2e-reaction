@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.2.60
+- Fix check reach weapon/attack
+
 ## Version 0.2.59
 - Fix Step keybindings logic
 
