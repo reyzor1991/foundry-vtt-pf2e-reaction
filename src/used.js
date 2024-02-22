@@ -54,6 +54,14 @@ Hooks.on('preCreateChatMessage', async (message, user, _options, userId)=>{
                 reactionWasUsedChat(_uuid(charmedlife), message.token.combatant);
             }
         }
+    } else if (message?.isRoll) {
+        const yourenext = actorFeat(message.actor, "youre-next");
+        if (yourenext) {
+            if (message?.flags?.pf2e?.modifiers?.find(a=>a.slug==="youre-next" && a.enabled)) {
+                decreaseReaction(message.token.combatant)
+                reactionWasUsedChat(_uuid(yourenext), message.token.combatant);
+            }
+        }
     }
 
 });

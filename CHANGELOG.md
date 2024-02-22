@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.2.61
+- Add You're Next
+
 ## Version 0.2.60
 - Fix check reach weapon/attack
 
