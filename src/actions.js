@@ -3,9 +3,9 @@ async function ringBell(message) {
         if (hasReaction(message?.target?.token?.combatant)) {
             const ring_bell = actorAction(message?.target?.actor, "ring-bell");
             if (ring_bell
-                    && getEnemyDistance(message.token, message.target.token)<=30
+                    && getEnemyDistance(message.token, message.target?.token)<=30
                     && hasExploitVulnerabilityEffect(message.actor, message?.target?.actor)) {
-                    await postInChatTemplate(_uuid(ring_bell), message.target.token.combatant);
+                    await postInChatTemplate(_uuid(ring_bell), message.target?.token.combatant);
             }
         }
         if (isTargetCharacter(message)) {
@@ -90,9 +90,9 @@ async function amuletsAbeyance(message) {
         //ally damaged
         if (message?.target) {
             (isTargetCharacter(message) ? characterWithReaction() : npcWithReaction())
-            .filter(a=>a?.actor?.id != message?.target?.actor._id)
+            .filter(a=>a?.actor?.id !== message?.target?.actor._id)
             .forEach(cc => {
-                if (getEnemyDistance(message.target.token, cc.token) <= 15 && hasExploitVulnerabilityEffect(message.actor, cc.actor)) {
+                if (getEnemyDistance(message.target?.token, cc.token) <= 15 && hasExploitVulnerabilityEffect(message.actor, cc.actor)) {
                     const aab = actorAction(cc.actor, "amulets-abeyance");
                     if (aab) {
                         postTargetInChatTemplate(_uuid(aab), cc);
@@ -108,9 +108,9 @@ async function retributiveStrike(message) {
         //ally damaged
         if (message?.target) {
             (isTargetCharacter(message) ? characterWithReaction() : npcWithReaction())
-            .filter(a=>a?.actor?.id != message?.target?.actor._id)
+            .filter(a=>a?.actor?.id !== message?.target?.actor._id)
             .forEach(cc => {
-                if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15) {
+                if (getEnemyDistance(message.target?.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15) {
                     const retributivestrike = actorAction(cc.actor, "retributive-strike");
                     if (retributivestrike) {
                         postTargetInChatTemplate(_uuid(retributivestrike), cc);
@@ -126,9 +126,9 @@ async function denierOfDestruction(message) {
         //ally damaged
         if (message?.target) {
             (isTargetCharacter(message) ? characterWithReaction() : npcWithReaction())
-            .filter(a=>a?.actor?.id != message?.target?.actor._id)
+            .filter(a=>a?.actor?.id !== message?.target?.actor._id)
             .forEach(cc => {
-                if (getEnemyDistance(message.target.token, cc.token) <= 30) {
+                if (getEnemyDistance(message.target?.token, cc.token) <= 30) {
                     const dod = actorAction(cc.actor, "denier-of-destruction");
                     if (dod) {
                         postTargetInChatTemplate(_uuid(dod), cc);
@@ -144,9 +144,9 @@ async function glimpseOfRedemption(message) {
         //ally damaged
         if (message?.target) {
             (isTargetCharacter(message) ? characterWithReaction() : npcWithReaction())
-            .filter(a=>a?.actor?.id != message?.target?.actor._id)
+            .filter(a=>a?.actor?.id !== message?.target?.actor._id)
             .forEach(cc => {
-                if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15) {
+                if (getEnemyDistance(message.target?.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15) {
                     const gor = actorAction(cc.actor, "glimpse-of-redemption");
                     if (gor) {
                         postTargetInChatTemplate(_uuid(gor), cc);
@@ -162,9 +162,9 @@ async function liberatingStep(message) {
         //ally damaged
         if (message?.target) {
             (isTargetCharacter(message) ? characterWithReaction() : npcWithReaction())
-            .filter(a=>a?.actor?.id != message?.target?.actor._id)
+            .filter(a=>a?.actor?.id !== message?.target?.actor._id)
             .forEach(cc => {
-                if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15) {
+                if (getEnemyDistance(message.target?.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15) {
                     const liberatingstep = actorAction(cc.actor, "liberating-step");
                     if (liberatingstep) {
                         postTargetInChatTemplate(_uuid(liberatingstep), cc);
@@ -175,10 +175,10 @@ async function liberatingStep(message) {
     } else if (messageType(message, 'skill-check')) {
         if (isTargetCharacter(message) && anySuccessMessageOutcome(message)) {
             characterWithReaction()
-            .filter(a=>a?.actor?.id != message?.target?.actor._id)
+            .filter(a=>a?.actor?.id !== message?.target?.actor._id)
             .forEach(cc => {
                 if (message?.flags?.pf2e?.context?.options.find(bb=>bb==="action:grapple")) {
-                    if (getEnemyDistance(message.target.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15){
+                    if (getEnemyDistance(message.target?.token, cc.token) <= 15 && getEnemyDistance(message.token, cc.token) <= 15){
                         const liberating_step = actorAction(cc.actor, "liberating-step");
                         if (liberating_step) {
                             postTargetInChatTemplate(_uuid(liberating_step), cc);
@@ -205,10 +205,10 @@ async function vengefulSpite(message) {
 
 async function reactiveGnaw(message) {
     if (messageType(message, 'damage-roll')) {
-        if (hasReaction(message?.target?.token?.combatant) && adjacentEnemy(message.target.token, message.token)) {
+        if (hasReaction(message?.target?.token?.combatant) && adjacentEnemy(message.target?.token, message.token)) {
             const rg = actorAction(message?.target?.actor, "reactive-gnaw");
             if (rg && message?.item?.system?.damage?.damageType === "slashing") {
-                await postInChatTemplate(_uuid(rg), message.target.token.combatant);
+                await postInChatTemplate(_uuid(rg), message.target?.token.combatant);
             }
         }
     }
@@ -216,10 +216,10 @@ async function reactiveGnaw(message) {
 
 async function ironCommand(message) {
     if (messageType(message, 'damage-roll')) {
-        if (hasReaction(message?.target?.token?.combatant) && getEnemyDistance(message?.target.token, message.token) <= 15) {
+        if (hasReaction(message?.target?.token?.combatant) && getEnemyDistance(message?.target?.token, message.token) <= 15) {
             const iron_command = actorAction(message?.target?.actor, "iron-command");
             if (iron_command) {
-                await postInChatTemplate(_uuid(iron_command), message.target.token.combatant);
+                await postInChatTemplate(_uuid(iron_command), message.target?.token.combatant);
             }
         }
     }
@@ -227,10 +227,10 @@ async function ironCommand(message) {
 
 async function selfishShield(message) {
     if (messageType(message, 'damage-roll')) {
-        if (hasReaction(message?.target?.token?.combatant) && getEnemyDistance(message?.target.token, message.token) <= 15) {
+        if (hasReaction(message?.target?.token?.combatant) && getEnemyDistance(message?.target?.token, message.token) <= 15) {
             const selfish_shield = actorAction(message?.target?.actor, "selfish-shield");
             if (selfish_shield) {
-                await postInChatTemplate(_uuid(selfish_shield), message.target.token.combatant);
+                await postInChatTemplate(_uuid(selfish_shield), message.target?.token.combatant);
             }
         }
     }
@@ -238,10 +238,10 @@ async function selfishShield(message) {
 
 async function destructiveVengeance(message) {
     if (messageType(message, 'damage-roll')) {
-        if (hasReaction(message?.target?.token?.combatant) && getEnemyDistance(message?.target.token, message.token) <= 15) {
+        if (hasReaction(message?.target?.token?.combatant) && getEnemyDistance(message?.target?.token, message.token) <= 15) {
             const destructive_vengeance = actorAction(message?.target?.actor, "destructive-vengeance");
             if (destructive_vengeance) {
-                await postInChatTemplate(_uuid(destructive_vengeance), message.target.token.combatant);
+                await postInChatTemplate(_uuid(destructive_vengeance), message.target?.token.combatant);
             }
         }
     }
@@ -305,7 +305,7 @@ async function wickedThorns(message) {
                 const wicked_thorns = actorAction(message?.target?.actor, "wicked-thorns");
                 if (wicked_thorns) {
                     if (message?.item?.traits.has("unarmed") || (message?.item?.isMelee && nonReach(message?.item?.traits))) {
-                        await postInChatTemplate(_uuid(wicked_thorns), message.target.token.combatant);
+                        await postInChatTemplate(_uuid(wicked_thorns), message.target?.token.combatant);
                     }
                 }
             }

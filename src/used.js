@@ -32,18 +32,18 @@ Hooks.on('preCreateChatMessage', async (message, user, _options, userId)=>{
     if (messageType(message, 'attack-roll')) {
 
         if (hasOption(message, "hit-the-dirt") && hasOption(message, "item:ranged")) {
-            decreaseReaction(message.target.token.combatant);
-            reactionWasUsedChat(hit_the_dirt, message.target.token.combatant);
+            decreaseReaction(message.target?.token.combatant);
+            reactionWasUsedChat(hit_the_dirt, message.target?.token.combatant);
         }
 
         if (message?.item?.isMelee && message?.target?.actor?.flags?.pf2e?.rollOptions?.all?.['crane-flutter']) {
-            decreaseReaction(message.target.token.combatant);
-            reactionWasUsedChat(crane_flutter, message.target.token.combatant);
+            decreaseReaction(message.target?.token.combatant);
+            reactionWasUsedChat(crane_flutter, message.target?.token.combatant);
         }
 
         if (message?.item?.isRanged && message?.target?.actor?.flags?.pf2e?.rollOptions?.ac?.['deflect-arrow']) {
-            decreaseReaction(message.target.token.combatant);
-            reactionWasUsedChat(deflect_arrow, message.target.token.combatant);
+            decreaseReaction(message.target?.token.combatant);
+            reactionWasUsedChat(deflect_arrow, message.target?.token.combatant);
         }
 
     } else if (messageType(message, "saving-throw")) {
