@@ -452,7 +452,7 @@ function combatantsForTriggers(tt, message) {
         }
         if (tr.name === 'AllyTakeDamage' && messageType(message, 'damage-roll')) {
             const t = filterByDistance((isTargetCharacter(message) ? characterWithReaction() : npcWithReaction())
-            .filter(a=>a?.actor?.id != message?.target?.actor._id), tr, message);
+            .filter(a=>a?.actor?.id !== message?.target?.actor._id), tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'ActorTakeDamage' && messageType(message, 'damage-roll')) {
@@ -508,7 +508,7 @@ function combatantsForTriggers(tt, message) {
         }
         if (tr.name === 'CreatureAttacksAlly' && messageType(message, 'attack-roll')) {
             const t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction())
-                .filter(a=>a?.actor?.id != message?.target?.actor._id), tr, message);
+                .filter(a=>a?.actor?.id !== message?.target?.actor._id), tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'ActorFailsSkillCheck' && messageType(message, 'skill-check') && anyFailureMessageOutcome(message)) {

@@ -601,8 +601,8 @@ Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
             .map(a=>a?.damageType).find(a=> a === "slashing")
         ) {
             const ImNotCrying = actorActionBySource(message?.target?.actor, "Item.ncKVztM6EL4i98dL");
-            if (ImNotCrying && adjacentEnemy(message.target.token, message.token)) {
-                await postInChatTemplate(_uuid(ImNotCrying), message.target.token.combatant);
+            if (ImNotCrying && adjacentEnemy(message.target?.token, message.token)) {
+                await postInChatTemplate(_uuid(ImNotCrying), message.target?.token.combatant);
             }
         }
     }
