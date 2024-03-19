@@ -91,3 +91,7 @@
 90. I'm Not Crying
 91. Opportune Backstab
 92. Banshee Cry(Spell only)
+93. Invigorating Fear
+94. Ectoplasmic Shield
+95. You're Next
+96. Disarming Block

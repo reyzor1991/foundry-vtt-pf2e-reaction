@@ -530,9 +530,10 @@ Hooks.on('renderChatMessage', (app, html, msg) => {
 });
 
 Hooks.on('createItem', async (effect, data, id) => {
+    if (id != game.userId) {return}
+    const currCom = game.combat?.turns?.find(a => a.actorId === effect.actor.id);
+    if (!currCom) {return}
     if ("effect-raise-a-shield" === effect.slug && isActorCharacter(effect.actor)) {
-        const currCom = game.combat?.turns?.find(a => a.actorId === effect.actor.id);
-        if (!currCom) {return}
         const withShield = game.combat?.turns?.filter(a => isActorCharacter(a.actor))
             .filter(a => hasEffect(a.actor, "effect-raise-a-shield"));
         const shield_wall = actorFeat(currCom.actor, "shield-wall");
@@ -552,6 +553,16 @@ Hooks.on('createItem', async (effect, data, id) => {
                 postInChatTemplate(_uuid(shield_wall_), cc);
             }
         });
+    } else if ('frightened' === effect.slug) {
+        let combs = game.combat?.turns
+            .filter(c=>c!=currCom)
+            .filter(c=>getEnemyDistance(c.token, effect.actor.getActiveTokens(true, true)[0]) <= 60)
+            .forEach(cc => {
+                const invigorating = actorActionBySource(cc.actor,'Compendium.pf2e.actionspf2e.Item.Ul4I0ER6pj3U5eAk')
+                if (invigorating) {
+                    postInChatTemplate(_uuid(invigorating), cc);
+                }
+            });
     }
 });
 
@@ -670,6 +681,10 @@ Hooks.on("targetToken", (_user, token, isTargeted, opts) => {
                 const as = actorAction(token.actor, "airy-step");
                 if (as) {
                     sendNotification(_user, token, as);
+                }
+                const es = actorAction(token.actor, "ectoplasmic-shield");
+                if (es) {
+                    sendNotification(_user, token, es);
                 }
             }
         }

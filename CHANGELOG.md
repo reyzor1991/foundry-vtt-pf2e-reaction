@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.2.62
+- Add Invigorating Fear
+- Add Ectoplasmic Shield
+
 ## Version 0.2.61
 - Add You're Next
 

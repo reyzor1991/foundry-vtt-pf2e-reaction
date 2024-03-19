@@ -529,6 +529,17 @@ async function retaliatoryCleansing(message) {
     }
 };
 
+async function ectoplasmicShield(message) {
+    if (messageType(message, 'attack-roll') && hasOption(message, "ranged")) {
+        if (hasReaction(message?.target?.token?.combatant)) {
+            const ectoplasmic_shield = actorAction(message?.target?.actor, "ectoplasmic-shield");
+            if (ectoplasmic_shield) {
+                await postInChatTemplate(_uuid(ectoplasmic_shield), message.target?.token.combatant);
+            }
+        }
+    }
+}
+
 async function nimbleDodge(message) {
     if (messageType(message, 'attack-roll')) {
         if (hasReaction(message?.target?.token?.combatant)) {

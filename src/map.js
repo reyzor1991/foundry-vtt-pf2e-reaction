@@ -53,6 +53,7 @@ const allReactionsMap = {
     'selfish-shield': selfishShield,
     'destructive-vengeance': destructiveVengeance,
     'nimble-dodge': nimbleDodge,
+    'ectoplasmic-shield': ectoplasmicShield,
     'airy-step': airyStep,
     'farabellus-flip': farabellusFlip,
     'reactive-shield': reactiveShield,
