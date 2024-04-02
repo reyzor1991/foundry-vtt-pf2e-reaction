@@ -670,7 +670,9 @@ Hooks.on("targetToken", (_user, token, isTargeted, opts) => {
                     const radius = Math.max(...Array.from(cc.actor.auras.values()).map(a => a.radius));
                     if (getEnemyDistance(token.document, cc.token) <= radius) {
                         const ed = actorFeat(cc.actor, "everdistant-defense");
-                        sendNotification(_user, token, nd)
+                        if (ed) {
+                            sendNotification(_user, token, ed)
+                        }
                     }
                 })
             } else {

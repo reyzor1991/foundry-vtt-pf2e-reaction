@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.2.63
+- Fix Everdistant Defense
+
 ## Version 0.2.62
 - Add Invigorating Fear
 - Add Ectoplasmic Shield
