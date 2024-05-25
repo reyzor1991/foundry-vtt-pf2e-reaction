@@ -1,7 +1,7 @@
 # Changelog
 
 ## Version 0.2.64
-- Add polish lang
+- Add poland lang
 
 ## Version 0.2.63
 - Fix Everdistant Defense
