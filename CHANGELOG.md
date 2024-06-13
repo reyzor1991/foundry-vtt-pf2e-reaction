@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.3.0
+- V12 Compatibility
+
 ## Version 0.2.64
 - Add poland lang
 

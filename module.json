@@ -2,7 +2,7 @@
   "id": "pf2e-reaction",
   "title": "PF2e Reaction Checker",
   "description": "Check reaction of combatant",
-  "version": "0.2.64",
+  "version": "0.3.0",
   "authors": [
     {
       "name": "Reyzor",
@@ -72,7 +72,7 @@
   "changelog": "https://github.com/reyzor1991/foundry-vtt-pf2e-reaction/blob/main/CHANGELOG.md",
   "compatibility": {
     "minimum": "10",
-    "verified": "11.308"
+    "verified": "12.237"
   },
   "relationships": {
     "systems": [
@@ -82,7 +82,7 @@
         "manifest": "https://github.com/foundryvtt/pf2e/releases/latest/download/system.json",
         "compatibility": {
           "minimum": "4.7.0",
-          "verified": "5.3.0"
+          "verified": "6.0.1"
         }
       }
     ],
