@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.3.1
+- Fix recall knowledge
+
 ## Version 0.3.0
 - V12 Compatibility
 
