@@ -606,6 +606,7 @@ function createTrait(t) {
 
 Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
     if (!game?.combats?.active) {return}
+    if (message?.flags?.pf2e?.context?.options?.includes('ignore-reaction')) {return}
 
     if (messageType(message, 'damage-roll') && hasReaction(message?.target?.token?.combatant)) {
         if (Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage})

@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.3.2
+- Skipping reactions
+
 ## Version 0.3.1
 - Fix recall knowledge
 
