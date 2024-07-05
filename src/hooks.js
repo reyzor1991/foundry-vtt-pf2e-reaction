@@ -293,7 +293,7 @@ async function postInChatTemplate(uuid, combatant, actionName=undefined, skipDea
                 token: null,
                 alias: "System"
             },
-            type: CONST.CHAT_MESSAGE_TYPES.OOC,
+            style: CONST.CHAT_MESSAGE_STYLES.OOC,
             content: content,
             whisper: whispers,
             flags: {'pf2e-reaction': check}
@@ -382,7 +382,7 @@ async function setReactionEffectToActor(actor, token, eff) {
     }
 
     const source = (await fromUuid(eff)).toObject();
-    source.flags = mergeObject(source.flags ?? {}, { core: { sourceId: eff } });
+    source.flags = foundry.utils.mergeObject(source.flags ?? {}, { core: { sourceId: eff } });
 
     if (game.combat.combatant.initiative <= actor.combatant.initiative) {
         source.system.duration.value = 1;
@@ -478,7 +478,7 @@ Hooks.on('pf2e.startTurn', async (_combatant) => {
 
     if (Settings.allReactionEffect) {
         const source = (await fromUuid(reactionsEffect)).toObject();
-        source.flags = mergeObject(source.flags ?? {}, { core: { sourceId: reactionsEffect } });
+        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { core: { sourceId: reactionsEffect } });
         source.system.badge.value = countAllReaction(_combatant)
 
         await _combatant.actor.createEmbeddedDocuments("Item", [source]);

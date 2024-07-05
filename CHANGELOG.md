@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.3.3
+- Ally uses a skill check
+- Ally makes an attack
+
 ## Version 0.3.2
 - Skipping reactions
 

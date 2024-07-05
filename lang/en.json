@@ -27,6 +27,8 @@
    "pf2e-reaction.SETTINGS.trigger.EnemyFailHitsActor":  "Enemy Fail Hits Actor",
    "pf2e-reaction.SETTINGS.trigger.ActorFailsHit":  "Actor fails hit",
    "pf2e-reaction.SETTINGS.trigger.ActorFailsSkillCheck":  "Actor fails skill check",
+   "pf2e-reaction.SETTINGS.trigger.AllyUseSkillCheck":  "Ally uses a skill check",
+   "pf2e-reaction.SETTINGS.trigger.AllyMakeAttack":  "Ally makes an attack",
 
 	"pf2e-reaction.SETTINGS.addReaction": "Add Homebrew Reaction",
 	"pf2e-reaction.SETTINGS.addTrigger": "Add Reaction Trigger",

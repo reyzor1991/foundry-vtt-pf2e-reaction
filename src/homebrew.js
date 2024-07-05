@@ -26,6 +26,8 @@ const Trigger = {
   EnemyFailHitsActor: "pf2e-reaction.SETTINGS.trigger.EnemyFailHitsActor",
   ActorFailsHit: "pf2e-reaction.SETTINGS.trigger.ActorFailsHit",
   ActorFailsSkillCheck: "pf2e-reaction.SETTINGS.trigger.ActorFailsSkillCheck",
+  AllyUseSkillCheck: "pf2e-reaction.SETTINGS.trigger.AllyUseSkillCheck",
+  AllyMakeAttack: "pf2e-reaction.SETTINGS.trigger.AllyMakeAttack",
 }
 
 class HomebrewReactionRequirement {
@@ -99,7 +101,7 @@ class ReactionHomebrewSettings extends FormApplication {
     }
 
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             title: game.i18n.localize(`pf2e-reaction.SETTINGS.${this.namespace}.name`),
             id: `${this.namespace}-settings`,
             classes: ['settings-menu'],
@@ -161,7 +163,7 @@ class ReactionHomebrewSettings extends FormApplication {
                 isCheckbox: setting.type === Boolean,
             };
         });
-        return mergeObject(super.getData(), {
+        return foundry.utils.mergeObject(super.getData(), {
             settings: templateData,
             homebrewReactions: this.homebrewReactions
         });
@@ -371,6 +373,12 @@ function handleHomebrewTrigger(tr, message) {
     if (tr.name === 'EnemyHitsActor' && messageType(message, 'attack-roll')) {
         return true;
     }
+    if (tr.name === 'AllyMakeAttack' && messageType(message, 'attack-roll')) {
+        return true;
+    }
+    if (tr.name === 'AllyUseSkillCheck' && messageType(message, 'skill-check')) {
+        return true;
+    }
     if (tr.name === 'EnemyCriticalFailHitsActor' && messageType(message, 'attack-roll') && criticalFailureMessageOutcome(message)) {
         return true;
     }
@@ -452,7 +460,7 @@ function combatantsForTriggers(tt, message) {
         }
         if (tr.name === 'AllyTakeDamage' && messageType(message, 'damage-roll')) {
             const t = filterByDistance((isTargetCharacter(message) ? characterWithReaction() : npcWithReaction())
-            .filter(a=>a?.actor?.id !== message?.target?.actor._id), tr, message);
+                .filter(a=>a.actor?.uuid !== message?.actor?.uuid), tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'ActorTakeDamage' && messageType(message, 'damage-roll')) {
@@ -473,7 +481,7 @@ function combatantsForTriggers(tt, message) {
             && message.actor.system?.attributes?.hp?.value === 0) {
 
             const t = filterByDistance((isTargetCharacter(message) ? characterWithReaction() : npcWithReaction())
-                .filter(a=>a.actorId !== message?.actor?._id), tr, message);
+                .filter(a=>a.actor?.uuid !== message?.actor?.uuid), tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'EnemyUsesTrait'
@@ -488,6 +496,16 @@ function combatantsForTriggers(tt, message) {
         }
         if (tr.name === 'EnemyHitsActor' && messageType(message, 'attack-roll')) {
             const t = filterByDistance([message?.target?.token?.combatant], tr, message);
+            res = res.concat(t);
+        }
+        if (tr.name === 'AllyMakeAttack' && messageType(message, 'attack-roll')) {
+            const t = filterByDistance((isActorCharacter(message.actor) ? characterWithReaction() : npcWithReaction())
+                .filter(a=>a.actor?.uuid !== message?.actor?.uuid), tr, message);
+            res = res.concat(t);
+        }
+        if (tr.name === 'AllyUseSkillCheck' && messageType(message, 'skill-check')) {
+            const t = filterByDistance((isActorCharacter(message.actor) ? characterWithReaction() : npcWithReaction())
+                .filter(a=>a.actor?.uuid !== message?.actor?.uuid), tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'EnemyCriticalFailHitsActor' && messageType(message, 'attack-roll') && criticalFailureMessageOutcome(message)) {
@@ -508,7 +526,7 @@ function combatantsForTriggers(tt, message) {
         }
         if (tr.name === 'CreatureAttacksAlly' && messageType(message, 'attack-roll')) {
             const t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction())
-                .filter(a=>a?.actor?.id !== message?.target?.actor._id), tr, message);
+                .filter(a=>a.actor?.uuid !== message?.actor?.uuid), tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'ActorFailsSkillCheck' && messageType(message, 'skill-check') && anyFailureMessageOutcome(message)) {

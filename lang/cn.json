@@ -27,6 +27,8 @@
    "pf2e-reaction.SETTINGS.trigger.EnemyFailHitsActor":  "敌人未能击中角色",
    "pf2e-reaction.SETTINGS.trigger.ActorFailsHit":  "角色攻击失手",
    "pf2e-reaction.SETTINGS.trigger.ActorFailsSkillCheck":  "角色技能检定失败",
+   "pf2e-reaction.SETTINGS.trigger.AllyUseSkillCheck":  "盟友使用技能检查",
+   "pf2e-reaction.SETTINGS.trigger.AllyMakeAttack":  "盟友发起攻击",
 
 	"pf2e-reaction.SETTINGS.addReaction": "添加房规反应动作",
 	"pf2e-reaction.SETTINGS.addTrigger": "添加反应触发条件",

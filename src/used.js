@@ -18,7 +18,7 @@ async function reactionWasUsedChat(uuid, combatant) {
             token: null,
             alias: "System"
         },
-        type: CONST.CHAT_MESSAGE_TYPES.OOC,
+        style: CONST.CHAT_MESSAGE_STYLES.OOC,
         content: content,
         whisper: whispers
     });

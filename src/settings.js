@@ -129,11 +129,11 @@ class Settings {
             hint: game.i18n.localize("pf2e-reaction.hotkey-v.hint"),
             editable: [{   key: "KeyV" }],
             onDown: () => {
-                game.skipMoveTrigger = mergeObject(game.skipMoveTrigger ?? {}, {[game.userId]:true});
+                game.skipMoveTrigger = foundry.utils.mergeObject(game.skipMoveTrigger ?? {}, {[game.userId]:true});
                 return true;
             },
             onUp: () => {
-                game.skipMoveTrigger = mergeObject(game.skipMoveTrigger ?? {}, {[game.userId]:false});
+                game.skipMoveTrigger = foundry.utils.mergeObject(game.skipMoveTrigger ?? {}, {[game.userId]:false});
                 return true;
             },
         });

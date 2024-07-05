@@ -25,6 +25,8 @@
   "pf2e-reaction.SETTINGS.trigger.EnemyFailHitsActor": "Wróg nie trafia w aktora",
   "pf2e-reaction.SETTINGS.trigger.ActorFailsHit": "Aktor nie trafia",
   "pf2e-reaction.SETTINGS.trigger.ActorFailsSkillCheck": "Aktor nie zdaje testu umiejętności",
+   "pf2e-reaction.SETTINGS.trigger.AllyUseSkillCheck":  "Sojusznik używa testu umiejętności",
+   "pf2e-reaction.SETTINGS.trigger.AllyMakeAttack":  "Sojusznik atakuje",
   "pf2e-reaction.SETTINGS.addReaction": "Dodaj reakcję Homebrew",
   "pf2e-reaction.SETTINGS.addTrigger": "Dodaj wyzwalacz reakcji",
   "pf2e-reaction.SETTINGS.addRequirement": "Dodaj wymaganie dotyczące reakcji",

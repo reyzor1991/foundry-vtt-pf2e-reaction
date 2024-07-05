@@ -27,6 +27,8 @@
    "pf2e-reaction.SETTINGS.trigger.EnemyFailHitsActor":  "Ворог не попав в актора",
    "pf2e-reaction.SETTINGS.trigger.ActorFailsHit":  "Актор не влучив",
    "pf2e-reaction.SETTINGS.trigger.ActorFailsSkillCheck":  "Актор не пройшов перевірку навика",
+   "pf2e-reaction.SETTINGS.trigger.AllyUseSkillCheck":  "Союзник використав навик",
+   "pf2e-reaction.SETTINGS.trigger.AllyMakeAttack":  "Союзник б'є",
 
 	"pf2e-reaction.SETTINGS.addReaction": "Додати Homebrew реакцію",
 	"pf2e-reaction.SETTINGS.addTrigger": "Додати трігер",
