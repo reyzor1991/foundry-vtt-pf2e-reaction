@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.3.4
+- Update Polish translate
+
 ## Version 0.3.3
 - Ally uses a skill check
 - Ally makes an attack
