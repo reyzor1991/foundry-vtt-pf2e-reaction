@@ -30,6 +30,7 @@
   "pf2e-reaction.SETTINGS.addReaction": "Dodaj reakcję Homebrew",
   "pf2e-reaction.SETTINGS.addTrigger": "Dodaj wyzwalacz reakcji",
   "pf2e-reaction.SETTINGS.addRequirement": "Dodaj wymaganie dotyczące reakcji",
+	"pf2e-reaction.SETTINGS.addOwnerRequirement": "Dodaj wymaganie do właściciela reakcji",
   "pf2e-reaction.SETTINGS.useHomebrew.name": "Użyj reakcji homebrew",
   "pf2e-reaction.SETTINGS.homebrewReactions.name": "Reakcje Homebrew",
   "pf2e-reaction.SETTINGS.homebrewSettings.name": "Ustawienia Reakcji Homebrew",

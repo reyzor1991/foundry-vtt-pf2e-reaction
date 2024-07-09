@@ -19,6 +19,7 @@
             </div>
             <button type="button" class="add-reaction-trigger" data-idx={{homebrewReaction.idx}}><i class="fas fa-add"></i>{{localize "pf2e-reaction.SETTINGS.addTrigger"}}</button>
             <button type="button" class="add-reaction-requirement" data-idx={{homebrewReaction.idx}}><i class="fas fa-add"></i>{{localize "pf2e-reaction.SETTINGS.addRequirement"}}</button>
+            <button type="button" class="add-reaction-owner-requirement" data-idx={{homebrewReaction.idx}}><i class="fas fa-add"></i>{{localize "pf2e-reaction.SETTINGS.addOwnerRequirement"}}</button>
             {{#each homebrewReaction.triggers as |t|}}
                 <div class="form-group" style="border:1px solid black">
                     <label>Trigger</label>
@@ -53,6 +54,23 @@
                     <label>Trait</label>
                     <input type="text" name="homebrewReaction.{{homebrewReaction.idx}}.requirements.{{r.idx}}.trait" value="{{r.trait}}" {{#if (eq "ActorHoldsItem" r.name)}} {{else}} {{#if (eq "TargetHoldsItem" r.name)}} {{else}} disabled {{/if}} {{/if}}/>
                     <button type="button" class="requirement-reaction-delete" data-parent={{homebrewReaction.idx}} data-idx={{r.idx}}><i class="fas fa-trash"></i></button>
+                </div>
+            {{/each}}
+            {{#each homebrewReaction.ownerRequirements as |r|}}
+                <div class="form-group" style="border:1px solid black">
+                    <label>Owner Requirement (Check Owner of reaction)</label>
+                    <select name="homebrewReaction.{{homebrewReaction.idx}}.ownerRequirements.{{r.idx}}.name" class="homebrew-reaction-owner-requirement" data-idx={{r.idx}} data-parent={{homebrewReaction.idx}}>
+                        {{#each r.choices as |v k|}}
+                            <option value="{{k}}" {{#if (eq k r.name)}} selected {{/if}}>{{localize v}}</option>
+                        {{/each}}
+                    </select>
+                    <label>Effect slug</label>
+                    <input type="text" name="homebrewReaction.{{homebrewReaction.idx}}.ownerRequirements.{{r.idx}}.effect" value="{{r.effect}}" {{#if (eq "TargetHasEffect" r.name)}} {{else}} {{#if (eq "ActorHasEffect" r.name)}} {{else}} disabled {{/if}} {{/if}}  />
+                    <label>Item slug</label>
+                    <input type="text" name="homebrewReaction.{{homebrewReaction.idx}}.ownerRequirements.{{r.idx}}.item" value="{{r.item}}" {{#if (eq "ActorHoldsItem" r.name)}} {{else}} {{#if (eq "TargetHoldsItem" r.name)}} {{else}} disabled {{/if}} {{/if}}/>
+                    <label>Trait</label>
+                    <input type="text" name="homebrewReaction.{{homebrewReaction.idx}}.ownerRequirements.{{r.idx}}.trait" value="{{r.trait}}" {{#if (eq "ActorHoldsItem" r.name)}} {{else}} {{#if (eq "TargetHoldsItem" r.name)}} {{else}} disabled {{/if}} {{/if}}/>
+                    <button type="button" class="owner-requirement-reaction-delete" data-parent={{homebrewReaction.idx}} data-idx={{r.idx}}><i class="fas fa-trash"></i></button>
                 </div>
             {{/each}}
         </fieldset>

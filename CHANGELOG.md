@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.4.0
+- Add Owner Requirement (Check Owner of reaction)
+
 ## Version 0.3.4
 - Update Polish translate
 

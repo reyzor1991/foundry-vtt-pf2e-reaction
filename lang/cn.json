@@ -33,6 +33,7 @@
 	"pf2e-reaction.SETTINGS.addReaction": "添加房规反应动作",
 	"pf2e-reaction.SETTINGS.addTrigger": "添加反应触发条件",
 	"pf2e-reaction.SETTINGS.addRequirement": "添加反应需求",
+	"pf2e-reaction.SETTINGS.addOwnerRequirement": "向反应所有者添加要求",
 
 	"pf2e-reaction.SETTINGS.useHomebrew.name": "使用房规反应动作",
 	"pf2e-reaction.SETTINGS.homebrewReactions.name": "房规反应动作",

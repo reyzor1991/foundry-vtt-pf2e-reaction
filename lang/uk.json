@@ -33,6 +33,7 @@
 	"pf2e-reaction.SETTINGS.addReaction": "Додати Homebrew реакцію",
 	"pf2e-reaction.SETTINGS.addTrigger": "Додати трігер",
 	"pf2e-reaction.SETTINGS.addRequirement": "Додати Вимогу",
+	"pf2e-reaction.SETTINGS.addOwnerRequirement": "Додати Вимогу до власника реакції",
 
 	"pf2e-reaction.SETTINGS.useHomebrew.name": "Використовуйте Homebrew реакції",
 	"pf2e-reaction.SETTINGS.homebrewReactions.name": "Homebrew реакції",

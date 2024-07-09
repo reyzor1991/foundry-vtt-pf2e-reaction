@@ -5,6 +5,11 @@ const Requirement = {
   ActorHoldsItem: "pf2e-reaction.SETTINGS.requirement.ActorHoldsItem",
   TargetHoldsItem: "pf2e-reaction.SETTINGS.requirement.TargetHoldsItem",
 }
+const OwnerRequirement = {
+  None: "pf2e-reaction.SETTINGS.requirement.None",
+  ActorHasEffect: "pf2e-reaction.SETTINGS.requirement.ActorHasEffect",
+  ActorHoldsItem: "pf2e-reaction.SETTINGS.requirement.ActorHoldsItem",
+}
 const Trigger = {
   None: "pf2e-reaction.SETTINGS.trigger.None",
   CriticalFailSavingThrow: "pf2e-reaction.SETTINGS.trigger.CriticalFailSavingThrow",
@@ -48,6 +53,24 @@ class HomebrewReactionRequirement {
   }
 }
 
+class HomebrewReactionOwnerRequirement {
+  constructor(idx) {
+    this.idx = idx;
+    this.name = Requirement.None;
+    this.effect = "";
+    this.item = "";
+    this.trait = "";
+    this.choices = Requirement
+  }
+
+  static fromObj(obj) {
+      const h = new HomebrewReactionOwnerRequirement();
+      Object.assign(h, obj);
+    h.choices = OwnerRequirement;
+    return h;
+  }
+}
+
 class HomebrewReactionTrigger {
   constructor(idx) {
     this.idx = idx;
@@ -73,6 +96,7 @@ class HomebrewReaction {
     this.uuid = "";
     this.triggers = [new HomebrewReactionTrigger(0)]
     this.requirements = []
+    this.ownerRequirements = []
   }
 
   static fromObj(obj) {
@@ -80,6 +104,7 @@ class HomebrewReaction {
       Object.assign(h, obj);
     h.triggers = h.triggers.map(a=>HomebrewReactionTrigger.fromObj(a));
     h.requirements = h.requirements.map(a=>HomebrewReactionRequirement.fromObj(a));
+    h.ownerRequirements = h.ownerRequirements.map(a=>HomebrewReactionOwnerRequirement.fromObj(a));
     return h;
   }
 }
@@ -177,7 +202,7 @@ class ReactionHomebrewSettings extends FormApplication {
         const hIdx = hr_key_parts[0];
         const keyPart = hr_key_parts[1];
 
-        if (keyPart === "triggers" || keyPart === "requirements") {
+        if (keyPart === "triggers" || keyPart === "requirements" || keyPart === "ownerRequirements") {
             const trigIdx = hr_key_parts[2];
             const trigField = hr_key_parts[3];
 
@@ -214,6 +239,9 @@ class ReactionHomebrewSettings extends FormApplication {
             for (let l=0; l < this.homebrewReactions[i].requirements.length; l++) {
                 this.homebrewReactions[i].requirements[l].idx = l;
             }
+            for (let b=0; b < this.homebrewReactions[i].ownerRequirements.length; b++) {
+                this.homebrewReactions[i].ownerRequirements[b].idx = b;
+            }
         }
     }
 
@@ -227,6 +255,9 @@ class ReactionHomebrewSettings extends FormApplication {
                         return {"name":a.name,"reachValue":a.reachValue,"reach":a.reach,"adjacent":a.adjacent,"trait":a.trait};
                     }),
                     requirements: this.homebrewReactions[i].requirements.map(a=>{
+                        return {"name":a.name,"effect":a.effect,"item":a.item,"trait":a.trait};
+                    }),
+                    ownerRequirements: this.homebrewReactions[i].ownerRequirements.map(a=>{
                         return {"name":a.name,"effect":a.effect,"item":a.item,"trait":a.trait};
                     }),
                 }
@@ -271,6 +302,13 @@ class ReactionHomebrewSettings extends FormApplication {
             this.updateIndexes();
             super.render()
         });
+        html.find('.owner-requirement-reaction-delete').click(async (event) => {
+            this.updateForm(event);
+
+            this.homebrewReactions[$(event.currentTarget).data().parent].ownerRequirements.splice($(event.currentTarget).data().idx, 1);
+            this.updateIndexes();
+            super.render()
+        });
         html.find('.add-reaction-trigger').click(async (event) => {
             this.updateForm(event);
 
@@ -283,6 +321,13 @@ class ReactionHomebrewSettings extends FormApplication {
 
             const i = $(event.currentTarget).data().idx;
             this.homebrewReactions[i].requirements.push(new HomebrewReactionRequirement(this.homebrewReactions[i].requirements.length));
+            super.render()
+        });
+        html.find('.add-reaction-owner-requirement').click(async (event) => {
+            this.updateForm(event);
+
+            const i = $(event.currentTarget).data().idx;
+            this.homebrewReactions[i].ownerRequirements.push(new HomebrewReactionOwnerRequirement(this.homebrewReactions[i].ownerRequirements.length));
             super.render()
         });
         html.find('.homebrew-reaction-trigger').change(async (event) => {
@@ -305,6 +350,18 @@ class ReactionHomebrewSettings extends FormApplication {
             }
             super.render()
         });
+        html.find('.homebrew-reaction-owner-requirement').change(async (event) => {
+            this.updateForm(event);
+            this.homebrewReactions[$(event.currentTarget).data().parent].ownerRequirements[$(event.currentTarget).data().idx].name = $(event.currentTarget).val();
+            if ("ActorHasEffect" !== $(event.currentTarget).val()) {
+                this.homebrewReactions[$(event.currentTarget).data().parent].ownerRequirements[$(event.currentTarget).data().idx].effect = "";
+            }
+            if ("ActorHoldsItem" !== $(event.currentTarget).val()) {
+                this.homebrewReactions[$(event.currentTarget).data().parent].ownerRequirements[$(event.currentTarget).data().idx].item = "";
+                this.homebrewReactions[$(event.currentTarget).data().parent].ownerRequirements[$(event.currentTarget).data().idx].trait = "";
+            }
+            super.render()
+        });
     }
 
 }
@@ -318,11 +375,13 @@ async function handleHomebrewMessages(message) {
             .forEach(hr => {
                 const tt = hr.triggers.filter(a => a.name !== "None");
                 const requirements = hr.requirements.filter(a => a.name !== "None");
+                const ownerRequirements = hr.ownerRequirements?.filter(a => a.name !== "None") ?? [];
                 if (!messageRequirements(message, requirements)) {
                     return;
                 }
                 if (tt.some(a=>handleHomebrewTrigger(a, message))) {
                     combatantsForTriggers(tt, message)
+                        .filter(c=>actorRequirements(c.actor, ownerRequirements))
                         .filter(a=>actorFeatBySource(a.actor, hr.uuid) || actorActionBySource(a.actor, hr.uuid) || actorSpellBySource(a.actor, hr.uuid))
                         .forEach(cc => {
                             postInChatTemplate(_uuid(hr), cc, undefined, tt.find(a=>a.name==="YouHPZero") !== undefined);
@@ -424,6 +483,18 @@ function messageRequirements(message, requirements) {
             return true;
         }
         if (a.name === 'TargetHoldsItem' && heldItems(message?.target?.actor, a.item, a.trait).length > 0) {
+            return true;
+        }
+        return false;
+    })
+}
+
+function actorRequirements(actor, requirements) {
+    return requirements.every(a=>{
+        if (a.name === 'ActorHasEffect' && hasEffect(actor, a.effect)) {
+            return true;
+        }
+        if (a.name === 'ActorHoldsItem' && heldItems(actor, a.item, a.trait).length > 0) {
             return true;
         }
         return false;
