@@ -32,18 +32,33 @@ async function addRecallButton(html, sheet, skill, dc, isLore=false) {
     a.onclick = async function () {
         let content = 'To Recall Knowledge, roll:';
         content += '<br>@Check[type:'+skill+'|dc:'+dc+'|traits:secret,action:recall-knowledge]';
-        await ChatMessage.create({
-            content: await TextEditor.enrichHTML(content),
-            flavor: '',
-            user: null,
-            speaker: {
-                scene: null,
-                actor: null,
-                token: null,
-                alias: "System"
-            },
-            style: CONST.CHAT_MESSAGE_STYLES.OOC
-        }).then();
+        if (foundry.utils.isNewerVersion(game.version, 12)) {
+            await ChatMessage.create({
+                content: await TextEditor.enrichHTML(content),
+                flavor: '',
+                user: null,
+                speaker: {
+                    scene: null,
+                    actor: null,
+                    token: null,
+                    alias: "System"
+                },
+                style: CONST.CHAT_MESSAGE_STYLES.OOC
+            }).then();
+        } else {
+            await ChatMessage.create({
+                content: await TextEditor.enrichHTML(content),
+                flavor: '',
+                user: null,
+                speaker: {
+                    scene: null,
+                    actor: null,
+                    token: null,
+                    alias: "System"
+                },
+                type: CONST.CHAT_MESSAGE_TYPES.OOC,
+            }).then();
+        }
     };
     but.append(a);
 

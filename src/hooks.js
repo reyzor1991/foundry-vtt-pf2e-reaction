@@ -284,27 +284,51 @@ async function postInChatTemplate(uuid, combatant, actionName=undefined, skipDea
             'flags.pf2e-reaction.reactions': countReaction(combatant, actionName)
         }, { noHook: true})
     } else {
-        ChatMessage.create({
-            flavor: '',
-            user: null,
-            speaker: {
-                scene: null,
-                actor: null,
-                token: null,
-                alias: "System"
-            },
-            style: CONST.CHAT_MESSAGE_STYLES.OOC,
-            content: content,
-            whisper: whispers,
-            flags: {'pf2e-reaction': check}
-        }).then(m=>{
-            const tt = game.settings.get("pf2e-reaction", "timeoutDelete")
-            if (tt > 0) {
-                setTimeout(function() {
-                    m.delete()
-                }, tt*1000)
-            }
-        });
+        if (foundry.utils.isNewerVersion(game.version, 12)) {
+            ChatMessage.create({
+                flavor: '',
+                user: null,
+                speaker: {
+                    scene: null,
+                    actor: null,
+                    token: null,
+                    alias: "System"
+                },
+                style: CONST.CHAT_MESSAGE_STYLES.OOC,
+                content: content,
+                whisper: whispers,
+                flags: {'pf2e-reaction': check}
+            }).then(m=>{
+                const tt = game.settings.get("pf2e-reaction", "timeoutDelete")
+                if (tt > 0) {
+                    setTimeout(function() {
+                        m.delete()
+                    }, tt*1000)
+                }
+            });
+        } else {
+            ChatMessage.create({
+                flavor: '',
+                user: null,
+                speaker: {
+                    scene: null,
+                    actor: null,
+                    token: null,
+                    alias: "System"
+                },
+                type: CONST.CHAT_MESSAGE_TYPES.OOC,
+                content: content,
+                whisper: whispers,
+                flags: {'pf2e-reaction': check}
+            }).then(m=>{
+                const tt = game.settings.get("pf2e-reaction", "timeoutDelete")
+                if (tt > 0) {
+                    setTimeout(function() {
+                        m.delete()
+                    }, tt*1000)
+                }
+            });
+        }
     }
 }
 

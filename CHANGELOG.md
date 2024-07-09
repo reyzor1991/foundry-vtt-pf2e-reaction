@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.4.1
+- Fix v11 Compatibility
+
 ## Version 0.4.0
 - Add Owner Requirement (Check Owner of reaction)
 

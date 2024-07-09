@@ -9,19 +9,35 @@ async function reactionWasUsedChat(uuid, combatant) {
         whispers = whispers.concat(combatant.players.map((u) => u.id));
     }
 
-    await ChatMessage.create({
-        flavor: '',
-        user: null,
-        speaker: {
-            scene: null,
-            actor: null,
-            token: null,
-            alias: "System"
-        },
-        style: CONST.CHAT_MESSAGE_STYLES.OOC,
-        content: content,
-        whisper: whispers
-    });
+    if (foundry.utils.isNewerVersion(game.version, 12)) {
+        await ChatMessage.create({
+            flavor: '',
+            user: null,
+            speaker: {
+                scene: null,
+                actor: null,
+                token: null,
+                alias: "System"
+            },
+            style: CONST.CHAT_MESSAGE_STYLES.OOC,
+            content: content,
+            whisper: whispers
+        });
+    } else {
+          await ChatMessage.create({
+            flavor: '',
+            user: null,
+            speaker: {
+                scene: null,
+                actor: null,
+                token: null,
+                alias: "System"
+            },
+            type: CONST.CHAT_MESSAGE_TYPES.OOC,
+            content: content,
+            whisper: whispers
+        });
+    }
 }
 
 
