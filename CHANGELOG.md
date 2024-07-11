@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.4.2
+- Update Polish translate
+
 ## Version 0.4.1
 - Fix v11 Compatibility
 
