@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 1.0.0
+- Add You're Next
+
 ## Version 0.4.2
 - Update Polish translate
 

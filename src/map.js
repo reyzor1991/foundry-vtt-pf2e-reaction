@@ -3,6 +3,7 @@ const allReactionsMap = {
     'disarming-block': disarmingBlock,
     'convincing-illusion': convincingIllusion,
     'ring-bell': ringBell,
+    'youre-next': youreNext,
     'mental-static': mentalStatic,
     'premonition-of-clarity': premonitionOfClarity,
     'grit-and-tenacity': gritAndTenacity,

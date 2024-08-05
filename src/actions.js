@@ -1,3 +1,61 @@
+async function youreNext(message) {
+    if (message?.flags?.pf2e?.appliedDamage && !message?.flags?.pf2e?.appliedDamage?.isHealing) {
+        if (message.actor.system?.attributes?.hp?.value === 0) {
+            const youreNext = actorFeat(game.combat.combatant?.actor, "youre-next");
+            if (youreNext) {
+                if (game.combat.combatant?.actor?.skills?.intimidation?.rank === 4) {
+                    let text = game.i18n.format("pf2e-reaction.ask", {uuid: _uuid(youreNext), name: game.combat.combatant?.token.name});
+
+                    let content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text: text, target: false});
+
+                    let whispers = ChatMessage.getWhisperRecipients("GM").map((u) => u.id);
+                    if (game.combat.combatant.players) {
+                        whispers = whispers.concat(game.combat.combatant.players.map((u) => u.id));
+                    }
+
+                    const check = {
+                        cId: game.combat.combatant._id,
+                        uuid: _uuid(youreNext),
+                        skipReaction: true,
+                    };
+
+                    let data = {
+                        flavor: '',
+                        user: null,
+                        speaker: {
+                            scene: null,
+                            actor: null,
+                            token: null,
+                            alias: "System"
+                        },
+                        style: CONST.CHAT_MESSAGE_STYLES.OOC,
+                        content: content,
+                        whisper: whispers,
+                        flags: {'pf2e-reaction': check}
+                    };
+
+                    if (foundry.utils.isNewerVersion(game.version, 12)) {
+                        data.style = CONST.CHAT_MESSAGE_STYLES.OOC;
+                    } else {
+                        data.type = CONST.CHAT_MESSAGE_TYPES.OOC;
+                    }
+
+                    ChatMessage.create(data).then(m=>{
+                        const tt = game.settings.get("pf2e-reaction", "timeoutDelete")
+                        if (tt > 0) {
+                            setTimeout(function() {
+                                m.delete()
+                            }, tt*1000)
+                        }
+                    });
+                } else {
+                    await postInChatTemplate(_uuid(youreNext), game.combat.combatant);
+                }
+            }
+        }
+    }
+}
+
 async function ringBell(message) {
     if (messageType(message, "spell-attack-roll") || messageType(message, 'attack-roll')) {
         if (hasReaction(message?.target?.token?.combatant)) {

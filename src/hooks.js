@@ -284,51 +284,35 @@ async function postInChatTemplate(uuid, combatant, actionName=undefined, skipDea
             'flags.pf2e-reaction.reactions': countReaction(combatant, actionName)
         }, { noHook: true})
     } else {
+        let data = {
+            flavor: '',
+            user: null,
+            speaker: {
+                scene: null,
+                actor: null,
+                token: null,
+                alias: "System"
+            },
+            style: CONST.CHAT_MESSAGE_STYLES.OOC,
+            content: content,
+            whisper: whispers,
+            flags: {'pf2e-reaction': check}
+        };
+
         if (foundry.utils.isNewerVersion(game.version, 12)) {
-            ChatMessage.create({
-                flavor: '',
-                user: null,
-                speaker: {
-                    scene: null,
-                    actor: null,
-                    token: null,
-                    alias: "System"
-                },
-                style: CONST.CHAT_MESSAGE_STYLES.OOC,
-                content: content,
-                whisper: whispers,
-                flags: {'pf2e-reaction': check}
-            }).then(m=>{
-                const tt = game.settings.get("pf2e-reaction", "timeoutDelete")
-                if (tt > 0) {
-                    setTimeout(function() {
-                        m.delete()
-                    }, tt*1000)
-                }
-            });
+            data.style = CONST.CHAT_MESSAGE_STYLES.OOC;
         } else {
-            ChatMessage.create({
-                flavor: '',
-                user: null,
-                speaker: {
-                    scene: null,
-                    actor: null,
-                    token: null,
-                    alias: "System"
-                },
-                type: CONST.CHAT_MESSAGE_TYPES.OOC,
-                content: content,
-                whisper: whispers,
-                flags: {'pf2e-reaction': check}
-            }).then(m=>{
-                const tt = game.settings.get("pf2e-reaction", "timeoutDelete")
-                if (tt > 0) {
-                    setTimeout(function() {
-                        m.delete()
-                    }, tt*1000)
-                }
-            });
+            data.type = CONST.CHAT_MESSAGE_TYPES.OOC;
         }
+
+        ChatMessage.create(data).then(m=>{
+            const tt = game.settings.get("pf2e-reaction", "timeoutDelete")
+            if (tt > 0) {
+                setTimeout(function() {
+                    m.delete()
+                }, tt*1000)
+            }
+        });
     }
 }
 
@@ -426,11 +410,14 @@ $(document).on('click', '.reaction-check', async function () {
         const count = mes.getFlag(moduleName, "count");
         const uuid = mes.getFlag(moduleName, "uuid");
         const actionName = mes.getFlag(moduleName, "actionName");
+        const skipReaction = mes.getFlag(moduleName, "skipReaction");
         const needTarget = mes.getFlag(moduleName, "needTarget") ?? false;
         if (t) {
             const combatant = game.combat?.turns?.find(a => a._id === t);
             if (combatant) {
-                await decreaseReaction(combatant, actionName);
+                if (!skipReaction) {
+                    await decreaseReaction(combatant, actionName);
+                }
                 if (reactions > 1 && count > 1) {
                     let text = game.i18n.format("pf2e-reaction.ask", {uuid: uuid, name: combatant.token.name});
                     if (count-1 > 1) {
