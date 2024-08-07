@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 1.0.1
+## Version 1.0.1-3
 - Fix handling GM
 
 ## Version 1.0.0
