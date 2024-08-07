@@ -48,7 +48,7 @@ async function setInexhaustibleCountermoves(combatants, val) {
 async function updateCombatantReactionState(combatant, newState, actionName=undefined) {
     if (!combatant) {return}
     if (!newState) {
-        if (!hasReaction(combatant, actionName) && game.user.isGM) {
+        if (!hasReaction(combatant, actionName) && isGM()) {
             ui.notifications.warn(`${combatant?.actor?.name} does not have reaction anymore`);
             return;
         }
@@ -652,7 +652,7 @@ function checkSendNotification(_user, token, featNames) {
 
 Hooks.on("targetToken", (_user, token, isTargeted, opts) => {
     if (Settings.notification && game?.combats?.active && isTargeted && hasReaction(token?.combatant)) {
-        if (game.user.isGM || token.combatant.players.find(a=>a.id===game.user.id)) {
+        if (isGM() || token.combatant.players.find(a=>a.id===game.user.id)) {
             if (isActorCharacter(token?.actor)) {
                 const nd = actorFeat(token.actor, "nimble-dodge");
                 if (nd && !hasCondition(token.actor, "encumbered")) {
