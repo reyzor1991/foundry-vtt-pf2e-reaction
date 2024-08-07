@@ -347,6 +347,7 @@ function messageWithTrait(message, trait) {
 function messageWithAnyTrait(message, traits) {
     if (messageType(message, "saving-throw")) {return false}
     if (messageType(message, "damage-roll")) {return false}
+    if (messageType(message, "damage-taken")) {return false}
     return traits.some(a=>messageWithTrait(message, a))
 }
 
