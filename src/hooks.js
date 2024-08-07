@@ -345,6 +345,7 @@ function messageWithTrait(message, trait) {
 }
 
 function messageWithAnyTrait(message, traits) {
+    if (messageType(message, "saving-throw")) {return false}
     return traits.some(a=>messageWithTrait(message, a))
 }
 
