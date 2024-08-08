@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 1.1.0
+- Handle champion reaction aura
+
 ## Version 1.0.1-4
 - Fix handling GM
 

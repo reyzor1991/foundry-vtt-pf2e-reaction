@@ -39,6 +39,7 @@ const allReactionsMap = {
     'retributive-strike': retributiveStrike,
     'denier-of-destruction': denierOfDestruction,
     'glimpse-of-redemption': glimpseOfRedemption,
+    'flash-of-grandeur': flashOfGrandeur,
     'liberating-step': liberatingStep,
     'fake-out': fakeOut,
     'ruby-resurrection': rubyResurrection,
