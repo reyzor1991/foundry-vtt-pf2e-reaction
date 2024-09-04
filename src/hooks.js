@@ -491,11 +491,19 @@ Hooks.on('pf2e.startTurn', async (_combatant) => {
     }
 
     if (Settings.allReactionEffect) {
-        const source = (await fromUuid(reactionsEffect)).toObject();
-        source.flags = foundry.utils.mergeObject(source.flags ?? {}, { core: { sourceId: reactionsEffect } });
-        source.system.badge.value = countAllReaction(_combatant)
+        setTimeout(async function () {
+            let eff = hasEffectBySource(_combatant.actor, reactionsEffect)
+            if (!game.settings.get("pf2e", "automation.removeExpiredEffects") && eff) {
+                await eff.update({"system.start.value": game.time.worldTime})
+            } else {
+                const source = (await fromUuid(reactionsEffect)).toObject();
+                source.flags = foundry.utils.mergeObject(source.flags ?? {}, { core: { sourceId: reactionsEffect } });
+                source.system.badge.value = countAllReaction(_combatant)
 
-        await _combatant.actor.createEmbeddedDocuments("Item", [source]);
+                await _combatant.actor.createEmbeddedDocuments("Item", [source]);
+            }
+
+        }, 300)
     }
 });
 

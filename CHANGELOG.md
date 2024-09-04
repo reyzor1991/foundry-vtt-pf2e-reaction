@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 1.1.1
+- Handle logic Available reactions effect
+
 ## Version 1.1.0
 - Handle champion reaction aura
 
