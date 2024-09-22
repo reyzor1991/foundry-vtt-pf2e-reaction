@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 1.1.2
+- Fix schadenfreude
+
 ## Version 1.1.1
 - Handle logic Available reactions effect
 
