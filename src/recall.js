@@ -86,7 +86,7 @@ function veryEasyLore(html, sheet, dc) {
 }
 
 Hooks.on("renderActorSheet", (sheet, html, data)=>{
-    if (game.user?.isGM && isNPC(sheet.actor) && sheet.token && Settings.recallKnowledge) {
+    if (game.user?.isGM && isNPC(sheet.actor) && Settings.recallKnowledge) {
         const recalls = html.find(".recall-knowledge .section-body .identification-skills");
         if (recalls.length === 0) {
             return;
