@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 1.1.4
+- Fix Counter Thought
+
 ## Version 1.1.3
 - Show RK at actor from compendium
 

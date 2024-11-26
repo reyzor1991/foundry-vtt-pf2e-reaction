@@ -25,6 +25,7 @@ const allReactionsMap = {
     'verdant-presence': verdantPresence,
     'align-ki': alignKi,
     'mage-hunter': mageHunter,
+    'counter-thought': counterThought,
     'accompany': accompany,
     'spell-relay': spellRelay,
     'you-failed-to-account-for-this': youFailedToAccountForThis,

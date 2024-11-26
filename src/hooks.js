@@ -553,7 +553,7 @@ Hooks.on('renderChatMessage', (app, html, msg) => {
 
 Hooks.on('createItem', async (effect, data, id) => {
     if (id != game.userId) {return}
-    const currCom = game.combat?.turns?.find(a => a.actorId === effect.actor.id);
+    const currCom = game.combat?.turns?.find(a => a?.actorId === effect?.actor?.id);
     if (!currCom) {return}
     if ("effect-raise-a-shield" === effect.slug && isActorCharacter(effect.actor)) {
         const withShield = game.combat?.turns?.filter(a => isActorCharacter(a.actor))

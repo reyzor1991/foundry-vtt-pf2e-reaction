@@ -263,6 +263,20 @@ async function mageHunter(message) {
     }
 };
 
+async function counterThought(message) {
+    if (message?.flags?.pf2e?.casting || messageType(message, 'spell-cast')) {
+        (isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction())
+            .forEach(cc => {
+                if (getEnemyDistance(message.token, cc.token) <= 30) {
+                    const counter_thought = actorFeat(cc.actor, "counter-thought");
+                    if (counter_thought && spellWithTrait(message?.item, "mental")) {
+                        postInChatTemplate(_uuid(counter_thought), cc);
+                    }
+                }
+            })
+    }
+};
+
 async function accompany(message) {
     if (message?.flags?.pf2e?.casting || messageType(message, 'spell-cast')) {
         if (message?.item && isActorCharacter(message?.actor)) {
