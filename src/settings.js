@@ -137,6 +137,26 @@ class Settings {
                 return true;
             },
         });
+
+        game.settings.register("pf2e-reaction", "timeoutDelete", {
+            name: game.i18n.localize("pf2e-reaction.delete.name"),
+            hint: game.i18n.localize("pf2e-reaction.delete.hint"),
+            scope: "world",
+            config: true,
+            default: 0,
+            type: Number,
+        });
+
+
+        game.settings.register(moduleName, "customReactionIcon", {
+            name: game.i18n.localize("pf2e-reaction.customReactionIcon.name"),
+            hint: game.i18n.localize("pf2e-reaction.customReactionIcon.hint"),
+            scope: "world",
+            config: true,
+            default: "",
+            filePicker: "file",
+            type: String,
+        });
     }
 
 }

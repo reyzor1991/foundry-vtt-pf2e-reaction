@@ -68,5 +68,8 @@
 	"pf2e-reaction.hotkey-v.name": "V - 不触发移动反应",
 	"pf2e-reaction.hotkey-v.hint": "移动时按热键不触发移动反应（1 步）",
 
-	"pf2e-reaction.recall-knowledge.need-fix": "对目标回忆知识的模组结构有所改动，请更新mod"
+	"pf2e-reaction.recall-knowledge.need-fix": "对目标回忆知识的模组结构有所改动，请更新mod",
+
+	"pf2e-reaction.customReactionIcon.name": "自定义反应图标",
+	"pf2e-reaction.customReactionIcon.hint": ""
 }

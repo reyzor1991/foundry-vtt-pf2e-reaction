@@ -31,22 +31,24 @@ async function updateInexhaustibleCountermoves(combatant) {
         return
     }
     if (isNPC(combatant.actor)) {
-        await setInexhaustibleCountermoves(game.combat.combatants.filter(a=>isActorCharacter(a.actor)), 1)
+        await setInexhaustibleCountermoves(game.combat.combatants.filter(a => isActorCharacter(a.actor)), 1)
     } else {
-        await setInexhaustibleCountermoves(game.combat.combatants.filter(a=>isActorCharacter(a.actor)), 0)
+        await setInexhaustibleCountermoves(game.combat.combatants.filter(a => isActorCharacter(a.actor)), 0)
     }
 }
 
 async function setInexhaustibleCountermoves(combatants, val) {
-    combatants.forEach(cc=> {
+    combatants.forEach(cc => {
         if (actorFeat(cc.actor, "inexhaustible-countermoves")) {
             cc.setFlag(moduleName, 'inexhaustible-countermoves', val);
         }
     })
 }
 
-async function updateCombatantReactionState(combatant, newState, actionName=undefined) {
-    if (!combatant) {return}
+async function updateCombatantReactionState(combatant, newState, actionName = undefined) {
+    if (!combatant) {
+        return
+    }
     if (!newState) {
         if (!hasReaction(combatant, actionName) && isGM()) {
             ui.notifications.warn(`${combatant?.actor?.name} does not have reaction anymore`);
@@ -161,7 +163,7 @@ function countAllReaction(combatant) {
     return count;
 }
 
-function countReaction(combatant, actionName=undefined) {
+function countReaction(combatant, actionName = undefined) {
     let count = 0;
     if (combatant) {
         if (combatant.getFlag(moduleName, 'state')) {
@@ -190,19 +192,19 @@ function countReaction(combatant, actionName=undefined) {
     return count;
 }
 
-function hasReaction(combatant, actionName=undefined) {
+function hasReaction(combatant, actionName = undefined) {
     return countReaction(combatant, actionName) > 0
-    && !hasCondition(combatant.actor, "confused")
-    && !hasCondition(combatant.actor, "petrified")
-    && !hasCondition(combatant.actor, "unconscious");
+        && !hasCondition(combatant.actor, "confused")
+        && !hasCondition(combatant.actor, "petrified")
+        && !hasCondition(combatant.actor, "unconscious");
 }
 
-function characterWithReaction(actionName=undefined) {
-    return game.combat.turns.filter(a => isActorCharacter(a.actor)).filter(a=>hasReaction(a, actionName));
+function characterWithReaction(actionName = undefined) {
+    return game.combat.turns.filter(a => isActorCharacter(a.actor)).filter(a => hasReaction(a, actionName));
 }
 
-function npcWithReaction(actionName=undefined) {
-    return game.combat.turns.filter(a => !isActorCharacter(a.actor)).filter(a=>hasReaction(a, actionName));
+function npcWithReaction(actionName = undefined) {
+    return game.combat.turns.filter(a => !isActorCharacter(a.actor)).filter(a => hasReaction(a, actionName));
 }
 
 function hasCondition(actor, con) {
@@ -237,9 +239,9 @@ async function postTargetInChatTemplate(uuid, combatant) {
     await postInChatTemplate(uuid, combatant, undefined, false, true)
 }
 
-async function postInChatTemplate(uuid, combatant, actionName=undefined, skipDeath=false, needTarget=false) {
+async function postInChatTemplate(uuid, combatant, actionName = undefined, skipDeath = false, needTarget = false) {
     if (!skipDeath) {
-        if((combatant?.actor?.system?.attributes?.hp?.value <= 0 && combatant?.actor?.system?.attributes?.hp?.temp <= 0 )
+        if ((combatant?.actor?.system?.attributes?.hp?.value <= 0 && combatant?.actor?.system?.attributes?.hp?.temp <= 0)
             || hasCondition(combatant?.actor, "unconscious")
             || hasCondition(combatant?.actor, "dying")
         ) {
@@ -260,29 +262,29 @@ async function postInChatTemplate(uuid, combatant, actionName=undefined, skipDea
         whispers = whispers.concat(combatant.players.map((u) => u.id));
     }
 
-    if (game.messages.size > 0 && content === game.messages.contents[game.messages.size-1].content) {
+    if (game.messages.size > 0 && content === game.messages.contents[game.messages.size - 1].content) {
         check['count'] = 2
         check['content'] = content
         check['reactions'] = countReaction(combatant, actionName)
         check['needTarget'] = needTarget
 
-        text = game.i18n.format("pf2e-reaction.askMultiple", {uuid:uuid, name:combatant.token.name, count: 2});
-        content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text:text, target: needTarget});
+        text = game.i18n.format("pf2e-reaction.askMultiple", {uuid: uuid, name: combatant.token.name, count: 2});
+        content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text: text, target: needTarget});
 
-        await game.messages.contents[game.messages.size-1].update({
+        await game.messages.contents[game.messages.size - 1].update({
             'content': content,
             'flags.pf2e-reaction': check
-        }, { noHook: true})
-    } else if (game.messages.size > 0 && content === game.messages.contents[game.messages.size-1]?.getFlag(moduleName, 'content')) {
+        }, {noHook: true})
+    } else if (game.messages.size > 0 && content === game.messages.contents[game.messages.size - 1]?.getFlag(moduleName, 'content')) {
         const count = game.messages.contents[game.messages.size - 1]?.getFlag(moduleName, "count") + 1;
-        text = game.i18n.format("pf2e-reaction.askMultiple", {uuid:uuid, name:combatant.token.name, count: count});
-        content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text:text, target: needTarget});
+        text = game.i18n.format("pf2e-reaction.askMultiple", {uuid: uuid, name: combatant.token.name, count: count});
+        content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text: text, target: needTarget});
 
-        await game.messages.contents[game.messages.size-1].update({
+        await game.messages.contents[game.messages.size - 1].update({
             'content': content,
             'flags.pf2e-reaction.count': count,
             'flags.pf2e-reaction.reactions': countReaction(combatant, actionName)
-        }, { noHook: true})
+        }, {noHook: true})
     } else {
         let data = {
             flavor: '',
@@ -305,12 +307,12 @@ async function postInChatTemplate(uuid, combatant, actionName=undefined, skipDea
             data.type = CONST.CHAT_MESSAGE_TYPES.OOC;
         }
 
-        ChatMessage.create(data).then(m=>{
+        ChatMessage.create(data).then(m => {
             const tt = game.settings.get("pf2e-reaction", "timeoutDelete")
             if (tt > 0) {
-                setTimeout(function() {
+                setTimeout(function () {
                     m.delete()
-                }, tt*1000)
+                }, tt * 1000)
             }
         });
     }
@@ -319,8 +321,8 @@ async function postInChatTemplate(uuid, combatant, actionName=undefined, skipDea
 async function checkRingmasterIntroduction(combatant) {
     if (isActorCharacter(combatant?.actor)) {
         characterWithReaction()
-            .filter(a=>a.tokenId !== combatant.tokenId)
-            .filter(a=>hasReaction(a))
+            .filter(a => a.tokenId !== combatant.tokenId)
+            .filter(a => hasReaction(a))
             .forEach(cc => {
                 const ringmasters_introduction = actorFeat(cc.actor, "ringmasters-introduction");
                 if (ringmasters_introduction) {
@@ -331,7 +333,7 @@ async function checkRingmasterIntroduction(combatant) {
 }
 
 function hasLoadedFirearmOrCrossbow(actor) {
-    return actor.system?.actions?.filter(a=>a.ready).filter(a=>a?.item?.baseType?.includes("crossbow") || a?.item?.group === "firearm").filter(a=>a.item.ammo)
+    return actor.system?.actions?.filter(a => a.ready).filter(a => a?.item?.baseType?.includes("crossbow") || a?.item?.group === "firearm").filter(a => a.item.ammo)
 }
 
 function spellWithTrait(spell, trait) {
@@ -340,15 +342,21 @@ function spellWithTrait(spell, trait) {
 
 function messageWithTrait(message, trait) {
     return message?.item?.system?.traits?.value?.includes(trait)
-            || message?.item?.castingTraits?.includes(trait)
-            || message?.flags?.pf2e?.context?.traits?.find(a=>a.name===trait)
+        || message?.item?.castingTraits?.includes(trait)
+        || message?.flags?.pf2e?.context?.traits?.find(a => a.name === trait)
 }
 
 function messageWithAnyTrait(message, traits) {
-    if (messageType(message, "saving-throw")) {return false}
-    if (messageType(message, "damage-roll")) {return false}
-    if (messageType(message, "damage-taken")) {return false}
-    return traits.some(a=>messageWithTrait(message, a))
+    if (messageType(message, "saving-throw")) {
+        return false
+    }
+    if (messageType(message, "damage-roll")) {
+        return false
+    }
+    if (messageType(message, "damage-taken")) {
+        return false
+    }
+    return traits.some(a => messageWithTrait(message, a))
 }
 
 function hasExploitVulnerabilityEffect(actor, thaum) {
@@ -371,8 +379,10 @@ function hasExploitVulnerabilityEffect(actor, thaum) {
     return false;
 }
 
-async function decreaseReaction(combatant, actionName=undefined) {
-    if (!combatant) {return}
+async function decreaseReaction(combatant, actionName = undefined) {
+    if (!combatant) {
+        return
+    }
     await updateCombatantReactionState(combatant, false, actionName);
     if (Settings.addReactionEffect && countAllReaction(combatant) <= 1) {
         await setReactionEffectToActor(combatant.actor, combatant.token, reactionWasUsedEffect);
@@ -393,7 +403,10 @@ async function setReactionEffectToActor(actor, token, eff) {
     }
 
     const source = (await fromUuid(eff)).toObject();
-    source.flags = foundry.utils.mergeObject(source.flags ?? {}, { core: { sourceId: eff } });
+    source.flags = foundry.utils.mergeObject(source.flags ?? {}, {core: {sourceId: eff}});
+    if (game.settings.get(moduleName, "customReactionIcon")) {
+        source.img = game.settings.get(moduleName, "customReactionIcon")
+    }
 
     if (game.combat.combatant.initiative <= actor.combatant.initiative) {
         source.system.duration.value = 1;
@@ -423,8 +436,8 @@ $(document).on('click', '.reaction-check', async function () {
                 }
                 if (reactions > 1 && count > 1) {
                     let text = game.i18n.format("pf2e-reaction.ask", {uuid: uuid, name: combatant.token.name});
-                    if (count-1 > 1) {
-                        text = game.i18n.format("pf2e-reaction.askMultiple", {uuid:uuid, name:combatant.token.name, count: count -1});
+                    if (count - 1 > 1) {
+                        text = game.i18n.format("pf2e-reaction.askMultiple", {uuid: uuid, name: combatant.token.name, count: count - 1});
                     }
                     const content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {
                         text: text,
@@ -438,7 +451,7 @@ $(document).on('click', '.reaction-check', async function () {
                     };
 
                     if (mes.permission === 3 || game.user?.isGM) {
-                        await mes.update(data, { noHook: true})
+                        await mes.update(data, {noHook: true})
                     } else {
                         socketlibSocket._sendRequest("updateItem", [mes.uuid, data], 0)
                     }
@@ -497,8 +510,11 @@ Hooks.on('pf2e.startTurn', async (_combatant) => {
                 await eff.update({"system.start.value": game.time.worldTime})
             } else {
                 const source = (await fromUuid(reactionsEffect)).toObject();
-                source.flags = foundry.utils.mergeObject(source.flags ?? {}, { core: { sourceId: reactionsEffect } });
+                source.flags = foundry.utils.mergeObject(source.flags ?? {}, {core: {sourceId: reactionsEffect}});
                 source.system.badge.value = countAllReaction(_combatant)
+                if (game.settings.get(moduleName, "customReactionIcon")) {
+                    source.img = game.settings.get(moduleName, "customReactionIcon")
+                }
 
                 await _combatant.actor.createEmbeddedDocuments("Item", [source]);
             }
@@ -512,10 +528,10 @@ Hooks.on('combatStart', async combat => {
 
     const keys = Object.keys(allReactionsMap)
 
-    combat.turns.forEach(cc =>{
+    combat.turns.forEach(cc => {
         updateCombatantReactionState(cc, true)
 
-        availableReactions.push(...keys.filter(k=>actorAction(cc.actor, k) || actorFeat(cc.actor, k) || actorSpell(cc.actor, k)));
+        availableReactions.push(...keys.filter(k => actorAction(cc.actor, k) || actorFeat(cc.actor, k) || actorSpell(cc.actor, k)));
     });
 
     await updateInexhaustibleCountermoves(combat.turns[0]);
@@ -530,7 +546,7 @@ Hooks.on('createCombatant', async (combatant, test) => {
     }
     if (game.combat?.started) {
         const availableReactions = game.combat.getFlag(moduleName, "availableReactions") ?? [];
-        availableReactions.push(...Object.keys(allReactionsMap).filter(k=>actorAction(combatant.actor, k) || actorFeat(combatant.actor, k) || actorSpell(combatant.actor, k)));
+        availableReactions.push(...Object.keys(allReactionsMap).filter(k => actorAction(combatant.actor, k) || actorFeat(combatant.actor, k) || actorSpell(combatant.actor, k)));
 
         await game.combat.setFlag(moduleName, "availableReactions", availableReactions)
     }
@@ -540,7 +556,7 @@ Hooks.on('renderChatMessage', (app, html, msg) => {
     if (msg.user.isGM) {
         return
     }
-    const comb = game.combat?.turns?.find(a=> a.id === app.getFlag(moduleName, "cId"));
+    const comb = game.combat?.turns?.find(a => a.id === app.getFlag(moduleName, "cId"));
     if (Settings.showToPlayers && comb && comb.players.includes(game.user)) {
         return
     }
@@ -552,9 +568,13 @@ Hooks.on('renderChatMessage', (app, html, msg) => {
 });
 
 Hooks.on('createItem', async (effect, data, id) => {
-    if (id != game.userId) {return}
+    if (id != game.userId) {
+        return
+    }
     const currCom = game.combat?.turns?.find(a => a?.actorId === effect?.actor?.id);
-    if (!currCom) {return}
+    if (!currCom) {
+        return
+    }
     if ("effect-raise-a-shield" === effect.slug && isActorCharacter(effect.actor)) {
         const withShield = game.combat?.turns?.filter(a => isActorCharacter(a.actor))
             .filter(a => hasEffect(a.actor, "effect-raise-a-shield"));
@@ -566,21 +586,21 @@ Hooks.on('createItem', async (effect, data, id) => {
                 await postInChatTemplate(_uuid(shield_wall), currCom);
             }
         }
-        withShield.filter(a=>hasReaction(a))
-        .filter(a=>a.id !== currCom.id)
-        .filter(a=>adjacentEnemy(a.token, currCom.token))
-        .forEach(cc => {
-            const shield_wall_ = actorFeat(a.actor, "shield-wall");
-            if (shield_wall_) {
-                postInChatTemplate(_uuid(shield_wall_), cc);
-            }
-        });
+        withShield.filter(a => hasReaction(a))
+            .filter(a => a.id !== currCom.id)
+            .filter(a => adjacentEnemy(a.token, currCom.token))
+            .forEach(cc => {
+                const shield_wall_ = actorFeat(a.actor, "shield-wall");
+                if (shield_wall_) {
+                    postInChatTemplate(_uuid(shield_wall_), cc);
+                }
+            });
     } else if ('frightened' === effect.slug) {
         let combs = game.combat?.turns
-            .filter(c=>c!=currCom)
-            .filter(c=>getEnemyDistance(c.token, effect.actor.getActiveTokens(true, true)[0]) <= 60)
+            .filter(c => c != currCom)
+            .filter(c => getEnemyDistance(c.token, effect.actor.getActiveTokens(true, true)[0]) <= 60)
             .forEach(cc => {
-                const invigorating = actorActionBySource(cc.actor,'Compendium.pf2e.actionspf2e.Item.Ul4I0ER6pj3U5eAk')
+                const invigorating = actorActionBySource(cc.actor, 'Compendium.pf2e.actionspf2e.Item.Ul4I0ER6pj3U5eAk')
                 if (invigorating) {
                     postInChatTemplate(_uuid(invigorating), cc);
                 }
@@ -590,10 +610,12 @@ Hooks.on('createItem', async (effect, data, id) => {
 
 Hooks.on('preUpdateToken', async (tokenDoc, data, deep, id) => {
     if (game?.combats?.active && (data.x > 0 || data.y > 0)) {
-        const message = {"actor" : tokenDoc.actor, "token": tokenDoc, "item": createTrait("move")};
+        const message = {"actor": tokenDoc.actor, "token": tokenDoc, "item": createTrait("move")};
 
         if (game.combat) {
-            if (game?.skipMoveTrigger?.[id]) {return}
+            if (game?.skipMoveTrigger?.[id]) {
+                return
+            }
 
             const availableReactions = game.combat.getFlag(moduleName, 'availableReactions') ?? []
 
@@ -623,16 +645,20 @@ Hooks.on('preUpdateToken', async (tokenDoc, data, deep, id) => {
 });
 
 function createTrait(t) {
-    return { "system": { "traits": { "value": [t] } } };
+    return {"system": {"traits": {"value": [t]}}};
 };
 
-Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
-    if (!game?.combats?.active) {return}
-    if (message?.flags?.pf2e?.context?.options?.includes('ignore-reaction')) {return}
+Hooks.on('preCreateChatMessage', async (message, user, _options, userId) => {
+    if (!game?.combats?.active) {
+        return
+    }
+    if (message?.flags?.pf2e?.context?.options?.includes('ignore-reaction')) {
+        return
+    }
 
     if (messageType(message, 'damage-roll') && hasReaction(message?.target?.token?.combatant)) {
         if (Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage})
-            .map(a=>a?.damageType).find(a=> a === "slashing")
+            .map(a => a?.damageType).find(a => a === "slashing")
         ) {
             const ImNotCrying = actorActionBySource(message?.target?.actor, "Item.ncKVztM6EL4i98dL");
             if (ImNotCrying && adjacentEnemy(message.target?.token, message.token)) {
@@ -663,15 +689,15 @@ function checkSendNotification(_user, token, featNames) {
 
 Hooks.on("targetToken", (_user, token, isTargeted, opts) => {
     if (Settings.notification && game?.combats?.active && isTargeted && hasReaction(token?.combatant)) {
-        if (isGM() || token.combatant.players.find(a=>a.id===game.user.id)) {
+        if (isGM() || token.combatant.players.find(a => a.id === game.user.id)) {
             if (isActorCharacter(token?.actor)) {
                 const nd = actorFeat(token.actor, "nimble-dodge");
                 if (nd && !hasCondition(token.actor, "encumbered")) {
                     sendNotification(_user, token, nd);
                 }
                 checkSendNotification(_user, token,
-                ["airy-step", "farabellus-flip", "hit-the-dirt",
-                 "you-failed-to-account-for-this", "foresee-danger", "deflect-arrow"]);
+                    ["airy-step", "farabellus-flip", "hit-the-dirt",
+                        "you-failed-to-account-for-this", "foresee-danger", "deflect-arrow"]);
 
                 const pir = actorFeat(token.actor, "pirouette");
                 if (pir && hasEffect(token.actor, "stance-masquerade-of-seasons-stance")) {
@@ -687,17 +713,17 @@ Hooks.on("targetToken", (_user, token, isTargeted, opts) => {
                 }
 
                 characterWithReaction()
-                .filter(a=>a.tokenId !== token.id)
-                .filter(a=>a.actor.auras.size > 0)
-                .forEach(cc => {
-                    const radius = Math.max(...Array.from(cc.actor.auras.values()).map(a => a.radius));
-                    if (getEnemyDistance(token.document, cc.token) <= radius) {
-                        const ed = actorFeat(cc.actor, "everdistant-defense");
-                        if (ed) {
-                            sendNotification(_user, token, ed)
+                    .filter(a => a.tokenId !== token.id)
+                    .filter(a => a.actor.auras.size > 0)
+                    .forEach(cc => {
+                        const radius = Math.max(...Array.from(cc.actor.auras.values()).map(a => a.radius));
+                        if (getEnemyDistance(token.document, cc.token) <= radius) {
+                            const ed = actorFeat(cc.actor, "everdistant-defense");
+                            if (ed) {
+                                sendNotification(_user, token, ed)
+                            }
                         }
-                    }
-                })
+                    })
             } else {
                 const nd = actorAction(token.actor, "nimble-dodge");
                 if (nd && !hasCondition(token.actor, "encumbered")) {

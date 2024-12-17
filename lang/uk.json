@@ -68,5 +68,8 @@
 	"pf2e-reaction.hotkey-v.name": "V - not trigger move reactions",
 	"pf2e-reaction.hotkey-v.hint": "Гаряча клавіша, яку потрібно натиснути під час руху, щоб не викликати реакцію на рух (на 1 крок)",
 
-	"pf2e-reaction.recall-knowledge.need-fix": "Structure of Recall Knowledge object was changed. Need to update module"
+	"pf2e-reaction.recall-knowledge.need-fix": "Structure of Recall Knowledge object was changed. Need to update module",
+
+	"pf2e-reaction.customReactionIcon.name": "Піктограма користувацької реакції",
+	"pf2e-reaction.customReactionIcon.hint": ""
 }

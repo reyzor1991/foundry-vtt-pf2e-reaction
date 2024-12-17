@@ -1,4 +1,5 @@
-# Changelog
+## Version 1.1.5
+- Custom Reaction icon
 
 ## Version 1.1.4
 - Fix Counter Thought
