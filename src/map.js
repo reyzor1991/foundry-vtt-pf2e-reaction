@@ -89,4 +89,5 @@ const allReactionsMap = {
     'verdistant-defense': verdistantDefense,
     'shield-warden-fighter': shieldWardenFighter,
     'shield-warden-champion': shieldWardenChampion,
+    'eerie-flicker': eerieFlicker,
 };
