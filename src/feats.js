@@ -977,3 +977,14 @@ async function verdistantDefense(message) {
             })
     }
 };
+
+async function eerieFlicker(e) {
+    if (messageType(e, "attack-roll") && anySuccessMessageOutcome(e)) {
+        if (hasReaction(e?.target?.token?.combatant)) {
+            const t = actorFeat(e?.target?.actor, "eerie-flicker");
+            if (t && !hasCondition(e?.target?.actor, "concealed") && !hasCondition(e?.target?.actor, "hidden") && !hasCondition(e?.target?.actor, "undetected")) {
+                await postInChatTemplate(_uuid(t), e.target?.token.combatant);
+            }
+        }
+    }
+};
