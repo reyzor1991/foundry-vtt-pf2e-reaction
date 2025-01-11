@@ -1,25 +1,35 @@
 async function bansheeCry(message) {
-    if (message?.item?.type !== 'spell') {return}
-    if (!message.item.components.verbal) {return}
+    if (message?.item?.type !== 'spell') {
+        return
+    }
+    if (!message.item.components.verbal) {
+        return
+    }
 
     (isActorCharacter(message.actor) ? npcWithReaction() : characterWithReaction())
-    .forEach(cc => {
-        if (getEnemyDistance(message.token, cc.token) <= 30) {
-            const bc = actorAction(cc.actor, "banshee-cry");
-            if (bc) {
-                postInChatTemplate(_uuid(bc), cc);
+        .forEach(cc => {
+            if (getEnemyDistance(message.token, cc.token) <= 30) {
+                const bc = actorAction(cc.actor, "banshee-cry");
+                if (bc) {
+                    postInChatTemplate(_uuid(bc), cc);
+                }
             }
-        }
-    })
+        })
 }
 
 async function opportuneBackstab(message) {
-    if (!messageType(message, 'damage-roll')) {return}
-    if (isTargetCharacter(message)) {return}
-    if (!message.item?.isMelee) {return}
+    if (!messageType(message, 'damage-roll')) {
+        return
+    }
+    if (isTargetCharacter(message)) {
+        return
+    }
+    if (!message.item?.isMelee) {
+        return
+    }
 
     characterWithReaction()
-        .filter(a=>a.actorId !== message?.actor?._id)
+        .filter(a => a.actorId !== message?.actor?._id)
         .forEach(cc => {
             const opportune_backstab = actorFeat(cc.actor, "opportune-backstab");
             if (opportune_backstab && canReachEnemy(message.target?.token, cc.token, cc.actor)) {
@@ -32,7 +42,7 @@ async function disarmingBlock(message) {
     if ("appliedDamage" in message?.flags?.pf2e && !message?.flags?.pf2e?.appliedDamage?.isHealing) {
         if (message?.content.includes("shield") && message?.content.includes("absorb")) {
             const disarming_block = actorFeat(message.actor, "disarming-block");
-            let lastDamage = game.messages.contents.slice(-10).reverse().find(m=>messageType(m, 'damage-roll'))
+            let lastDamage = game.messages.contents.slice(-10).reverse().find(m => messageType(m, 'damage-roll'))
             if (disarming_block && lastDamage && lastDamage.item?.isMelee && hasReaction(message?.actor?.combatant)) {
                 postInChatTemplate(_uuid(disarming_block), message.actor?.combatant);
             }
@@ -54,7 +64,7 @@ async function convincingIllusion(message) {
             }
         }
     }
-};
+}
 
 async function mentalStatic(message) {
     if (messageType(message, "saving-throw") && hasReaction(message?.token?.combatant)) {
@@ -65,7 +75,7 @@ async function mentalStatic(message) {
             }
         }
     }
-};
+}
 
 async function premonitionOfClarity(message) {
     if (messageType(message, "saving-throw")) {
@@ -77,7 +87,7 @@ async function premonitionOfClarity(message) {
             }
         }
     }
-};
+}
 
 async function gritAndTenacity(message) {
     if (messageType(message, "saving-throw")) {
@@ -88,7 +98,7 @@ async function gritAndTenacity(message) {
             }
         }
     }
-};
+}
 
 async function orcFerocity(message) {
     if (message?.flags?.pf2e?.appliedDamage && !message?.flags?.pf2e?.appliedDamage?.isHealing) {
@@ -99,7 +109,7 @@ async function orcFerocity(message) {
             }
         }
     }
-};
+}
 
 async function cheatDeath(message) {
     if (message?.flags?.pf2e?.appliedDamage && !message?.flags?.pf2e?.appliedDamage?.isHealing) {
@@ -110,7 +120,7 @@ async function cheatDeath(message) {
             }
         }
     }
-};
+}
 
 async function cleave(message) {
     if (messageType(message, 'damage-roll')) {
@@ -131,13 +141,13 @@ async function cleave(message) {
             }
         }
     }
-};
+}
 
 async function shieldBlock(message) {
     if (messageType(message, 'damage-roll')) {
         if (hasReaction(message?.target?.token?.combatant, "shield-block")) {
-            const dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a=>a?.damageType);
-            if (dTypes.filter(a=> a=== "bludgeoning" || a === "piercing" || a=== "slashing").length > 0) {
+            const dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a => a?.damageType);
+            if (dTypes.filter(a => a === "bludgeoning" || a === "piercing" || a === "slashing").length > 0) {
                 const sblock = actorFeat(message?.target?.actor, "shield-block");
                 if (sblock && hasEffect(message.target?.actor, "effect-raise-a-shield")) {
                     await postInChatTemplate(_uuid(sblock), message.target?.token.combatant, "shield-block");
@@ -145,7 +155,7 @@ async function shieldBlock(message) {
             }
         }
     }
-};
+}
 
 async function electricCounter(message) {
     if (messageType(message, 'damage-roll')) {
@@ -156,7 +166,7 @@ async function electricCounter(message) {
             }
         }
     }
-};
+}
 
 async function allInMyHead(message) {
     if (messageType(message, 'damage-roll')) {
@@ -167,7 +177,7 @@ async function allInMyHead(message) {
             }
         }
     }
-};
+}
 
 async function unexpectedShift(message) {
     if (messageType(message, 'damage-roll')) {
@@ -178,13 +188,13 @@ async function unexpectedShift(message) {
             }
         }
     }
-};
+}
 
 async function resoundingFinale(message) {
     if (messageType(message, 'damage-roll')) {
         if (hasReaction(message?.target?.token?.combatant)) {
-            const dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a=>a.damageType);
-            if (dTypes.filter(a=> a=== "sonic").length > 0) {
+            const dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a => a.damageType);
+            if (dTypes.filter(a => a === "sonic").length > 0) {
                 const resounding = actorFeat(message?.target?.actor, "resounding-finale");
                 if (resounding) {
                     await postInChatTemplate(_uuid(resounding), message.target?.token.combatant);
@@ -192,13 +202,13 @@ async function resoundingFinale(message) {
             }
         }
     }
-};
+}
 
 async function reverberate(message) {
     if (messageType(message, 'damage-roll')) {
         if (hasReaction(message?.target?.token?.combatant)) {
-            const dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a=>a.damageType);
-            if (dTypes.filter(a=> a=== "sonic").length > 0) {
+            const dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a => a.damageType);
+            if (dTypes.filter(a => a === "sonic").length > 0) {
                 const reverberate = actorFeat(message?.target?.actor, "reverberate");
                 if (reverberate && message.item.type === "spell") {
                     await postInChatTemplate(_uuid(reverberate), message.target?.token.combatant);
@@ -206,7 +216,7 @@ async function reverberate(message) {
             }
         }
     }
-};
+}
 
 async function verdantPresence(message) {
     if (messageType(message, 'damage-roll')) {
@@ -227,7 +237,7 @@ async function verdantPresence(message) {
             }
         }
     }
-};
+}
 
 async function alignKi(message) {
     if (message?.flags?.pf2e?.casting || messageType(message, 'spell-cast')) {
@@ -240,7 +250,7 @@ async function alignKi(message) {
             }
         }
     }
-};
+}
 
 async function mageHunter(message) {
     if (message?.flags?.pf2e?.casting || messageType(message, 'spell-cast')) {
@@ -261,7 +271,7 @@ async function mageHunter(message) {
                 }
             })
     }
-};
+}
 
 async function counterThought(message) {
     if (message?.flags?.pf2e?.casting || messageType(message, 'spell-cast')) {
@@ -275,15 +285,15 @@ async function counterThought(message) {
                 }
             })
     }
-};
+}
 
 async function accompany(message) {
     if (message?.flags?.pf2e?.casting || messageType(message, 'spell-cast')) {
         if (message?.item && isActorCharacter(message?.actor)) {
             if (!message?.item?.isCantrip) {
                 characterWithReaction()
-                    .filter(a=>a.actorId !== message?.actor?._id)
-                    .filter(a=>getEnemyDistance(message.token, a.token) <= 30)
+                    .filter(a => a.actorId !== message?.actor?._id)
+                    .filter(a => getEnemyDistance(message.token, a.token) <= 30)
                     .forEach(cc => {
                         const accompany = actorFeat(cc.actor, "accompany");
                         if (accompany) {
@@ -293,7 +303,7 @@ async function accompany(message) {
             }
         }
     }
-};
+}
 
 async function spellRelay(message) {
     if (message?.flags?.pf2e?.casting || messageType(message, 'spell-cast')) {
@@ -302,8 +312,8 @@ async function spellRelay(message) {
             spellRange = spellRange ? spellRange[0] : 0;
 
             characterWithReaction()
-                .filter(a=>a.actorId !== message?.actor?._id)
-                .filter(a=>getEnemyDistance(message.token, a.token) <= spellRange)
+                .filter(a => a.actorId !== message?.actor?._id)
+                .filter(a => getEnemyDistance(message.token, a.token) <= spellRange)
                 .forEach(cc => {
                     const spell_relay = actorFeat(cc.actor, "spell-relay");
                     if (spell_relay) {
@@ -312,7 +322,7 @@ async function spellRelay(message) {
                 })
         }
     }
-};
+}
 
 async function youFailedToAccountForThis(message) {
     if (messageType(message, "spell-attack-roll") || messageType(message, 'attack-roll')) {
@@ -323,7 +333,7 @@ async function youFailedToAccountForThis(message) {
             }
         }
     }
-};
+}
 
 async function suspectOfOpportunity(message) {
     if (messageType(message, "spell-attack-roll") || messageType(message, 'attack-roll')) {
@@ -334,7 +344,7 @@ async function suspectOfOpportunity(message) {
             }
         }
     }
-};
+}
 
 async function foreseeDanger(message) {
     if (messageType(message, "spell-attack-roll") || messageType(message, 'attack-roll')) {
@@ -345,7 +355,7 @@ async function foreseeDanger(message) {
             }
         }
     }
-};
+}
 
 async function mirrorShield(message) {
     if (messageType(message, "spell-attack-roll") || messageType(message, 'attack-roll')) {
@@ -356,7 +366,7 @@ async function mirrorShield(message) {
             }
         }
     }
-};
+}
 
 async function spiritualGuides(message) {
     if (messageType(message, 'perception-check') || messageType(message, 'skill-check')) {
@@ -367,7 +377,7 @@ async function spiritualGuides(message) {
             }
         }
     }
-};
+}
 
 async function squawk(message) {
     if (messageType(message, 'skill-check')) {
@@ -375,21 +385,21 @@ async function squawk(message) {
             if (criticalFailureMessageOutcome(message)) {
                 const squawk = actorFeat(message?.actor, "squawk");
                 if (squawk && !message?.target?.actor?.system?.traits?.value?.includes("tengu")
-                    && ["deception","diplomacy","intimidation"].some(a=>message.flags?.pf2e?.context?.domains?.includes(a))
+                    && ["deception", "diplomacy", "intimidation"].some(a => message.flags?.pf2e?.context?.domains?.includes(a))
                 ) {
                     await postInChatTemplate(_uuid(squawk), message.token.combatant);
                 }
             }
         }
     }
-};
+}
 
 async function sacrificeArmor(message) {
     if (messageType(message, 'damage-roll')) {
         if (hasReaction(message?.target?.token?.combatant)) {
-            const dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a=>a.damageType);
+            const dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a => a.damageType);
 
-            if (dTypes.filter(a=> a=== "bludgeoning" || a === "piercing" || a=== "slashing").length > 0) {
+            if (dTypes.filter(a => a === "bludgeoning" || a === "piercing" || a === "slashing").length > 0) {
                 const sarmor = actorFeat(message?.target?.actor, "sacrifice-armor");
                 if (sarmor) {
                     await postInChatTemplate(_uuid(sarmor), message.target?.token.combatant);
@@ -397,14 +407,14 @@ async function sacrificeArmor(message) {
             }
         }
     }
-};
+}
 
 async function reactiveTransformation(message) {
     if (messageType(message, 'damage-roll')) {
         if (hasReaction(message?.target?.token?.combatant)) {
-            const dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a=>a.damageType);
+            const dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a => a.damageType);
 
-            if (dTypes.filter(a=> ["acid", "cold", "electricity", "fire", 'poison'].includes(a)).length > 0) {
+            if (dTypes.filter(a => ["acid", "cold", "electricity", "fire", 'poison'].includes(a)).length > 0) {
                 const reactivet = actorFeat(message?.target?.actor, "reactive-transformation");
                 if (reactivet) {
                     await postInChatTemplate(_uuid(reactivet), message.target?.token.combatant);
@@ -412,14 +422,14 @@ async function reactiveTransformation(message) {
             }
         }
     }
-};
+}
 
 async function fakeOut(message) {
     if ((messageType(message, 'skill-check') && isActorCharacter(message?.actor) && messageWithTrait(message, "attack"))
         || (messageType(message, 'attack-roll') && isActorCharacter(message?.actor))
     ) {
         characterWithReaction()
-            .filter(a=>a.actorId !== message?.actor?._id)
+            .filter(a => a.actorId !== message?.actor?._id)
             .forEach(cc => {
                 const fake_out = actorFeat(cc?.actor, "fake-out");
                 if (fake_out) {
@@ -433,7 +443,7 @@ async function fakeOut(message) {
                 }
             })
     }
-};
+}
 
 async function rubyResurrection(message) {
     if (message?.flags?.pf2e?.appliedDamage && !message?.flags?.pf2e?.appliedDamage?.isHealing) {
@@ -446,7 +456,7 @@ async function rubyResurrection(message) {
             }
         }
     }
-};
+}
 
 async function rapidResponse(message) {
     if (message?.flags?.pf2e?.appliedDamage && !message?.flags?.pf2e?.appliedDamage?.isHealing) {
@@ -454,17 +464,17 @@ async function rapidResponse(message) {
             // ally
             if (isActorCharacter(message?.actor)) {
                 characterWithReaction()
-                .filter(a=>a.actorId !== message?.actor?._id)
-                .forEach(cc => {
-                    const rapid_response = actorFeat(cc.actor, "rapid-response");
-                    if (rapid_response) {
-                        postInChatTemplate(_uuid(rapid_response), cc);
-                    }
-                });
+                    .filter(a => a.actorId !== message?.actor?._id)
+                    .forEach(cc => {
+                        const rapid_response = actorFeat(cc.actor, "rapid-response");
+                        if (rapid_response) {
+                            postInChatTemplate(_uuid(rapid_response), cc);
+                        }
+                    });
             }
         }
     }
-};
+}
 
 async function no(message) {
     if (message?.flags?.pf2e?.appliedDamage && !message?.flags?.pf2e?.appliedDamage?.isHealing) {
@@ -472,28 +482,28 @@ async function no(message) {
             // ally
             if (isActorCharacter(message?.actor)) {
                 characterWithReaction()
-                .filter(a=>a.actorId !== message?.actor?._id)
-                .forEach(cc => {
-                    const no = actorFeat(cc.actor, "no");
-                    if (no && message?.actor?.combatant && getEnemyDistance(message.token, cc.token) <= 60) {
-                        postInChatTemplate(_uuid(no), cc);
-                    }
-                });
+                    .filter(a => a.actorId !== message?.actor?._id)
+                    .forEach(cc => {
+                        const no = actorFeat(cc.actor, "no");
+                        if (no && message?.actor?.combatant && getEnemyDistance(message.token, cc.token) <= 60) {
+                            postInChatTemplate(_uuid(no), cc);
+                        }
+                    });
             }
         }
     }
-};
+}
 
 async function woundedRage(message) {
     if (message?.flags?.pf2e?.appliedDamage && !message?.flags?.pf2e?.appliedDamage?.isHealing) {
         if (message.actor.system?.attributes?.hp?.value !== 0 && hasReaction(message?.token?.combatant)) {
             const wounded_rage = actorFeat(message?.actor, "wounded-rage");
-            if (wounded_rage && !hasCondition(message?.actor,"encumbered") && !hasEffect(message.actor, "effect-rage")) {
+            if (wounded_rage && !hasCondition(message?.actor, "encumbered") && !hasEffect(message.actor, "effect-rage")) {
                 await postInChatTemplate(_uuid(wounded_rage), message?.token?.combatant);
             }
         }
     }
-};
+}
 
 async function negateDamage(message) {
     if (message?.flags?.pf2e?.appliedDamage && !message?.flags?.pf2e?.appliedDamage?.isHealing) {
@@ -504,7 +514,7 @@ async function negateDamage(message) {
             }
         }
     }
-};
+}
 
 async function distractingExplosion(message) {
     if (!isActorCharacter(message?.actor) && messageWithTrait(message, "concentrate")) {
@@ -517,7 +527,7 @@ async function distractingExplosion(message) {
                 }
             });
     }
-};
+}
 
 async function embraceThePain(message) {
     if (messageType(message, 'damage-roll')) {
@@ -528,20 +538,20 @@ async function embraceThePain(message) {
             }
         }
     }
-};
+}
 
 async function retaliatoryCleansing(message) {
     if (messageType(message, 'damage-roll')) {
         if (hasReaction(message?.target?.token?.combatant) && adjacentEnemy(message.target?.token, message.token)) {
             const rc = actorFeat(message?.target?.actor, "retaliatory-cleansing");
             if (rc) {
-                if (actorHeldWeapon(message?.target?.actor).filter(a=>a.slug==="holy-water" || (a.weaponTraits.filter(b=>b.name === "bomb").length > 0 && a.weaponTraits.filter(b=>b.name === "positive").length > 0)).length > 0) {
+                if (actorHeldWeapon(message?.target?.actor).filter(a => a.slug === "holy-water" || (a.weaponTraits.filter(b => b.name === "bomb").length > 0 && a.weaponTraits.filter(b => b.name === "positive").length > 0)).length > 0) {
                     await postInChatTemplate(_uuid(rc), message.target?.token.combatant);
                 }
             }
         }
     }
-};
+}
 
 async function ectoplasmicShield(message) {
     if (messageType(message, 'attack-roll') && hasOption(message, "ranged")) {
@@ -558,12 +568,12 @@ async function nimbleDodge(message) {
     if (messageType(message, 'attack-roll')) {
         if (hasReaction(message?.target?.token?.combatant)) {
             const nimble_dodge = actorFeat(message?.target?.actor, "nimble-dodge") ?? actorAction(message?.target?.actor, "nimble-dodge");
-            if (nimble_dodge && !hasCondition(message?.target?.actor,"encumbered")) {
+            if (nimble_dodge && !hasCondition(message?.target?.actor, "encumbered")) {
                 await postInChatTemplate(_uuid(nimble_dodge), message.target?.token.combatant);
             }
         }
     }
-};
+}
 
 async function airyStep(message) {
     if (messageType(message, 'attack-roll')) {
@@ -574,7 +584,7 @@ async function airyStep(message) {
             }
         }
     }
-};
+}
 
 async function farabellusFlip(message) {
     if (messageType(message, 'attack-roll')) {
@@ -585,7 +595,7 @@ async function farabellusFlip(message) {
             }
         }
     }
-};
+}
 
 async function reactiveShield(message) {
     if (messageType(message, 'attack-roll') && anySuccessMessageOutcome(message)) {
@@ -596,7 +606,7 @@ async function reactiveShield(message) {
             }
         }
     }
-};
+}
 
 async function pirouette(message) {
     if (messageType(message, 'attack-roll')) {
@@ -607,19 +617,19 @@ async function pirouette(message) {
             }
         }
     }
-};
+}
 
 async function fieryRetort(message) {
     if (messageType(message, 'attack-roll') && anySuccessMessageOutcome(message)) {
         if (hasReaction(message?.target?.token?.combatant)) {
             const fiery_retort = actorFeat(message?.target?.actor, "fiery-retort");
             if (fiery_retort && adjacentEnemy(message.token, message.target?.token)
-                && (message?.item?.isMelee|| message?.item?.traits?.has("unarmed"))) {
+                && (message?.item?.isMelee || message?.item?.traits?.has("unarmed"))) {
                 await postInChatTemplate(_uuid(fiery_retort), message.target?.token.combatant);
             }
         }
     }
-};
+}
 
 async function knightsRetaliation(message) {
     if (messageType(message, 'attack-roll')) {
@@ -633,7 +643,7 @@ async function knightsRetaliation(message) {
             }
         }
     }
-};
+}
 
 async function tangleOfBattle(message) {
     if (messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
@@ -644,7 +654,7 @@ async function tangleOfBattle(message) {
             }
         }
     }
-};
+}
 
 async function cleverGambit(message) {
     if (messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
@@ -655,7 +665,7 @@ async function cleverGambit(message) {
             }
         }
     }
-};
+}
 
 async function opportuneRiposte(message) {
     if (messageType(message, 'attack-roll')) {
@@ -666,7 +676,7 @@ async function opportuneRiposte(message) {
             }
         }
     }
-};
+}
 
 async function duelingRiposte(message) {
     if (messageType(message, 'attack-roll')) {
@@ -677,19 +687,19 @@ async function duelingRiposte(message) {
             }
         }
     }
-};
+}
 
 async function twinRiposte(message) {
     if (messageType(message, 'attack-roll')) {
         if (criticalFailureMessageOutcome(message) && hasReaction(message?.target?.token?.combatant)) {
             const twin_riposte = actorFeat(message?.target?.actor, "twin-riposte");
             if (twin_riposte && canReachEnemy(message.token, message?.target?.token, message?.target?.actor)
-                && (hasEffect(message.target?.actor, "effect-twin-parry")||hasEffect(message.target?.actor, "effect-twin-parry-parry-trait"))) {
+                && (hasEffect(message.target?.actor, "effect-twin-parry") || hasEffect(message.target?.actor, "effect-twin-parry-parry-trait"))) {
                 await postInChatTemplate(_uuid(twin_riposte), message.target?.token.combatant);
             }
         }
     }
-};
+}
 
 async function perfectClarity(message) {
     if (messageType(message, 'attack-roll')) {
@@ -702,7 +712,7 @@ async function perfectClarity(message) {
             }
         }
     }
-};
+}
 
 async function furiousVengeance(message) {
     if (messageType(message, 'attack-roll')) {
@@ -715,7 +725,7 @@ async function furiousVengeance(message) {
             }
         }
     }
-};
+}
 
 async function cringe(message) {
     if (messageType(message, 'attack-roll')) {
@@ -728,7 +738,7 @@ async function cringe(message) {
             }
         }
     }
-};
+}
 
 async function stormRetribution(message) {
     if (messageType(message, 'attack-roll')) {
@@ -745,17 +755,19 @@ async function stormRetribution(message) {
             }
         }
     }
-};
+}
 
 async function courageousOpportunity(message) {
-    if (isActorCharacter(message.actor)) {return}
+    if (isActorCharacter(message.actor)) {
+        return
+    }
     if (
-        messageWithAnyTrait(message, ["manipulate","move", "auditory"])
+        messageWithAnyTrait(message, ["manipulate", "move", "auditory"])
         || (messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll"))
     ) {
         characterWithReaction()
-            .filter(cc=>canReachEnemy(message.token, cc.token, cc.actor))
-            .filter(a=>hasEffect(a.actor, "spell-effect-inspire-courage"))
+            .filter(cc => canReachEnemy(message.token, cc.token, cc.actor))
+            .filter(a => hasEffect(a.actor, "spell-effect-inspire-courage"))
             .forEach(cc => {
                 const courageous_opportunity = actorFeat(cc.actor, "courageous-opportunity");
                 if (courageous_opportunity) {
@@ -763,12 +775,12 @@ async function courageousOpportunity(message) {
                 }
             });
     }
-};
+}
 
 async function attackOfOpportunity(message) {
     if (
         (messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll"))
-        || messageWithAnyTrait(message, ["manipulate","move"])
+        || messageWithAnyTrait(message, ["manipulate", "move"])
     ) {
         (isActorCharacter(message.actor) ? npcWithReaction("attack-of-opportunity") : characterWithReaction("attack-of-opportunity"))
             .forEach(cc => {
@@ -778,7 +790,7 @@ async function attackOfOpportunity(message) {
                     if (isNPC(cc.actor)) {
                         const match = aoo.name.match('\(([A-Za-z]{1,}) Only\)');
                         if (match && match.length === 3) {
-                            specificWeapon=match[2]
+                            specificWeapon = match[2]
                         }
                     }
                     if (canReachEnemy(message.token, cc.token, cc.actor, specificWeapon)) {
@@ -787,12 +799,12 @@ async function attackOfOpportunity(message) {
                 }
             })
     }
-};
+}
 
 async function reactiveStrike(message) {
     if (
         (messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll"))
-        || messageWithAnyTrait(message, ["manipulate","move"])
+        || messageWithAnyTrait(message, ["manipulate", "move"])
     ) {
         (isActorCharacter(message.actor) ? npcWithReaction("reactive-strike") : characterWithReaction("reactive-strike"))
             .forEach(cc => {
@@ -802,7 +814,7 @@ async function reactiveStrike(message) {
                     if (isNPC(cc.actor)) {
                         const match = aoo.name.match('\(([A-Za-z]{1,}) Only\)');
                         if (match && match.length === 3) {
-                            specificWeapon=match[2]
+                            specificWeapon = match[2]
                         }
                     }
                     if (canReachEnemy(message.token, cc.token, cc.actor, specificWeapon)) {
@@ -811,14 +823,14 @@ async function reactiveStrike(message) {
                 }
             })
     }
-};
+}
 
 async function emergencyTarge(message) {
     if (messageType(message, "saving-throw")) {
         if (hasReaction(message?.token?.combatant) && anyFailureMessageOutcome(message)) {
             const origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
             const emergency_targe = actorFeat(message?.actor, "emergency-targe")
-            if (emergency_targe && message?.flags?.pf2e?.origin?.type  === 'spell') {
+            if (emergency_targe && message?.flags?.pf2e?.origin?.type === 'spell') {
                 await postInChatTemplate(_uuid(emergency_targe), message.token.combatant);
             }
         }
@@ -830,7 +842,7 @@ async function emergencyTarge(message) {
             }
         }
     }
-};
+}
 
 async function impossibleTechnique(message) {
     if (messageType(message, 'attack-roll') && anySuccessMessageOutcome(message)) {
@@ -844,7 +856,7 @@ async function impossibleTechnique(message) {
             }
         }
     }
-};
+}
 
 async function ripplingSpin(message) {
     if (messageType(message, 'attack-roll') && anySuccessMessageOutcome(message)) {
@@ -858,7 +870,7 @@ async function ripplingSpin(message) {
             }
         }
     }
-};
+}
 
 async function guardiansDeflectionFighter(message) {
     if (messageType(message, 'attack-roll') && anySuccessMessageOutcome(message)) {
@@ -868,8 +880,8 @@ async function guardiansDeflectionFighter(message) {
 
             if (rr.degreeOfSuccess !== newR) {
                 characterWithReaction()
-                    .filter(a=>a?.actor?.id !== message?.target?.actor._id)
-                    .filter(cc=>canReachEnemy(message?.target?.token, cc.token, cc.actor))
+                    .filter(a => a?.actor?.id !== message?.target?.actor._id)
+                    .filter(cc => canReachEnemy(message?.target?.token, cc.token, cc.actor))
                     .forEach(cc => {
                         const guardians_def = actorFeat(cc.actor, "guardians-deflection-fighter");
                         if (guardians_def) {
@@ -879,7 +891,7 @@ async function guardiansDeflectionFighter(message) {
             }
         }
     }
-};
+}
 
 async function guardiansDeflectionSwashbuckler(message) {
     if (messageType(message, 'attack-roll') && anySuccessMessageOutcome(message)) {
@@ -889,8 +901,8 @@ async function guardiansDeflectionSwashbuckler(message) {
 
             if (rr.degreeOfSuccess !== newR) {
                 characterWithReaction()
-                    .filter(a=>a?.actor?.id !== message?.target?.actor._id)
-                    .filter(cc=>canReachEnemy(message?.target?.token, cc.token, cc.actor))
+                    .filter(a => a?.actor?.id !== message?.target?.actor._id)
+                    .filter(cc => canReachEnemy(message?.target?.token, cc.token, cc.actor))
                     .forEach(cc => {
                         const guardians_def = actorFeat(cc.actor, "guardians-deflection-swashbuckler");
                         if (guardians_def) {
@@ -900,43 +912,55 @@ async function guardiansDeflectionSwashbuckler(message) {
             }
         }
     }
-};
+}
 
 async function shieldWardenFighter(message) {
-    if (!messageType(message, 'damage-roll')) {return}
-    if (!isTargetCharacter(message)) {return}
-    const dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a=>a?.damageType);
-    if (dTypes.filter(a=> a=== "bludgeoning" || a === "piercing" || a=== "slashing").length === 0) {return;}
+    if (!messageType(message, 'damage-roll')) {
+        return
+    }
+    if (!isTargetCharacter(message)) {
+        return
+    }
+    const dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a => a?.damageType);
+    if (dTypes.filter(a => a === "bludgeoning" || a === "piercing" || a === "slashing").length === 0) {
+        return;
+    }
 
     characterWithReaction()
-        .filter(a=>a.actorId !== message?.actor?._id)
-        .filter(a=>hasEffect(a.actor, "effect-raise-a-shield"))
-        .filter(a=>adjacentEnemy(message.target?.token, a.token))
+        .filter(a => a.actorId !== message?.actor?._id)
+        .filter(a => hasEffect(a.actor, "effect-raise-a-shield"))
+        .filter(a => adjacentEnemy(message.target?.token, a.token))
         .forEach(cc => {
             const shield_warden = actorFeat(cc.actor, "shield-warden-fighter");
             if (shield_warden) {
                 postTargetInChatTemplate(_uuid(shield_warden), cc, undefined);
             }
         })
-};
+}
 
 async function shieldWardenChampion(message) {
-    if (!messageType(message, 'damage-roll')) {return}
-    if (!isTargetCharacter(message)) {return}
-    const dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a=>a?.damageType);
-    if (dTypes.filter(a=> a=== "bludgeoning" || a === "piercing" || a=== "slashing").length === 0) {return;}
+    if (!messageType(message, 'damage-roll')) {
+        return
+    }
+    if (!isTargetCharacter(message)) {
+        return
+    }
+    const dTypes = Object.values(message?.item?.system?.damageRolls ?? {a: message?.item?.system?.damage}).map(a => a?.damageType);
+    if (dTypes.filter(a => a === "bludgeoning" || a === "piercing" || a === "slashing").length === 0) {
+        return;
+    }
 
     characterWithReaction()
-        .filter(a=>a.actorId !== message?.actor?._id)
-        .filter(a=>hasEffect(a.actor, "effect-raise-a-shield"))
-        .filter(a=>adjacentEnemy(message.target?.token, a.token))
+        .filter(a => a.actorId !== message?.actor?._id)
+        .filter(a => hasEffect(a.actor, "effect-raise-a-shield"))
+        .filter(a => adjacentEnemy(message.target?.token, a.token))
         .forEach(cc => {
             const shield_warden = actorFeat(cc.actor, "shield-warden-champion");
             if (shield_warden) {
                 postTargetInChatTemplate(_uuid(shield_warden), cc);
             }
         })
-};
+}
 
 async function standStill(message) {
     if (!isActorCharacter(message.actor) && messageWithTrait(message, "move")) {
@@ -948,7 +972,7 @@ async function standStill(message) {
                 }
             });
     }
-};
+}
 
 async function noEscape(message) {
     if (!isActorCharacter(message.actor) && messageWithTrait(message, "move")) {
@@ -960,12 +984,12 @@ async function noEscape(message) {
                 }
             });
     }
-};
+}
 
 async function verdistantDefense(message) {
     if (!isActorCharacter(message.actor) && messageWithTrait(message, "move")) {
         characterWithReaction()
-            .filter(a=>a.actor.auras.size > 0)
+            .filter(a => a.actor.auras.size > 0)
             .forEach(cc => {
                 const everdistant_defense = actorFeat(cc.actor, "everdistant-defense");
                 if (everdistant_defense) {
@@ -976,19 +1000,19 @@ async function verdistantDefense(message) {
                 }
             })
     }
-};
+}
 
-async function eerieFlicker(e) {
-    if (messageType(e, "attack-roll") && anySuccessMessageOutcome(e)) {
-        if (hasReaction(e?.target?.token?.combatant)) {
-            const hasFeat = actorFeat(e?.target?.actor, "eerie-flicker");
-            if (hasFeat
-                && !hasCondition(e?.target?.actor, "concealed") 
-                && !hasCondition(e?.target?.actor, "hidden") 
-                && !hasCondition(e?.target?.actor, "undetected")
+async function eerieFlicker(message) {
+    if (messageType(message, "attack-roll") && anySuccessMessageOutcome(message)) {
+        if (hasReaction(message?.target?.token?.combatant)) {
+            let eerieFlicker = actorFeat(message?.target?.actor, "eerie-flicker");
+            if (eerieFlicker
+                && !hasCondition(message?.target?.actor, "concealed")
+                && !hasCondition(message?.target?.actor, "hidden")
+                && !hasCondition(message?.target?.actor, "undetected")
             ) {
-                await postInChatTemplate(_uuid(t), e.target?.token.combatant);
+                await postInChatTemplate(_uuid(eerieFlicker), message.target.token.combatant);
             }
         }
     }
-};
+}

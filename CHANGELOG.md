@@ -1,3 +1,6 @@
+## Version 1.1.6
+- Eerie Flicker. Thank you @mardaravicius
+
 ## Version 1.1.5
 - Custom Reaction icon
 
