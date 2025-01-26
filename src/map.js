@@ -90,4 +90,5 @@ const allReactionsMap = {
     'shield-warden-fighter': shieldWardenFighter,
     'shield-warden-champion': shieldWardenChampion,
     'eerie-flicker': eerieFlicker,
+    'scars-of-steel': scarsOfSteel,
 };

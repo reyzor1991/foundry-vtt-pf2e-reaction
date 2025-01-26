@@ -1016,3 +1016,22 @@ async function eerieFlicker(message) {
         }
     }
 }
+
+async function scarsOfSteel(message) {
+    if (!messageType(message, 'damage-roll')) {
+        return
+    }
+    if (!hasReaction(message?.target?.token?.combatant)) {
+        return
+    }
+
+    if (game.pf2e.Predicate.test([
+        "check:outcome:critical-success",
+        "item:damage:category:physical"
+    ], message?.flags?.pf2e?.context?.options || [])) {
+        let scarsOfSteel = actorFeat(message?.target?.actor, "scars-of-steel");
+        if (scarsOfSteel) {
+            await postInChatTemplate(_uuid(scarsOfSteel), message.target.token.combatant);
+        }
+    }
+}

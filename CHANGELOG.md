@@ -1,5 +1,6 @@
 ## Version 1.1.7
 - Add trigger - Enemy HP Zero
+- Scars of Steel
 
 ## Version 1.1.6
 - Eerie Flicker. Thank you @mardaravicius
