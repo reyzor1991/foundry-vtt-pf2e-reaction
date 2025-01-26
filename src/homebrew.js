@@ -1,112 +1,113 @@
 const Requirement = {
-  None: "pf2e-reaction.SETTINGS.requirement.None",
-  ActorHasEffect: "pf2e-reaction.SETTINGS.requirement.ActorHasEffect",
-  TargetHasEffect: "pf2e-reaction.SETTINGS.requirement.TargetHasEffect",
-  ActorHoldsItem: "pf2e-reaction.SETTINGS.requirement.ActorHoldsItem",
-  TargetHoldsItem: "pf2e-reaction.SETTINGS.requirement.TargetHoldsItem",
+    None: "pf2e-reaction.SETTINGS.requirement.None",
+    ActorHasEffect: "pf2e-reaction.SETTINGS.requirement.ActorHasEffect",
+    TargetHasEffect: "pf2e-reaction.SETTINGS.requirement.TargetHasEffect",
+    ActorHoldsItem: "pf2e-reaction.SETTINGS.requirement.ActorHoldsItem",
+    TargetHoldsItem: "pf2e-reaction.SETTINGS.requirement.TargetHoldsItem",
 }
 const OwnerRequirement = {
-  None: "pf2e-reaction.SETTINGS.requirement.None",
-  ActorHasEffect: "pf2e-reaction.SETTINGS.requirement.ActorHasEffect",
-  ActorHoldsItem: "pf2e-reaction.SETTINGS.requirement.ActorHoldsItem",
+    None: "pf2e-reaction.SETTINGS.requirement.None",
+    ActorHasEffect: "pf2e-reaction.SETTINGS.requirement.ActorHasEffect",
+    ActorHoldsItem: "pf2e-reaction.SETTINGS.requirement.ActorHoldsItem",
 }
 const Trigger = {
-  None: "pf2e-reaction.SETTINGS.trigger.None",
-  CriticalFailSavingThrow: "pf2e-reaction.SETTINGS.trigger.CriticalFailSavingThrow",
-  FailSavingThrow: "pf2e-reaction.SETTINGS.trigger.FailSavingThrow",
-  CriticalHitCreature: "pf2e-reaction.SETTINGS.trigger.CriticalHitCreature",
-  EnemyUseManipulateAction: "pf2e-reaction.SETTINGS.trigger.EnemyUseManipulateAction",
-  EnemyUseMoveAction: "pf2e-reaction.SETTINGS.trigger.EnemyUseMoveAction",
-  EnemyUseRangedAttack: "pf2e-reaction.SETTINGS.trigger.EnemyUseRangedAttack",
-  AllyTakeDamage: "pf2e-reaction.SETTINGS.trigger.AllyTakeDamage",
-  ActorTakeDamage: "pf2e-reaction.SETTINGS.trigger.ActorTakeDamage",
-  CreatureAttacksAlly: "pf2e-reaction.SETTINGS.trigger.CreatureAttacksAlly",
-  YouHPZero: "pf2e-reaction.SETTINGS.trigger.YouHPZero",
-  AllyHPZero: "pf2e-reaction.SETTINGS.trigger.AllyHPZero",
-  EnemyUsesTrait: "pf2e-reaction.SETTINGS.trigger.EnemyUsesTrait",
-  EnemyCastSpell: "pf2e-reaction.SETTINGS.trigger.EnemyCastSpell",
-  EnemyHitsActor: "pf2e-reaction.SETTINGS.trigger.EnemyHitsActor",
-  EnemyCriticalFailHitsActor: "pf2e-reaction.SETTINGS.trigger.EnemyCriticalFailHitsActor",
-  EnemyCriticalHitsActor: "pf2e-reaction.SETTINGS.trigger.EnemyCriticalHitsActor",
-  EnemyFailHitsActor: "pf2e-reaction.SETTINGS.trigger.EnemyFailHitsActor",
-  ActorFailsHit: "pf2e-reaction.SETTINGS.trigger.ActorFailsHit",
-  ActorFailsSkillCheck: "pf2e-reaction.SETTINGS.trigger.ActorFailsSkillCheck",
-  AllyUseSkillCheck: "pf2e-reaction.SETTINGS.trigger.AllyUseSkillCheck",
-  AllyMakeAttack: "pf2e-reaction.SETTINGS.trigger.AllyMakeAttack",
+    None: "pf2e-reaction.SETTINGS.trigger.None",
+    CriticalFailSavingThrow: "pf2e-reaction.SETTINGS.trigger.CriticalFailSavingThrow",
+    FailSavingThrow: "pf2e-reaction.SETTINGS.trigger.FailSavingThrow",
+    CriticalHitCreature: "pf2e-reaction.SETTINGS.trigger.CriticalHitCreature",
+    EnemyUseManipulateAction: "pf2e-reaction.SETTINGS.trigger.EnemyUseManipulateAction",
+    EnemyUseMoveAction: "pf2e-reaction.SETTINGS.trigger.EnemyUseMoveAction",
+    EnemyUseRangedAttack: "pf2e-reaction.SETTINGS.trigger.EnemyUseRangedAttack",
+    AllyTakeDamage: "pf2e-reaction.SETTINGS.trigger.AllyTakeDamage",
+    ActorTakeDamage: "pf2e-reaction.SETTINGS.trigger.ActorTakeDamage",
+    CreatureAttacksAlly: "pf2e-reaction.SETTINGS.trigger.CreatureAttacksAlly",
+    YouHPZero: "pf2e-reaction.SETTINGS.trigger.YouHPZero",
+    AllyHPZero: "pf2e-reaction.SETTINGS.trigger.AllyHPZero",
+    EnemyHPZero: "pf2e-reaction.SETTINGS.trigger.EnemyHPZero",
+    EnemyUsesTrait: "pf2e-reaction.SETTINGS.trigger.EnemyUsesTrait",
+    EnemyCastSpell: "pf2e-reaction.SETTINGS.trigger.EnemyCastSpell",
+    EnemyHitsActor: "pf2e-reaction.SETTINGS.trigger.EnemyHitsActor",
+    EnemyCriticalFailHitsActor: "pf2e-reaction.SETTINGS.trigger.EnemyCriticalFailHitsActor",
+    EnemyCriticalHitsActor: "pf2e-reaction.SETTINGS.trigger.EnemyCriticalHitsActor",
+    EnemyFailHitsActor: "pf2e-reaction.SETTINGS.trigger.EnemyFailHitsActor",
+    ActorFailsHit: "pf2e-reaction.SETTINGS.trigger.ActorFailsHit",
+    ActorFailsSkillCheck: "pf2e-reaction.SETTINGS.trigger.ActorFailsSkillCheck",
+    AllyUseSkillCheck: "pf2e-reaction.SETTINGS.trigger.AllyUseSkillCheck",
+    AllyMakeAttack: "pf2e-reaction.SETTINGS.trigger.AllyMakeAttack",
 }
 
 class HomebrewReactionRequirement {
-  constructor(idx) {
-    this.idx = idx;
-    this.name = Requirement.None;
-    this.effect = "";
-    this.item = "";
-    this.trait = "";
-    this.choices = Requirement
-  }
+    constructor(idx) {
+        this.idx = idx;
+        this.name = Requirement.None;
+        this.effect = "";
+        this.item = "";
+        this.trait = "";
+        this.choices = Requirement
+    }
 
-  static fromObj(obj) {
-      const h = new HomebrewReactionRequirement();
-      Object.assign(h, obj);
-    h.choices = Requirement;
-    return h;
-  }
+    static fromObj(obj) {
+        const h = new HomebrewReactionRequirement();
+        Object.assign(h, obj);
+        h.choices = Requirement;
+        return h;
+    }
 }
 
 class HomebrewReactionOwnerRequirement {
-  constructor(idx) {
-    this.idx = idx;
-    this.name = Requirement.None;
-    this.effect = "";
-    this.item = "";
-    this.trait = "";
-    this.choices = Requirement
-  }
+    constructor(idx) {
+        this.idx = idx;
+        this.name = Requirement.None;
+        this.effect = "";
+        this.item = "";
+        this.trait = "";
+        this.choices = Requirement
+    }
 
-  static fromObj(obj) {
-      const h = new HomebrewReactionOwnerRequirement();
-      Object.assign(h, obj);
-    h.choices = OwnerRequirement;
-    return h;
-  }
+    static fromObj(obj) {
+        const h = new HomebrewReactionOwnerRequirement();
+        Object.assign(h, obj);
+        h.choices = OwnerRequirement;
+        return h;
+    }
 }
 
 class HomebrewReactionTrigger {
-  constructor(idx) {
-    this.idx = idx;
-    this.name = Trigger.None;
-    this.reachValue = 0;
-    this.reach = false;
-    this.adjacent = false;
-    this.trait = "";
-    this.choices = Trigger
-  }
+    constructor(idx) {
+        this.idx = idx;
+        this.name = Trigger.None;
+        this.reachValue = 0;
+        this.reach = false;
+        this.adjacent = false;
+        this.trait = "";
+        this.choices = Trigger
+    }
 
-  static fromObj(obj) {
-      const h = new HomebrewReactionTrigger();
-      Object.assign(h, obj);
-    h.choices = Trigger;
-    return h;
-  }
+    static fromObj(obj) {
+        const h = new HomebrewReactionTrigger();
+        Object.assign(h, obj);
+        h.choices = Trigger;
+        return h;
+    }
 }
 
 class HomebrewReaction {
-  constructor(idx) {
-    this.idx = idx;
-    this.uuid = "";
-    this.triggers = [new HomebrewReactionTrigger(0)]
-    this.requirements = []
-    this.ownerRequirements = []
-  }
+    constructor(idx) {
+        this.idx = idx;
+        this.uuid = "";
+        this.triggers = [new HomebrewReactionTrigger(0)]
+        this.requirements = []
+        this.ownerRequirements = []
+    }
 
-  static fromObj(obj) {
-      const h = new HomebrewReaction();
-      Object.assign(h, obj);
-    h.triggers = h.triggers.map(a=>HomebrewReactionTrigger.fromObj(a));
-    h.requirements = h.requirements.map(a=>HomebrewReactionRequirement.fromObj(a));
-    h.ownerRequirements = h.ownerRequirements.map(a=>HomebrewReactionOwnerRequirement.fromObj(a));
-    return h;
-  }
+    static fromObj(obj) {
+        const h = new HomebrewReaction();
+        Object.assign(h, obj);
+        h.triggers = h.triggers.map(a => HomebrewReactionTrigger.fromObj(a));
+        h.requirements = h.requirements.map(a => HomebrewReactionRequirement.fromObj(a));
+        h.ownerRequirements = h.ownerRequirements.map(a => HomebrewReactionOwnerRequirement.fromObj(a));
+        return h;
+    }
 }
 
 class ReactionHomebrewSettings extends FormApplication {
@@ -120,7 +121,7 @@ class ReactionHomebrewSettings extends FormApplication {
         super();
         const _e = game.settings.get("pf2e-reaction", "homebrewReactions");
         if (_e) {
-            this.homebrewReactions = _e.map(a=>HomebrewReaction.fromObj(a));
+            this.homebrewReactions = _e.map(a => HomebrewReaction.fromObj(a));
             this.updateIndexes();
         }
     }
@@ -177,7 +178,7 @@ class ReactionHomebrewSettings extends FormApplication {
     }
 
     getData() {
-        const templateData = Object.entries(ReactionHomebrewSettings.settings).filter(([key, setting])=>{
+        const templateData = Object.entries(ReactionHomebrewSettings.settings).filter(([key, setting]) => {
             return key !== "homebrewReactions"
         }).map(([key, setting]) => {
             const value = game.settings.get("pf2e-reaction", key);
@@ -195,7 +196,7 @@ class ReactionHomebrewSettings extends FormApplication {
     }
 
     async updateHomebrewReactions(key, value) {
-        if (!key.startsWith("homebrewReaction."))return;
+        if (!key.startsWith("homebrewReaction.")) return;
 
         const hr_key = key.replace("homebrewReaction.", "");
         const hr_key_parts = hr_key.split(".");
@@ -214,7 +215,7 @@ class ReactionHomebrewSettings extends FormApplication {
 
     async _updateObject(_event, data) {
         for (const key of Object.keys(data)) {
-            if (key.startsWith("homebrewReaction."))continue;
+            if (key.startsWith("homebrewReaction.")) continue;
             let _v = data[key];
             if (_v === null || _v === "null") {
                 _v = "";
@@ -222,7 +223,7 @@ class ReactionHomebrewSettings extends FormApplication {
             await game.settings.set("pf2e-reaction", key, _v);
         }
         for (const key of Object.keys(data)) {
-            if (!key.startsWith("homebrewReaction."))continue;
+            if (!key.startsWith("homebrewReaction.")) continue;
             const _v = data[key];
             this.updateHomebrewReactions(key, _v)
         }
@@ -230,16 +231,16 @@ class ReactionHomebrewSettings extends FormApplication {
     }
 
     updateIndexes() {
-        for (let i=0; i < this.homebrewReactions.length; i++) {
+        for (let i = 0; i < this.homebrewReactions.length; i++) {
             this.homebrewReactions[i].idx = i;
 
-            for (let j=0; j < this.homebrewReactions[i].triggers.length; j++) {
+            for (let j = 0; j < this.homebrewReactions[i].triggers.length; j++) {
                 this.homebrewReactions[i].triggers[j].idx = j;
             }
-            for (let l=0; l < this.homebrewReactions[i].requirements.length; l++) {
+            for (let l = 0; l < this.homebrewReactions[i].requirements.length; l++) {
                 this.homebrewReactions[i].requirements[l].idx = l;
             }
-            for (let b=0; b < this.homebrewReactions[i].ownerRequirements.length; b++) {
+            for (let b = 0; b < this.homebrewReactions[i].ownerRequirements.length; b++) {
                 this.homebrewReactions[i].ownerRequirements[b].idx = b;
             }
         }
@@ -247,18 +248,18 @@ class ReactionHomebrewSettings extends FormApplication {
 
     rawValue() {
         const res = [];
-        for (let i=0; i < this.homebrewReactions.length; i++) {
+        for (let i = 0; i < this.homebrewReactions.length; i++) {
             res.push(
                 {
                     uuid: this.homebrewReactions[i].uuid,
-                    triggers: this.homebrewReactions[i].triggers.map(a=>{
-                        return {"name":a.name,"reachValue":a.reachValue,"reach":a.reach,"adjacent":a.adjacent,"trait":a.trait};
+                    triggers: this.homebrewReactions[i].triggers.map(a => {
+                        return {"name": a.name, "reachValue": a.reachValue, "reach": a.reach, "adjacent": a.adjacent, "trait": a.trait};
                     }),
-                    requirements: this.homebrewReactions[i].requirements.map(a=>{
-                        return {"name":a.name,"effect":a.effect,"item":a.item,"trait":a.trait};
+                    requirements: this.homebrewReactions[i].requirements.map(a => {
+                        return {"name": a.name, "effect": a.effect, "item": a.item, "trait": a.trait};
                     }),
-                    ownerRequirements: this.homebrewReactions[i].ownerRequirements.map(a=>{
-                        return {"name":a.name,"effect":a.effect,"item":a.item,"trait":a.trait};
+                    ownerRequirements: this.homebrewReactions[i].ownerRequirements.map(a => {
+                        return {"name": a.name, "effect": a.effect, "item": a.item, "trait": a.trait};
                     }),
                 }
             );
@@ -267,8 +268,8 @@ class ReactionHomebrewSettings extends FormApplication {
     }
 
     updateForm(event) {
-        $(event.currentTarget).closest('form').serializeArray().forEach(e=>{
-            this.updateHomebrewReactions(e.name,e.value)
+        $(event.currentTarget).closest('form').serializeArray().forEach(e => {
+            this.updateHomebrewReactions(e.name, e.value)
         })
     }
 
@@ -370,8 +371,8 @@ class ReactionHomebrewSettings extends FormApplication {
 async function handleHomebrewMessages(message) {
     if (Settings.useHomebrew) {
         Settings.homebrewReactions
-            .filter(a=>a.uuid.length > 0 && a.triggers.length > 0)
-            .filter(a=>a.triggers.filter(a=> a.name !== "None").length > 0)
+            .filter(a => a.uuid.length > 0 && a.triggers.length > 0)
+            .filter(a => a.triggers.filter(a => a.name !== "None").length > 0)
             .forEach(hr => {
                 const tt = hr.triggers.filter(a => a.name !== "None");
                 const requirements = hr.requirements.filter(a => a.name !== "None");
@@ -379,12 +380,17 @@ async function handleHomebrewMessages(message) {
                 if (!messageRequirements(message, requirements)) {
                     return;
                 }
-                if (tt.some(a=>handleHomebrewTrigger(a, message))) {
+                if (tt.some(a => handleHomebrewTrigger(a, message))) {
                     combatantsForTriggers(tt, message)
-                        .filter(c=>actorRequirements(c.actor, ownerRequirements))
-                        .filter(a=>actorFeatBySource(a.actor, hr.uuid) || actorActionBySource(a.actor, hr.uuid) || actorSpellBySource(a.actor, hr.uuid))
+                        .filter(c => actorRequirements(c.actor, ownerRequirements))
                         .forEach(cc => {
-                            postInChatTemplate(_uuid(hr), cc, undefined, tt.find(a=>a.name==="YouHPZero") !== undefined);
+                        // .filter(a =>  || actorActionBySource(a.actor, hr.uuid) || actorSpellBySource(a.actor, hr.uuid))
+                            let feat = actorFeatBySource(cc.actor, _uuid(hr));
+                            let act = actorActionBySource(cc.actor, _uuid(hr));
+                            let spell = actorSpellBySource(cc.actor, _uuid(hr));
+                            if (feat || act || spell) {
+                                postInChatTemplate(_uuid(feat || act || spell), cc, undefined, tt.find(a => a.name === "YouHPZero") !== undefined);
+                            }
                         })
                 }
             })
@@ -416,7 +422,7 @@ function handleHomebrewTrigger(tr, message) {
     if (tr.name === 'ActorTakeDamage' && messageType(message, 'damage-roll')) {
         return true;
     }
-    if ((tr.name === 'YouHPZero' || tr.name === "AllyHPZero")
+    if ((tr.name === 'YouHPZero' || tr.name === "AllyHPZero" || tr.name === "EnemyHPZero")
         && message?.flags?.pf2e?.appliedDamage
         && !message?.flags?.pf2e?.appliedDamage?.isHealing
         && message.actor.system?.attributes?.hp?.value === 0) {
@@ -462,17 +468,17 @@ function handleHomebrewTrigger(tr, message) {
 function filterByDistance(t, tr, message) {
     let r = t;
     if (tr.reach) {
-        r = r.filter(cc=>canReachEnemy(message.token, cc.token, cc.actor));
+        r = r.filter(cc => canReachEnemy(message.token, cc.token, cc.actor));
     } else if (tr.adjacent) {
-        r = r.filter(a=>adjacentEnemy(message.token, a.token));
+        r = r.filter(a => adjacentEnemy(message.token, a.token));
     } else if (tr.reachValue > 0) {
-        r = r.filter(a=>getEnemyDistance(message.token, a.token) <= tr.reachValue);
+        r = r.filter(a => getEnemyDistance(message.token, a.token) <= tr.reachValue);
     }
     return r;
 }
 
 function messageRequirements(message, requirements) {
-    return requirements.every(a=>{
+    return requirements.every(a => {
         if (a.name === 'TargetHasEffect' && hasEffect(message?.target?.actor, a.effect)) {
             return true;
         }
@@ -490,7 +496,7 @@ function messageRequirements(message, requirements) {
 }
 
 function actorRequirements(actor, requirements) {
-    return requirements.every(a=>{
+    return requirements.every(a => {
         if (a.name === 'ActorHasEffect' && hasEffect(actor, a.effect)) {
             return true;
         }
@@ -531,29 +537,29 @@ function combatantsForTriggers(tt, message) {
         }
         if (tr.name === 'AllyTakeDamage' && messageType(message, 'damage-roll')) {
             const t = filterByDistance((isTargetCharacter(message) ? characterWithReaction() : npcWithReaction())
-                .filter(a=>a.actor?.uuid !== message?.actor?.uuid), tr, message);
+                .filter(a => a.actor?.uuid !== message?.actor?.uuid), tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'ActorTakeDamage' && messageType(message, 'damage-roll')) {
             const t = filterByDistance([message?.target?.token?.combatant], tr, message);
             res = res.concat(t);
         }
-        if ((tr.name === 'YouHPZero')
-            && message?.flags?.pf2e?.appliedDamage
+        if (message?.flags?.pf2e?.appliedDamage
             && !message?.flags?.pf2e?.appliedDamage?.isHealing
             && message.actor.system?.attributes?.hp?.value === 0) {
 
-            const t = filterByDistance([message?.token?.combatant], tr, message);
-            res = res.concat(t);
-        }
-        if ((tr.name === "AllyHPZero")
-            && message?.flags?.pf2e?.appliedDamage
-            && !message?.flags?.pf2e?.appliedDamage?.isHealing
-            && message.actor.system?.attributes?.hp?.value === 0) {
-
-            const t = filterByDistance((isTargetCharacter(message) ? characterWithReaction() : npcWithReaction())
-                .filter(a=>a.actor?.uuid !== message?.actor?.uuid), tr, message);
-            res = res.concat(t);
+            if (tr.name === 'YouHPZero') {
+                let t = filterByDistance([message?.token?.combatant], tr, message);
+                res = res.concat(t);
+            } else if (tr.name === 'AllyHPZero') {
+                const t = filterByDistance((isActorCharacter(message.actor) ? characterWithReaction() : npcWithReaction())
+                    .filter(a => a.actor?.uuid !== message?.actor?.uuid), tr, message);
+                res = res.concat(t);
+            } else if (tr.name === 'EnemyHPZero') {
+                const t = filterByDistance((isActorCharacter(message.actor) ? npcWithReaction() : characterWithReaction())
+                    .filter(a => a.actor?.uuid !== message?.actor?.uuid), tr, message);
+                res = res.concat(t);
+            }
         }
         if (tr.name === 'EnemyUsesTrait'
             && message?.item?.system?.traits?.value?.includes(tr.trait)) {
@@ -571,12 +577,12 @@ function combatantsForTriggers(tt, message) {
         }
         if (tr.name === 'AllyMakeAttack' && messageType(message, 'attack-roll')) {
             const t = filterByDistance((isActorCharacter(message.actor) ? characterWithReaction() : npcWithReaction())
-                .filter(a=>a.actor?.uuid !== message?.actor?.uuid), tr, message);
+                .filter(a => a.actor?.uuid !== message?.actor?.uuid), tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'AllyUseSkillCheck' && messageType(message, 'skill-check')) {
             const t = filterByDistance((isActorCharacter(message.actor) ? characterWithReaction() : npcWithReaction())
-                .filter(a=>a.actor?.uuid !== message?.actor?.uuid), tr, message);
+                .filter(a => a.actor?.uuid !== message?.actor?.uuid), tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'EnemyCriticalFailHitsActor' && messageType(message, 'attack-roll') && criticalFailureMessageOutcome(message)) {
@@ -597,7 +603,7 @@ function combatantsForTriggers(tt, message) {
         }
         if (tr.name === 'CreatureAttacksAlly' && messageType(message, 'attack-roll')) {
             const t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction())
-                .filter(a=>a.actor?.uuid !== message?.actor?.uuid), tr, message);
+                .filter(a => a.actor?.uuid !== message?.actor?.uuid), tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'ActorFailsSkillCheck' && messageType(message, 'skill-check') && anyFailureMessageOutcome(message)) {
@@ -605,8 +611,8 @@ function combatantsForTriggers(tt, message) {
             res = res.concat(t);
         }
     });
-    res = res.filter(a=>a!==null)
-    res = [...new Map(res.map(item =>[item['actorId'], item])).values()];
+    res = res.filter(a => a !== null)
+    res = [...new Map(res.map(item => [item['actorId'], item])).values()];
 
     return res;
 }
@@ -629,6 +635,6 @@ Hooks.on('preUpdateToken', (tokenDoc, data, deep, id) => {
     }
 });
 
-Hooks.on('preCreateChatMessage',async (message, user, _options, userId)=>{
+Hooks.on('preCreateChatMessage', async (message, user, _options, userId) => {
     handleHomebrewMessages(message)
 });

@@ -17,6 +17,7 @@
   "pf2e-reaction.SETTINGS.trigger.CreatureAttacksAlly": "Stwór atakuje sojusznika",
   "pf2e-reaction.SETTINGS.trigger.YouHPZero": "Twoje PW zredukowane do 0",
   "pf2e-reaction.SETTINGS.trigger.AllyHPZero": "PW sojusznika zmniejszone do 0",
+  "pf2e-reaction.SETTINGS.trigger.EnemyHPZero": "PW wroga zmniejszone do 0",
   "pf2e-reaction.SETTINGS.trigger.EnemyUsesTrait": "Wróg używa akcji z cechą",
   "pf2e-reaction.SETTINGS.trigger.EnemyCastSpell": "Wróg rzuca zaklęcie",
   "pf2e-reaction.SETTINGS.trigger.EnemyHitsActor": "Wróg trafia w aktora",
@@ -63,7 +64,6 @@
   "pf2e-reaction.hotkey-v.name": "V – nie wyzwala reakcji na ruch",
   "pf2e-reaction.hotkey-v.hint": "Skrót klawiszowy do naciśnięcia podczas ruchu, aby nie wywołać reakcji na ruch (przez 1 krok)",
   "pf2e-reaction.recall-knowledge.need-fix": "Zmieniono strukturę obiektu Przywołanie Wiedzy. Trzeba zaktualizować moduł",
-
   "pf2e-reaction.customReactionIcon.name": "Ikona reakcji niestandardowej",
   "pf2e-reaction.customReactionIcon.hint": ""
 }

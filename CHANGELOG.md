@@ -1,3 +1,6 @@
+## Version 1.1.7
+- Add trigger - Enemy HP Zero
+
 ## Version 1.1.6
 - Eerie Flicker. Thank you @mardaravicius
 
