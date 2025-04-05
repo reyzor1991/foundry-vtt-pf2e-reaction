@@ -18,6 +18,7 @@ const Trigger = {
     EnemyUseManipulateAction: "pf2e-reaction.SETTINGS.trigger.EnemyUseManipulateAction",
     EnemyUseMoveAction: "pf2e-reaction.SETTINGS.trigger.EnemyUseMoveAction",
     EnemyUseRangedAttack: "pf2e-reaction.SETTINGS.trigger.EnemyUseRangedAttack",
+    EnemyUseRangedAttackVsTarget: "pf2e-reaction.SETTINGS.trigger.EnemyUseRangedAttackVsTarget",
     AllyTakeDamage: "pf2e-reaction.SETTINGS.trigger.AllyTakeDamage",
     ActorTakeDamage: "pf2e-reaction.SETTINGS.trigger.ActorTakeDamage",
     CreatureAttacksAlly: "pf2e-reaction.SETTINGS.trigger.CreatureAttacksAlly",
@@ -384,7 +385,6 @@ async function handleHomebrewMessages(message) {
                     combatantsForTriggers(tt, message)
                         .filter(c => actorRequirements(c.actor, ownerRequirements))
                         .forEach(cc => {
-                        // .filter(a =>  || actorActionBySource(a.actor, hr.uuid) || actorSpellBySource(a.actor, hr.uuid))
                             let feat = actorFeatBySource(cc.actor, _uuid(hr));
                             let act = actorActionBySource(cc.actor, _uuid(hr));
                             let spell = actorSpellBySource(cc.actor, _uuid(hr));
@@ -399,6 +399,9 @@ async function handleHomebrewMessages(message) {
 
 function handleHomebrewTrigger(tr, message) {
     if (tr.name === 'EnemyUseRangedAttack' && messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll")) {
+        return true;
+    }
+    if (tr.name === 'EnemyUseRangedAttackVsTarget' && messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll")) {
         return true;
     }
     if (tr.name === 'EnemyUseManipulateAction' && message?.item?.type === 'action' && message?.item?.system?.traits?.value.includes("manipulate")) {
@@ -515,6 +518,10 @@ function combatantsForTriggers(tt, message) {
             const t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
             res = res.concat(t);
         }
+        if (tr.name === 'EnemyUseRangedAttackVsTarget' && messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll")) {
+            const t = filterByDistance(hasReaction(message?.target?.token?.combatant) ? [message?.target?.token?.combatant] : [], tr, message);
+            res = res.concat(t);
+        }
         if (tr.name === 'EnemyUseManipulateAction' && message?.item?.type === 'action' && message?.item?.system?.traits?.value.includes("manipulate")) {
             const t = filterByDistance((isActorCharacter(message?.actor) ? npcWithReaction() : characterWithReaction()), tr, message);
             res = res.concat(t);
@@ -524,15 +531,15 @@ function combatantsForTriggers(tt, message) {
             res = res.concat(t);
         }
         if (tr.name === 'FailSavingThrow' && messageType(message, 'saving-throw') && anyFailureMessageOutcome(message)) {
-            const t = filterByDistance([message?.token?.combatant], tr, message);
+            const t = filterByDistance(hasReaction(message?.token?.combatant) ? [message?.token?.combatant] : [], tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'CriticalFailSavingThrow' && messageType(message, 'saving-throw') && criticalFailureMessageOutcome(message)) {
-            const t = filterByDistance([message?.token?.combatant], tr, message);
+            const t = filterByDistance(hasReaction(message?.token?.combatant) ? [message?.token?.combatant] : [], tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'CriticalHitCreature' && messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
-            const t = filterByDistance([message?.token?.combatant], tr, message);
+            const t = filterByDistance(hasReaction(message?.token?.combatant) ? [message?.token?.combatant] : [], tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'AllyTakeDamage' && messageType(message, 'damage-roll')) {
@@ -541,7 +548,7 @@ function combatantsForTriggers(tt, message) {
             res = res.concat(t);
         }
         if (tr.name === 'ActorTakeDamage' && messageType(message, 'damage-roll')) {
-            const t = filterByDistance([message?.target?.token?.combatant], tr, message);
+            const t = filterByDistance(hasReaction(message?.target?.token?.combatant) ? [message?.target?.token?.combatant] : [], tr, message);
             res = res.concat(t);
         }
         if (message?.flags?.pf2e?.appliedDamage
@@ -549,7 +556,7 @@ function combatantsForTriggers(tt, message) {
             && message.actor.system?.attributes?.hp?.value === 0) {
 
             if (tr.name === 'YouHPZero') {
-                let t = filterByDistance([message?.token?.combatant], tr, message);
+                const t = filterByDistance(hasReaction(message?.token?.combatant) ? [message?.token?.combatant] : [], tr, message);
                 res = res.concat(t);
             } else if (tr.name === 'AllyHPZero') {
                 const t = filterByDistance((isActorCharacter(message.actor) ? characterWithReaction() : npcWithReaction())
@@ -572,7 +579,7 @@ function combatantsForTriggers(tt, message) {
             res = res.concat(t);
         }
         if (tr.name === 'EnemyHitsActor' && messageType(message, 'attack-roll')) {
-            const t = filterByDistance([message?.target?.token?.combatant], tr, message);
+            const t = filterByDistance(hasReaction(message?.target?.token?.combatant) ? [message?.target?.token?.combatant] : [], tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'AllyMakeAttack' && messageType(message, 'attack-roll')) {
@@ -586,19 +593,19 @@ function combatantsForTriggers(tt, message) {
             res = res.concat(t);
         }
         if (tr.name === 'EnemyCriticalFailHitsActor' && messageType(message, 'attack-roll') && criticalFailureMessageOutcome(message)) {
-            const t = filterByDistance([message?.target?.token?.combatant], tr, message);
+            const t = filterByDistance(hasReaction(message?.target?.token?.combatant) ? [message?.target?.token?.combatant] : [], tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'EnemyCriticalHitsActor' && messageType(message, 'attack-roll') && criticalSuccessMessageOutcome(message)) {
-            const t = filterByDistance([message?.target?.token?.combatant], tr, message);
+            const t = filterByDistance(hasReaction(message?.target?.token?.combatant) ? [message?.target?.token?.combatant] : [], tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'EnemyFailHitsActor' && messageType(message, 'attack-roll') && anyFailureMessageOutcome(message)) {
-            const t = filterByDistance([message?.target?.token?.combatant], tr, message);
+            const t = filterByDistance(hasReaction(message?.target?.token?.combatant) ? [message?.target?.token?.combatant] : [], tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'ActorFailsHit' && messageType(message, 'attack-roll') && anyFailureMessageOutcome(message)) {
-            const t = filterByDistance([message?.token?.combatant], tr, message);
+            const t = filterByDistance(hasReaction(message?.token?.combatant) ? [message?.token?.combatant] : [], tr, message);
             res = res.concat(t);
         }
         if (tr.name === 'CreatureAttacksAlly' && messageType(message, 'attack-roll')) {
@@ -607,7 +614,7 @@ function combatantsForTriggers(tt, message) {
             res = res.concat(t);
         }
         if (tr.name === 'ActorFailsSkillCheck' && messageType(message, 'skill-check') && anyFailureMessageOutcome(message)) {
-            const t = filterByDistance([message?.token?.combatant], tr, message);
+            const t = filterByDistance(hasReaction(message?.token?.combatant) ? [message?.token?.combatant] : [], tr, message);
             res = res.concat(t);
         }
     });

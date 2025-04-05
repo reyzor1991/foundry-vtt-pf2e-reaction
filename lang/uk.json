@@ -12,6 +12,7 @@
   "pf2e-reaction.SETTINGS.trigger.EnemyUseManipulateAction": "Ворог використовує маніпулятивні дії",
   "pf2e-reaction.SETTINGS.trigger.EnemyUseMoveAction": "Ворог використовує рухову дію",
   "pf2e-reaction.SETTINGS.trigger.EnemyUseRangedAttack": "Ворог використовує дальню атаку",
+  "pf2e-reaction.SETTINGS.trigger.EnemyUseRangedAttackVsTarget": "Ворог використовує дальню атаку проти цілі",
   "pf2e-reaction.SETTINGS.trigger.AllyTakeDamage": "Союзник отримує пошкодження",
   "pf2e-reaction.SETTINGS.trigger.ActorTakeDamage": "Актор отримує пошкодження",
   "pf2e-reaction.SETTINGS.trigger.CreatureAttacksAlly": "Істота атакує союзника",

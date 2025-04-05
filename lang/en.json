@@ -12,6 +12,7 @@
   "pf2e-reaction.SETTINGS.trigger.EnemyUseManipulateAction": "Enemy use manipulate action",
   "pf2e-reaction.SETTINGS.trigger.EnemyUseMoveAction": "Enemy use move action",
   "pf2e-reaction.SETTINGS.trigger.EnemyUseRangedAttack": "Enemy use ranged attack",
+  "pf2e-reaction.SETTINGS.trigger.EnemyUseRangedAttackVsTarget": "Enemy use ranged attack vs target",
   "pf2e-reaction.SETTINGS.trigger.AllyTakeDamage": "Ally take damage",
   "pf2e-reaction.SETTINGS.trigger.ActorTakeDamage": "Actor take damage",
   "pf2e-reaction.SETTINGS.trigger.CreatureAttacksAlly": "Creature attacks ally",

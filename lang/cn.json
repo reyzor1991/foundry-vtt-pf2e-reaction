@@ -12,6 +12,7 @@
   "pf2e-reaction.SETTINGS.trigger.EnemyUseManipulateAction": "敌人使用操作动作",
   "pf2e-reaction.SETTINGS.trigger.EnemyUseMoveAction": "敌人使用移动动作",
   "pf2e-reaction.SETTINGS.trigger.EnemyUseRangedAttack": "敌人使用远程攻击",
+  "pf2e-reaction.SETTINGS.trigger.EnemyUseRangedAttackVsTarget": "敌人对目标使用远程攻击",
   "pf2e-reaction.SETTINGS.trigger.AllyTakeDamage": "盟友受到伤害",
   "pf2e-reaction.SETTINGS.trigger.ActorTakeDamage": "角色受到伤害",
   "pf2e-reaction.SETTINGS.trigger.CreatureAttacksAlly": "有生物攻击盟友",

@@ -12,6 +12,7 @@
   "pf2e-reaction.SETTINGS.trigger.EnemyUseManipulateAction": "Wróg używa manipulacji",
   "pf2e-reaction.SETTINGS.trigger.EnemyUseMoveAction": "Wróg używa akcji ruchu",
   "pf2e-reaction.SETTINGS.trigger.EnemyUseRangedAttack": "Wróg używa ataku dystansowego",
+  "pf2e-reaction.SETTINGS.trigger.EnemyUseRangedAttackVsTarget": "Wróg używa ataku dystansowego przeciwko celowi",
   "pf2e-reaction.SETTINGS.trigger.AllyTakeDamage": "Sojusznik otrzymuje obrażenia",
   "pf2e-reaction.SETTINGS.trigger.ActorTakeDamage": "Aktor otrzymuje obrażenia",
   "pf2e-reaction.SETTINGS.trigger.CreatureAttacksAlly": "Stwór atakuje sojusznika",

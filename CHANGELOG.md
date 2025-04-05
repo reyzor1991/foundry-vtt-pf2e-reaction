@@ -1,3 +1,6 @@
+## Version 1.1.8
+- Add trigger - Enemy use ranged attack vs target
+
 ## Version 1.1.7
 - Add trigger - Enemy HP Zero
 - Scars of Steel
