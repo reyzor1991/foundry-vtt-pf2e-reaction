@@ -609,6 +609,9 @@ Hooks.on('createItem', async (effect, data, id) => {
 });
 
 Hooks.on('preUpdateToken', async (tokenDoc, data, deep, id) => {
+    if (tokenDoc?.actor?.isDead) {
+        return
+    }
     if (game?.combats?.active && (data.x > 0 || data.y > 0)) {
         const message = {"actor": tokenDoc.actor, "token": tokenDoc, "item": createTrait("move")};
 
@@ -620,27 +623,40 @@ Hooks.on('preUpdateToken', async (tokenDoc, data, deep, id) => {
             const availableReactions = game.combat.getFlag(moduleName, 'availableReactions') ?? []
 
             if (availableReactions.includes('courageous-opportunity')) {
-                await courageousOpportunity(message);
+                courageousOpportunity(message);
             }
             if (availableReactions.includes('implements-interruption')) {
-                await implementsInterruption(message);
+                implementsInterruption(message);
             }
             if (availableReactions.includes('attack-of-opportunity')) {
-                await attackOfOpportunity(message);
+                attackOfOpportunity(message);
             }
             if (availableReactions.includes('reactive-strike')) {
-                await reactiveStrike(message);
+                reactiveStrike(message);
             }
             if (availableReactions.includes('stand-still')) {
-                await standStill(message);
+                standStill(message);
             }
             if (availableReactions.includes('no-escape')) {
-                await noEscape(message);
+                noEscape(message);
             }
             if (availableReactions.includes('verdistant-defense')) {
-                await verdistantDefense(message);
+                verdistantDefense(message);
             }
         }
+
+        handleHomebrewMessages({
+            'token': tokenDoc,
+            'item': {
+                'type': 'action',
+                'system': {
+                    'traits': {
+                        'value': ['move']
+                    }
+                }
+            },
+            'actor': tokenDoc.actor
+        })
     }
 });
 

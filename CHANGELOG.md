@@ -1,3 +1,6 @@
+## Version 1.1.9
+- Ignore dead token when they move
+
 ## Version 1.1.8
 - Add trigger - Enemy use ranged attack vs target
 

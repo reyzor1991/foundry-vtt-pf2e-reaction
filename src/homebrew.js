@@ -624,24 +624,6 @@ function combatantsForTriggers(tt, message) {
     return res;
 }
 
-
-Hooks.on('preUpdateToken', (tokenDoc, data, deep, id) => {
-    if (game?.combats?.active && (data.x > 0 || data.y > 0)) {
-        handleHomebrewMessages({
-            'token': tokenDoc,
-            'item': {
-                'type': 'action',
-                'system': {
-                    'traits': {
-                        'value': ['move']
-                    }
-                }
-            },
-            'actor': tokenDoc.actor
-        })
-    }
-});
-
 Hooks.on('preCreateChatMessage', async (message, user, _options, userId) => {
     handleHomebrewMessages(message)
 });
