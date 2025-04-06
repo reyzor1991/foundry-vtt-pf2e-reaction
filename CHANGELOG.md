@@ -1,3 +1,6 @@
+## Version 1.1.10
+- Update pl lang file
+
 ## Version 1.1.9
 - Ignore dead token when they move
 
