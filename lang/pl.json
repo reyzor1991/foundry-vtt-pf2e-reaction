@@ -18,7 +18,7 @@
   "pf2e-reaction.SETTINGS.trigger.CreatureAttacksAlly": "Stwór atakuje sojusznika",
   "pf2e-reaction.SETTINGS.trigger.YouHPZero": "Twoje PW zredukowane do 0",
   "pf2e-reaction.SETTINGS.trigger.AllyHPZero": "PW sojusznika zmniejszone do 0",
-  "pf2e-reaction.SETTINGS.trigger.EnemyHPZero": "PW wroga zmniejszone do 0",
+  "pf2e-reaction.SETTINGS.trigger.EnemyHPZero": "PW wroga zredukowane do 0",
   "pf2e-reaction.SETTINGS.trigger.EnemyUsesTrait": "Wróg używa akcji z cechą",
   "pf2e-reaction.SETTINGS.trigger.EnemyCastSpell": "Wróg rzuca zaklęcie",
   "pf2e-reaction.SETTINGS.trigger.EnemyHitsActor": "Wróg trafia w aktora",
@@ -53,8 +53,8 @@
   "pf2e-reaction.weaponRange.name": "Podstawowy dystans broni",
   "pf2e-reaction.weaponRange.hint": "Podstawowy dystans broni, aby sprawdzić atak okazyjny",
   "pf2e-reaction.notify": "{name} ma {uuid}. Zwróć na to uwagę!",
-  "pf2e-reaction.ask": "{name} może używać @UUID[{uuid}]. Zastosowano reakcję?",
-  "pf2e-reaction.askMultiple": "{name} może używać @UUID[{uuid}], zdarzyło się to {count} razy. Zastosowano reakcję?",
+  "pf2e-reaction.ask": "{name} może używać @UUID[{uuid}]. Zastosować reakcję?",
+  "pf2e-reaction.askMultiple": "{name} może używać @UUID[{uuid}], zdarzyło się to {count} razy. Zastosować reakcję?",
   "pf2e-reaction.yes": "Tak",
   "pf2e-reaction.yes-target": "Tak (wybierz cel)",
   "pf2e-reaction.no": "NIE",
@@ -65,6 +65,6 @@
   "pf2e-reaction.hotkey-v.name": "V – nie wyzwala reakcji na ruch",
   "pf2e-reaction.hotkey-v.hint": "Skrót klawiszowy do naciśnięcia podczas ruchu, aby nie wywołać reakcji na ruch (przez 1 krok)",
   "pf2e-reaction.recall-knowledge.need-fix": "Zmieniono strukturę obiektu Przywołanie Wiedzy. Trzeba zaktualizować moduł",
-  "pf2e-reaction.customReactionIcon.name": "Ikona reakcji niestandardowej",
+  "pf2e-reaction.customReactionIcon.name": "Niestandardowa ikona reakcji",
   "pf2e-reaction.customReactionIcon.hint": ""
 }
