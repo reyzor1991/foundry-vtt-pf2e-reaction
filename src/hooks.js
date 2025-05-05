@@ -552,7 +552,7 @@ Hooks.on('createCombatant', async (combatant, test) => {
     }
 });
 
-Hooks.on('renderChatMessage', (app, html, msg) => {
+Hooks.on('renderChatMessageHTML', (app, html, msg) => {
     if (msg.user.isGM) {
         return
     }
@@ -562,13 +562,14 @@ Hooks.on('renderChatMessage', (app, html, msg) => {
     }
 
     if (app?.flags?.[moduleName]) {
-        html.addClass('hide-reaction-check');
+        html.classList.add('hide-reaction-check');
         html.hide();
+        html.style.display = 'none';
     }
 });
 
 Hooks.on('createItem', async (effect, data, id) => {
-    if (id != game.userId) {
+    if (id !== game.userId) {
         return
     }
     const currCom = game.combat?.turns?.find(a => a?.actorId === effect?.actor?.id);
@@ -596,8 +597,8 @@ Hooks.on('createItem', async (effect, data, id) => {
                 }
             });
     } else if ('frightened' === effect.slug) {
-        let combs = game.combat?.turns
-            .filter(c => c != currCom)
+        game.combat?.turns
+            .filter(c => c !== currCom)
             .filter(c => getEnemyDistance(c.token, effect.actor.getActiveTokens(true, true)[0]) <= 60)
             .forEach(cc => {
                 const invigorating = actorActionBySource(cc.actor, 'Compendium.pf2e.actionspf2e.Item.Ul4I0ER6pj3U5eAk')
@@ -662,9 +663,9 @@ Hooks.on('preUpdateToken', async (tokenDoc, data, deep, id) => {
 
 function createTrait(t) {
     return {"system": {"traits": {"value": [t]}}};
-};
+}
 
-Hooks.on('preCreateChatMessage', async (message, user, _options, userId) => {
+Hooks.on('preCreateChatMessage', async (message, user, _options) => {
     if (!game?.combats?.active) {
         return
     }
@@ -703,7 +704,7 @@ function checkSendNotification(_user, token, featNames) {
     })
 }
 
-Hooks.on("targetToken", (_user, token, isTargeted, opts) => {
+Hooks.on("targetToken", (_user, token, isTargeted) => {
     if (Settings.notification && game?.combats?.active && isTargeted && hasReaction(token?.combatant)) {
         if (isGM() || token.combatant.players.find(a => a.id === game.user.id)) {
             if (isActorCharacter(token?.actor)) {

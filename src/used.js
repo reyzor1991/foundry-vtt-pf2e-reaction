@@ -42,7 +42,7 @@ async function reactionWasUsedChat(uuid, combatant) {
 
 
 
-Hooks.on('preCreateChatMessage', async (message, user, _options, userId)=>{
+Hooks.on('preCreateChatMessage', async (message, user, _options)=>{
     if (!game?.combats?.active) {return}
 
     if (messageType(message, 'attack-roll')) {

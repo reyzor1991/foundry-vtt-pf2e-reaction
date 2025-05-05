@@ -828,7 +828,6 @@ async function reactiveStrike(message) {
 async function emergencyTarge(message) {
     if (messageType(message, "saving-throw")) {
         if (hasReaction(message?.token?.combatant) && anyFailureMessageOutcome(message)) {
-            const origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
             const emergency_targe = actorFeat(message?.actor, "emergency-targe")
             if (emergency_targe && message?.flags?.pf2e?.origin?.type === 'spell') {
                 await postInChatTemplate(_uuid(emergency_targe), message.token.combatant);

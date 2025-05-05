@@ -34,7 +34,7 @@ async function addRecallButton(html, sheet, skill, dc, isLore=false) {
         content += '<br>@Check[type:'+skill+'|dc:'+dc+'|traits:secret,action:recall-knowledge]';
         if (foundry.utils.isNewerVersion(game.version, 12)) {
             await ChatMessage.create({
-                content: await TextEditor.enrichHTML(content),
+                content: await foundry.applications.ux.TextEditor.implementation.enrichHTML(content),
                 flavor: '',
                 user: null,
                 speaker: {
@@ -47,7 +47,7 @@ async function addRecallButton(html, sheet, skill, dc, isLore=false) {
             }).then();
         } else {
             await ChatMessage.create({
-                content: await TextEditor.enrichHTML(content),
+                content: await foundry.applications.ux.TextEditor.implementation.enrichHTML(content),
                 flavor: '',
                 user: null,
                 speaker: {

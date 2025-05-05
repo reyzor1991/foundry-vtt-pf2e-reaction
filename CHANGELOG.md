@@ -1,3 +1,6 @@
+## Version 1.2.0
+- V13
+
 ## Version 1.1.10
 - Update pl lang file
 
