@@ -1,3 +1,6 @@
+## Version 1.2.1
+- Delete effects when combat ends
+
 ## Version 1.2.0
 - V13
 

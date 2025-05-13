@@ -403,7 +403,6 @@ async function setReactionEffectToActor(actor, token, eff) {
     }
 
     const source = (await fromUuid(eff)).toObject();
-    source.flags = foundry.utils.mergeObject(source.flags ?? {}, {core: {sourceId: eff}});
     if (game.settings.get(moduleName, "customReactionIcon")) {
         source.img = game.settings.get(moduleName, "customReactionIcon")
     }
@@ -510,7 +509,6 @@ Hooks.on('pf2e.startTurn', async (_combatant) => {
                 await eff.update({"system.start.value": game.time.worldTime})
             } else {
                 const source = (await fromUuid(reactionsEffect)).toObject();
-                source.flags = foundry.utils.mergeObject(source.flags ?? {}, {core: {sourceId: reactionsEffect}});
                 source.system.badge.value = countAllReaction(_combatant)
                 if (game.settings.get(moduleName, "customReactionIcon")) {
                     source.img = game.settings.get(moduleName, "customReactionIcon")
@@ -521,6 +519,18 @@ Hooks.on('pf2e.startTurn', async (_combatant) => {
 
         }, 300)
     }
+});
+
+Hooks.on('deleteCombat', async (combat, a,b,c) => {
+    if (!isGM()) {
+        return;
+    }
+    combat?.turns?.flatMap((combatant) => {
+        return combatant?.actor?.itemTypes?.effect
+            ?.filter(i=>i.sourceId === reactionsEffect || i.sourceId === reactionWasUsedEffect)
+    }).forEach((eff) => {
+        eff.delete()
+    })
 });
 
 Hooks.on('combatStart', async combat => {
