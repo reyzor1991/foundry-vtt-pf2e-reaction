@@ -1,3 +1,6 @@
+## Version 1.2.2
+- Fix posting message
+
 ## Version 1.2.1
 - Delete effects when combat ends
 

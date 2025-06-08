@@ -449,7 +449,6 @@ $(document).on('click', '.reaction-check', async function () {
                         socketlibSocket._sendRequest("updateItem", [mes.uuid, data], 0)
                     }
                 } else {
-                    //Left == here, I *think* it's a bug. Should probably be ```mes.permission === "granted"```
                     if (mes.permission === 3 || game.user?.isGM) {
                         await mes.delete()
                     } else {
@@ -457,7 +456,7 @@ $(document).on('click', '.reaction-check', async function () {
                     }
                 }
                 if (Settings.postMessage && uuid) {
-                    await (await fromUuid(uuid))?.toMessage()
+                    await (await fromUuid(uuid))?.toMessage({}, {rollMode: 'blindroll'})
                 }
             }
         }

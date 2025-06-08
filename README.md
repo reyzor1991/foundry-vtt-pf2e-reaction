@@ -73,7 +73,7 @@ Open Game License:
 
 * See [OpenGameLicense.md](OpenGameLicense.md)
 
-[Version]: https://img.shields.io/badge/Version-1.2.1-yellow?style=flat-square
+[Version]: https://img.shields.io/badge/Version-1.2.2-yellow?style=flat-square
 [Version URL]: https://github.com/reyzor1991/foundry-vtt-pf2e-reaction
 
 [Forge Installs ULR]: https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fpf2e-reaction&colorB=4aa94a
