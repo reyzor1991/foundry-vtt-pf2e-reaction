@@ -72,7 +72,7 @@
   "changelog": "https://github.com/reyzor1991/foundry-vtt-pf2e-reaction/blob/main/CHANGELOG.md",
   "compatibility": {
     "minimum": "13.342",
-    "verified": "13.342"
+    "verified": "13.345"
   },
   "relationships": {
     "systems": [
@@ -81,8 +81,8 @@
         "type": "system",
         "manifest": "https://github.com/foundryvtt/pf2e/releases/latest/download/system.json",
         "compatibility": {
-          "minimum": "4.7.0",
-          "verified": "6.0.1"
+          "minimum": "7.0.5",
+          "verified": "7.1.1"
         }
       }
     ],

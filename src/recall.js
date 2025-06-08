@@ -85,7 +85,7 @@ function veryEasyLore(html, sheet, dc) {
     addRecallButton(html, sheet, `${sheet.actor.name.toLowerCase().replaceAll(" ", "-")}-lore`, dc, true)
 }
 
-Hooks.on("renderActorSheet", (sheet, html, data)=>{
+Hooks.on("renderActorSheet", (sheet, html)=>{
     if (game.user?.isGM && isNPC(sheet.actor) && Settings.recallKnowledge) {
         const recalls = html.find(".recall-knowledge .section-body .identification-skills");
         if (recalls.length === 0) {

@@ -301,12 +301,6 @@ async function postInChatTemplate(uuid, combatant, actionName = undefined, skipD
             flags: {'pf2e-reaction': check}
         };
 
-        if (foundry.utils.isNewerVersion(game.version, 12)) {
-            data.style = CONST.CHAT_MESSAGE_STYLES.OOC;
-        } else {
-            data.type = CONST.CHAT_MESSAGE_TYPES.OOC;
-        }
-
         ChatMessage.create(data).then(m => {
             const tt = game.settings.get("pf2e-reaction", "timeoutDelete")
             if (tt > 0) {
@@ -521,13 +515,13 @@ Hooks.on('pf2e.startTurn', async (_combatant) => {
     }
 });
 
-Hooks.on('deleteCombat', async (combat, a,b,c) => {
+Hooks.on('deleteCombat', async (combat, a, b, c) => {
     if (!isGM()) {
         return;
     }
     combat?.turns?.flatMap((combatant) => {
         return combatant?.actor?.itemTypes?.effect
-            ?.filter(i=>i.sourceId === reactionsEffect || i.sourceId === reactionWasUsedEffect)
+            ?.filter(i => i.sourceId === reactionsEffect || i.sourceId === reactionWasUsedEffect)
     }).forEach((eff) => {
         eff.delete()
     })
