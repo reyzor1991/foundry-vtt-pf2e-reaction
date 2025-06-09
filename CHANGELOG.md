@@ -1,3 +1,6 @@
+## Version 1.2.3
+- code improvement
+
 ## Version 1.2.2
 - Fix posting message
 

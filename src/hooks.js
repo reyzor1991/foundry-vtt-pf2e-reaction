@@ -250,7 +250,7 @@ async function postInChatTemplate(uuid, combatant, actionName = undefined, skipD
     }
 
     let text = game.i18n.format("pf2e-reaction.ask", {uuid: uuid, name: combatant.token.name});
-    let content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text: text, target: needTarget});
+    let content = await foundry.applications.handlebars.renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text: text, target: needTarget});
     const check = {
         cId: combatant._id,
         uuid: uuid,
@@ -269,7 +269,7 @@ async function postInChatTemplate(uuid, combatant, actionName = undefined, skipD
         check['needTarget'] = needTarget
 
         text = game.i18n.format("pf2e-reaction.askMultiple", {uuid: uuid, name: combatant.token.name, count: 2});
-        content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text: text, target: needTarget});
+        content = await foundry.applications.handlebars.renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text: text, target: needTarget});
 
         await game.messages.contents[game.messages.size - 1].update({
             'content': content,
@@ -278,7 +278,7 @@ async function postInChatTemplate(uuid, combatant, actionName = undefined, skipD
     } else if (game.messages.size > 0 && content === game.messages.contents[game.messages.size - 1]?.getFlag(moduleName, 'content')) {
         const count = game.messages.contents[game.messages.size - 1]?.getFlag(moduleName, "count") + 1;
         text = game.i18n.format("pf2e-reaction.askMultiple", {uuid: uuid, name: combatant.token.name, count: count});
-        content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text: text, target: needTarget});
+        content = await foundry.applications.handlebars.renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text: text, target: needTarget});
 
         await game.messages.contents[game.messages.size - 1].update({
             'content': content,
@@ -612,56 +612,50 @@ Hooks.on('createItem', async (effect, data, id) => {
     }
 });
 
-Hooks.on('preUpdateToken', async (tokenDoc, data, deep, id) => {
-    if (tokenDoc?.actor?.isDead) {
+Hooks.on('preUpdateToken', (tokenDoc, data, id) => {
+    if (tokenDoc?.actor?.isDead || !game?.combats?.active) {
         return
     }
-    if (game?.combats?.active && (data.x > 0 || data.y > 0)) {
-        const message = {"actor": tokenDoc.actor, "token": tokenDoc, "item": createTrait("move")};
+    if (data.x === tokenDoc.x && data.y === tokenDoc.y) {
+        return
+    }
+    const message = {
+        "actor": tokenDoc.actor,
+        "token": tokenDoc,
+        "item": createTrait("move")
+    };
 
-        if (game.combat) {
-            if (game?.skipMoveTrigger?.[id]) {
-                return
-            }
-
-            const availableReactions = game.combat.getFlag(moduleName, 'availableReactions') ?? []
-
-            if (availableReactions.includes('courageous-opportunity')) {
-                courageousOpportunity(message);
-            }
-            if (availableReactions.includes('implements-interruption')) {
-                implementsInterruption(message);
-            }
-            if (availableReactions.includes('attack-of-opportunity')) {
-                attackOfOpportunity(message);
-            }
-            if (availableReactions.includes('reactive-strike')) {
-                reactiveStrike(message);
-            }
-            if (availableReactions.includes('stand-still')) {
-                standStill(message);
-            }
-            if (availableReactions.includes('no-escape')) {
-                noEscape(message);
-            }
-            if (availableReactions.includes('verdistant-defense')) {
-                verdistantDefense(message);
-            }
+    if (game.combat) {
+        if (game?.skipMoveTrigger?.[id]) {
+            return
         }
 
-        handleHomebrewMessages({
-            'token': tokenDoc,
-            'item': {
-                'type': 'action',
-                'system': {
-                    'traits': {
-                        'value': ['move']
-                    }
-                }
-            },
-            'actor': tokenDoc.actor
-        })
+        const availableReactions = game.combat.getFlag(moduleName, 'availableReactions') ?? []
+
+        if (availableReactions.includes('courageous-opportunity')) {
+            courageousOpportunity(message);
+        }
+        if (availableReactions.includes('implements-interruption')) {
+            implementsInterruption(message);
+        }
+        if (availableReactions.includes('attack-of-opportunity')) {
+            attackOfOpportunity(message);
+        }
+        if (availableReactions.includes('reactive-strike')) {
+            reactiveStrike(message);
+        }
+        if (availableReactions.includes('stand-still')) {
+            standStill(message);
+        }
+        if (availableReactions.includes('no-escape')) {
+            noEscape(message);
+        }
+        if (availableReactions.includes('verdistant-defense')) {
+            verdistantDefense(message);
+        }
     }
+
+    handleHomebrewMessages(message)
 });
 
 function createTrait(t) {

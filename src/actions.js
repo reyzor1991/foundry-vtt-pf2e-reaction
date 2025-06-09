@@ -9,7 +9,7 @@ async function youreNext(message) {
                         name: game.combat.combatant?.token.name
                     });
 
-                    let content = await renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {
+                    let content = await foundry.applications.handlebars.renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {
                         text: text,
                         target: false
                     });
@@ -391,7 +391,7 @@ async function avengingBite(message) {
     }
 }
 
-async function implementsInterruption(message) {
+function implementsInterruption(message) {
     if (!isActorCharacter(message.actor)
         && messageWithAnyTrait(message, ["concentrate", "manipulate", "move"])
     ) {
@@ -411,14 +411,14 @@ async function implementsInterruption(message) {
     }
 }
 
-async function fastSwallow(message) {
+function fastSwallow(message) {
     if (messageType(message, 'attack-roll')) {
         if (anySuccessMessageOutcome(message)) {
             if (hasReaction(message?.token?.combatant)) {
                 if (message?.item?.system?.attackEffects?.value.includes("improved-grab")) {
                     const fs = actorAction(message?.actor, "fast-swallow");
                     if (fs) {
-                        await postInChatTemplate(_uuid(fs), message?.token?.combatant);
+                        postInChatTemplate(_uuid(fs), message?.token?.combatant);
                     }
                 }
             }

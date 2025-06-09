@@ -58,7 +58,7 @@ async function convincingIllusion(message) {
                 if (successMessageOutcome(message)) {
                     const convincing_illusion = actorFeat(origin?.actor, "convincing-illusion");
                     if (convincing_illusion && origin?.traits?.has("illusion")) {
-                        await postInChatTemplate(_uuid(convincing_illusion), origin?.actor?.combatant);
+                        postInChatTemplate(_uuid(convincing_illusion), origin?.actor?.combatant);
                     }
                 }
             }
@@ -83,7 +83,7 @@ async function premonitionOfClarity(message) {
             const origin = await fromUuid(message?.flags?.pf2e?.origin?.uuid);
             const poc = actorFeat(message.actor, "premonition-of-clarity");
             if (poc && origin?.traits?.has("mental")) {
-                await postInChatTemplate(_uuid(poc), message.token.combatant);
+                postInChatTemplate(_uuid(poc), message.token.combatant);
             }
         }
     }
@@ -94,7 +94,7 @@ async function gritAndTenacity(message) {
         if (hasReaction(message?.token?.combatant) && anyFailureMessageOutcome(message)) {
             const gat = actorFeat(message.actor, "grit-and-tenacity");
             if (gat) {
-                await postInChatTemplate(_uuid(gat), message.token.combatant);
+                postInChatTemplate(_uuid(gat), message.token.combatant);
             }
         }
     }
@@ -105,7 +105,7 @@ async function orcFerocity(message) {
         if (message.actor.system?.attributes?.hp?.value === 0 && hasReaction(message?.token?.combatant)) {
             const orc_ferocity = actorFeat(message?.actor, "orc-ferocity");
             if (orc_ferocity) {
-                await postInChatTemplate(_uuid(orc_ferocity), message?.token?.combatant, undefined, true);
+                postInChatTemplate(_uuid(orc_ferocity), message?.token?.combatant, undefined, true);
             }
         }
     }
@@ -116,7 +116,7 @@ async function cheatDeath(message) {
         if (message.actor.system?.attributes?.hp?.value === 0 && hasReaction(message?.token?.combatant)) {
             const cheat_death = actorFeat(message?.actor, "cheat-death");
             if (cheat_death) {
-                await postInChatTemplate(_uuid(cheat_death), message?.token?.combatant, undefined, true);
+                postInChatTemplate(_uuid(cheat_death), message?.token?.combatant, undefined, true);
             }
         }
     }
@@ -135,7 +135,7 @@ async function cleave(message) {
                         .filter(a => a.actor.system.attributes.hp.value > 0);
 
                     if (adjEnemies.length > 0) {
-                        await postInChatTemplate(_uuid(cleave), message.actor.combatant);
+                        postInChatTemplate(_uuid(cleave), message.actor.combatant);
                     }
                 }
             }
@@ -150,7 +150,7 @@ async function shieldBlock(message) {
             if (dTypes.filter(a => a === "bludgeoning" || a === "piercing" || a === "slashing").length > 0) {
                 const sblock = actorFeat(message?.target?.actor, "shield-block");
                 if (sblock && hasEffect(message.target?.actor, "effect-raise-a-shield")) {
-                    await postInChatTemplate(_uuid(sblock), message.target?.token.combatant, "shield-block");
+                    postInChatTemplate(_uuid(sblock), message.target?.token.combatant, "shield-block");
                 }
             }
         }
@@ -162,7 +162,7 @@ async function electricCounter(message) {
         if (hasReaction(message?.target?.token?.combatant)) {
             const electric_counter = actorFeat(message?.target?.actor, "electric-counter");
             if (electric_counter && hasEffect(message?.target?.actor, "stance-wild-winds-stance")) {
-                await postInChatTemplate(_uuid(electric_counter), message?.target?.token?.combatant);
+                postInChatTemplate(_uuid(electric_counter), message?.target?.token?.combatant);
             }
         }
     }
@@ -173,7 +173,7 @@ async function allInMyHead(message) {
         if (hasReaction(message?.target?.token?.combatant)) {
             const all_in = actorFeat(message?.target?.actor, "all-in-my-head");
             if (all_in && !message?.item?.traits.has("death")) {
-                await postInChatTemplate(_uuid(all_in), message.target?.token.combatant);
+                postInChatTemplate(_uuid(all_in), message.target?.token.combatant);
             }
         }
     }
@@ -184,7 +184,7 @@ async function unexpectedShift(message) {
         if (hasReaction(message?.target?.token?.combatant)) {
             const unexpecteds = actorFeat(message?.target?.actor, "unexpected-shift");
             if (unexpecteds) {
-                await postInChatTemplate(_uuid(unexpecteds), message.target?.token.combatant);
+                postInChatTemplate(_uuid(unexpecteds), message.target?.token.combatant);
             }
         }
     }
@@ -197,7 +197,7 @@ async function resoundingFinale(message) {
             if (dTypes.filter(a => a === "sonic").length > 0) {
                 const resounding = actorFeat(message?.target?.actor, "resounding-finale");
                 if (resounding) {
-                    await postInChatTemplate(_uuid(resounding), message.target?.token.combatant);
+                    postInChatTemplate(_uuid(resounding), message.target?.token.combatant);
                 }
             }
         }
@@ -211,7 +211,7 @@ async function reverberate(message) {
             if (dTypes.filter(a => a === "sonic").length > 0) {
                 const reverberate = actorFeat(message?.target?.actor, "reverberate");
                 if (reverberate && message.item.type === "spell") {
-                    await postInChatTemplate(_uuid(reverberate), message.target?.token.combatant);
+                    postInChatTemplate(_uuid(reverberate), message.target?.token.combatant);
                 }
             }
         }
@@ -223,7 +223,7 @@ async function verdantPresence(message) {
         if (hasReaction(message?.target?.token?.combatant)) {
             const verdantp = actorFeat(message?.target?.actor, "verdant-presence");
             if (verdantp) {
-                await postInChatTemplate(_uuid(verdantp), message.target?.token.combatant);
+                postInChatTemplate(_uuid(verdantp), message.target?.token.combatant);
             }
         }
     }
@@ -232,7 +232,7 @@ async function verdantPresence(message) {
             if (hasReaction(message?.token?.combatant)) {
                 const verdant_presence = actorFeat(message?.actor, "verdant-presence");
                 if (verdant_presence && message?.item?.system?.traditions.value.includes("primal")) {
-                    await postInChatTemplate(_uuid(verdant_presence), message?.token?.combatant);
+                    postInChatTemplate(_uuid(verdant_presence), message?.token?.combatant);
                 }
             }
         }
@@ -245,7 +245,7 @@ async function alignKi(message) {
             if (hasReaction(message?.token?.combatant)) {
                 const align_ki = actorFeat(message?.actor, "align-ki");
                 if (align_ki && messageWithTrait(message, "monk")) {
-                    await postInChatTemplate(_uuid(align_ki), message?.token?.combatant);
+                    postInChatTemplate(_uuid(align_ki), message?.token?.combatant);
                 }
             }
         }
@@ -329,7 +329,7 @@ async function youFailedToAccountForThis(message) {
         if (hasReaction(message?.target?.token?.combatant)) {
             const you_failed_to = actorFeat(message?.target?.actor, "you-failed-to-account-for-this");
             if (you_failed_to) {
-                await postInChatTemplate(_uuid(you_failed_to), message.target?.token.combatant);
+                postInChatTemplate(_uuid(you_failed_to), message.target?.token.combatant);
             }
         }
     }
@@ -340,7 +340,7 @@ async function suspectOfOpportunity(message) {
         if (hasReaction(message?.target?.token?.combatant)) {
             const suspect_of_opportunity = actorFeat(message?.target?.actor, "suspect-of-opportunity");
             if (suspect_of_opportunity) {
-                await postInChatTemplate(_uuid(suspect_of_opportunity), message.target?.token.combatant);
+                postInChatTemplate(_uuid(suspect_of_opportunity), message.target?.token.combatant);
             }
         }
     }
@@ -351,7 +351,7 @@ async function foreseeDanger(message) {
         if (hasReaction(message?.target?.token?.combatant)) {
             const foresee_danger = actorFeat(message?.target?.actor, "foresee-danger");
             if (foresee_danger) {
-                await postInChatTemplate(_uuid(foresee_danger), message.target?.token.combatant);
+                postInChatTemplate(_uuid(foresee_danger), message.target?.token.combatant);
             }
         }
     }
@@ -362,7 +362,7 @@ async function mirrorShield(message) {
         if (hasReaction(message?.target?.token?.combatant) && criticalFailureMessageOutcome(message)) {
             const mirror_shield = actorFeat(message?.target?.actor, "mirror-shield");
             if (mirror_shield) {
-                await postInChatTemplate(_uuid(mirror_shield), message?.target?.token?.combatant);
+                postInChatTemplate(_uuid(mirror_shield), message?.target?.token?.combatant);
             }
         }
     }
@@ -373,7 +373,7 @@ async function spiritualGuides(message) {
         if (failureMessageOutcome(message) && hasReaction(message?.token?.combatant)) {
             const spiritual_guides = actorFeat(message?.actor, "spiritual-guides")
             if (spiritual_guides) {
-                await postInChatTemplate(_uuid(spiritual_guides), message.token.combatant);
+                postInChatTemplate(_uuid(spiritual_guides), message.token.combatant);
             }
         }
     }
@@ -387,7 +387,7 @@ async function squawk(message) {
                 if (squawk && !message?.target?.actor?.system?.traits?.value?.includes("tengu")
                     && ["deception", "diplomacy", "intimidation"].some(a => message.flags?.pf2e?.context?.domains?.includes(a))
                 ) {
-                    await postInChatTemplate(_uuid(squawk), message.token.combatant);
+                    postInChatTemplate(_uuid(squawk), message.token.combatant);
                 }
             }
         }
@@ -402,7 +402,7 @@ async function sacrificeArmor(message) {
             if (dTypes.filter(a => a === "bludgeoning" || a === "piercing" || a === "slashing").length > 0) {
                 const sarmor = actorFeat(message?.target?.actor, "sacrifice-armor");
                 if (sarmor) {
-                    await postInChatTemplate(_uuid(sarmor), message.target?.token.combatant);
+                    postInChatTemplate(_uuid(sarmor), message.target?.token.combatant);
                 }
             }
         }
@@ -417,7 +417,7 @@ async function reactiveTransformation(message) {
             if (dTypes.filter(a => ["acid", "cold", "electricity", "fire", 'poison'].includes(a)).length > 0) {
                 const reactivet = actorFeat(message?.target?.actor, "reactive-transformation");
                 if (reactivet) {
-                    await postInChatTemplate(_uuid(reactivet), message.target?.token.combatant);
+                    postInChatTemplate(_uuid(reactivet), message.target?.token.combatant);
                 }
             }
         }
@@ -451,7 +451,7 @@ async function rubyResurrection(message) {
             if (hasReaction(message?.token?.combatant)) {
                 const ruby_resurrection = actorFeat(message?.actor, "ruby-resurrection");
                 if (ruby_resurrection) {
-                    await postInChatTemplate(_uuid(ruby_resurrection), message?.token?.combatant, undefined, true);
+                    postInChatTemplate(_uuid(ruby_resurrection), message?.token?.combatant, undefined, true);
                 }
             }
         }
@@ -499,7 +499,7 @@ async function woundedRage(message) {
         if (message.actor.system?.attributes?.hp?.value !== 0 && hasReaction(message?.token?.combatant)) {
             const wounded_rage = actorFeat(message?.actor, "wounded-rage");
             if (wounded_rage && !hasCondition(message?.actor, "encumbered") && !hasEffect(message.actor, "effect-rage")) {
-                await postInChatTemplate(_uuid(wounded_rage), message?.token?.combatant);
+                postInChatTemplate(_uuid(wounded_rage), message?.token?.combatant);
             }
         }
     }
@@ -510,7 +510,7 @@ async function negateDamage(message) {
         if (message.actor.system?.attributes?.hp?.value !== 0 && hasReaction(message?.token?.combatant)) {
             const negate_damage = actorFeat(message?.actor, "negate-damage");
             if (negate_damage) {
-                await postInChatTemplate(_uuid(negate_damage), message?.token?.combatant);
+                postInChatTemplate(_uuid(negate_damage), message?.token?.combatant);
             }
         }
     }
@@ -534,7 +534,7 @@ async function embraceThePain(message) {
         if (hasReaction(message?.target?.token?.combatant)) {
             const embracethepain = actorFeat(message?.target?.actor, "embrace-the-pain");
             if (message?.item?.isMelee && embracethepain) {
-                await postInChatTemplate(_uuid(embracethepain), message.target?.token.combatant);
+                postInChatTemplate(_uuid(embracethepain), message.target?.token.combatant);
             }
         }
     }
@@ -546,7 +546,7 @@ async function retaliatoryCleansing(message) {
             const rc = actorFeat(message?.target?.actor, "retaliatory-cleansing");
             if (rc) {
                 if (actorHeldWeapon(message?.target?.actor).filter(a => a.slug === "holy-water" || (a.weaponTraits.filter(b => b.name === "bomb").length > 0 && a.weaponTraits.filter(b => b.name === "positive").length > 0)).length > 0) {
-                    await postInChatTemplate(_uuid(rc), message.target?.token.combatant);
+                    postInChatTemplate(_uuid(rc), message.target?.token.combatant);
                 }
             }
         }
@@ -558,7 +558,7 @@ async function ectoplasmicShield(message) {
         if (hasReaction(message?.target?.token?.combatant)) {
             const ectoplasmic_shield = actorAction(message?.target?.actor, "ectoplasmic-shield");
             if (ectoplasmic_shield) {
-                await postInChatTemplate(_uuid(ectoplasmic_shield), message.target?.token.combatant);
+                postInChatTemplate(_uuid(ectoplasmic_shield), message.target?.token.combatant);
             }
         }
     }
@@ -569,7 +569,7 @@ async function nimbleDodge(message) {
         if (hasReaction(message?.target?.token?.combatant)) {
             const nimble_dodge = actorFeat(message?.target?.actor, "nimble-dodge") ?? actorAction(message?.target?.actor, "nimble-dodge");
             if (nimble_dodge && !hasCondition(message?.target?.actor, "encumbered")) {
-                await postInChatTemplate(_uuid(nimble_dodge), message.target?.token.combatant);
+                postInChatTemplate(_uuid(nimble_dodge), message.target?.token.combatant);
             }
         }
     }
@@ -580,7 +580,7 @@ async function airyStep(message) {
         if (hasReaction(message?.target?.token?.combatant)) {
             const airy_step = actorFeat(message?.target?.actor, "airy-step") ?? actorAction(message?.target?.actor, "airy-step");
             if (airy_step) {
-                await postInChatTemplate(_uuid(nimble_dodge), message.target?.token.combatant);
+                postInChatTemplate(_uuid(nimble_dodge), message.target?.token.combatant);
             }
         }
     }
@@ -591,7 +591,7 @@ async function farabellusFlip(message) {
         if (hasReaction(message?.target?.token?.combatant)) {
             const farabellus_flip = actorFeat(message?.target?.actor, "farabellus-flip");
             if (farabellus_flip) {
-                await postInChatTemplate(_uuid(farabellus_flip), message.target?.token.combatant);
+                postInChatTemplate(_uuid(farabellus_flip), message.target?.token.combatant);
             }
         }
     }
@@ -602,7 +602,7 @@ async function reactiveShield(message) {
         if (hasReaction(message?.target?.token?.combatant)) {
             const reactive_shield = actorFeat(message?.target?.actor, "reactive-shield");
             if (reactive_shield && !hasEffect(message?.target?.actor, "effect-raise-a-shield") && message?.item?.isMelee) {
-                await postInChatTemplate(_uuid(reactive_shield), message.target?.token.combatant);
+                postInChatTemplate(_uuid(reactive_shield), message.target?.token.combatant);
             }
         }
     }
@@ -613,7 +613,7 @@ async function pirouette(message) {
         if (hasReaction(message?.target?.token?.combatant)) {
             const pirouette = actorFeat(message?.target?.actor, "pirouette");
             if (pirouette && hasEffect(message?.target?.actor, "stance-masquerade-of-seasons-stance")) {
-                await postInChatTemplate(_uuid(pirouette), message.target?.token.combatant);
+                postInChatTemplate(_uuid(pirouette), message.target?.token.combatant);
             }
         }
     }
@@ -625,7 +625,7 @@ async function fieryRetort(message) {
             const fiery_retort = actorFeat(message?.target?.actor, "fiery-retort");
             if (fiery_retort && adjacentEnemy(message.token, message.target?.token)
                 && (message?.item?.isMelee || message?.item?.traits?.has("unarmed"))) {
-                await postInChatTemplate(_uuid(fiery_retort), message.target?.token.combatant);
+                postInChatTemplate(_uuid(fiery_retort), message.target?.token.combatant);
             }
         }
     }
@@ -639,7 +639,7 @@ async function knightsRetaliation(message) {
                 && message?.actor?.system.traits.value.includes("undead")
                 && criticalFailureMessageOutcome(message)
             ) {
-                await postInChatTemplate(_uuid(knights_retaliation), message.target?.token.combatant);
+                postInChatTemplate(_uuid(knights_retaliation), message.target?.token.combatant);
             }
         }
     }
@@ -650,7 +650,7 @@ async function tangleOfBattle(message) {
         if (hasReaction(message?.token?.combatant)) {
             const tob = actorFeat(message?.actor, "tangle-of-battle");
             if (tob && adjacentEnemy(message.target?.token, message?.token)) {
-                await postInChatTemplate(_uuid(tob), message.token.combatant);
+                postInChatTemplate(_uuid(tob), message.token.combatant);
             }
         }
     }
@@ -661,7 +661,7 @@ async function cleverGambit(message) {
         if (hasReaction(message?.token?.combatant)) {
             const clever_gambit = actorFeat(message?.actor, "clever-gambit");
             if (clever_gambit && hasEffect(message?.target?.actor, "effect-recall-knowledge-identified")) {
-                await postInChatTemplate(_uuid(clever_gambit), message.token.combatant);
+                postInChatTemplate(_uuid(clever_gambit), message.token.combatant);
             }
         }
     }
@@ -672,7 +672,7 @@ async function opportuneRiposte(message) {
         if (criticalFailureMessageOutcome(message) && hasReaction(message?.target?.token?.combatant, "opportune-riposte")) {
             const opportune_riposte = actorFeat(message?.target?.actor, "opportune-riposte") ?? actorAction(message?.target?.actor, "opportune-riposte");
             if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && opportune_riposte) {
-                await postInChatTemplate(_uuid(opportune_riposte), message.target?.token.combatant, "opportune-riposte");
+                postInChatTemplate(_uuid(opportune_riposte), message.target?.token.combatant, "opportune-riposte");
             }
         }
     }
@@ -683,7 +683,7 @@ async function duelingRiposte(message) {
         if (criticalFailureMessageOutcome(message) && hasReaction(message?.target?.token?.combatant)) {
             const dueling_riposte = actorFeat(message?.target?.actor, "dueling-riposte");
             if (dueling_riposte && hasEffect(message.target?.actor, "effect-dueling-parry")) {
-                await postInChatTemplate(_uuid(dueling_riposte), message.target?.token.combatant);
+                postInChatTemplate(_uuid(dueling_riposte), message.target?.token.combatant);
             }
         }
     }
@@ -695,7 +695,7 @@ async function twinRiposte(message) {
             const twin_riposte = actorFeat(message?.target?.actor, "twin-riposte");
             if (twin_riposte && canReachEnemy(message.token, message?.target?.token, message?.target?.actor)
                 && (hasEffect(message.target?.actor, "effect-twin-parry") || hasEffect(message.target?.actor, "effect-twin-parry-parry-trait"))) {
-                await postInChatTemplate(_uuid(twin_riposte), message.target?.token.combatant);
+                postInChatTemplate(_uuid(twin_riposte), message.target?.token.combatant);
             }
         }
     }
@@ -707,7 +707,7 @@ async function perfectClarity(message) {
             if (hasReaction(message?.token?.combatant)) {
                 const perfect_clarity = actorFeat(message?.actor, "perfect-clarity");
                 if (perfect_clarity) {
-                    await postInChatTemplate(_uuid(perfect_clarity), message?.token?.combatant);
+                    postInChatTemplate(_uuid(perfect_clarity), message?.token?.combatant);
                 }
             }
         }
@@ -720,7 +720,7 @@ async function furiousVengeance(message) {
             if (hasReaction(message?.target?.token?.combatant)) {
                 const fv = actorFeat(message?.target?.actor, "furious-vengeance")
                 if (canReachEnemy(message.token, message?.target?.token, message?.target?.actor) && fv) {
-                    await postInChatTemplate(_uuid(fv), message.target?.token.combatant);
+                    postInChatTemplate(_uuid(fv), message.target?.token.combatant);
                 }
             }
         }
@@ -733,14 +733,14 @@ async function cringe(message) {
             if (hasReaction(message?.target?.token?.combatant)) {
                 const cringe = actorFeat(message?.target?.actor, "cringe");
                 if (cringe) {
-                    await postInChatTemplate(_uuid(cringe), message.target?.token.combatant);
+                    postInChatTemplate(_uuid(cringe), message.target?.token.combatant);
                 }
             }
         }
     }
 }
 
-async function stormRetribution(message) {
+function stormRetribution(message) {
     if (messageType(message, 'attack-roll')) {
         if (criticalSuccessMessageOutcome(message)) {
             if (adjacentEnemy(message.token, message?.target?.token, message?.target?.actor)) {
@@ -748,7 +748,7 @@ async function stormRetribution(message) {
                     if (message?.target?.actor?.system?.resources?.focus?.value > 0) {
                         const sr = actorFeat(message?.target?.actor, "storm-retribution")
                         if (sr) {
-                            await postInChatTemplate(_uuid(sr), message.target?.token.combatant);
+                            postInChatTemplate(_uuid(sr), message.target?.token.combatant);
                         }
                     }
                 }
@@ -757,7 +757,7 @@ async function stormRetribution(message) {
     }
 }
 
-async function courageousOpportunity(message) {
+function courageousOpportunity(message) {
     if (isActorCharacter(message.actor)) {
         return
     }
@@ -777,7 +777,7 @@ async function courageousOpportunity(message) {
     }
 }
 
-async function attackOfOpportunity(message) {
+function attackOfOpportunity(message) {
     if (
         (messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll"))
         || messageWithAnyTrait(message, ["manipulate", "move"])
@@ -801,7 +801,7 @@ async function attackOfOpportunity(message) {
     }
 }
 
-async function reactiveStrike(message) {
+function reactiveStrike(message) {
     if (
         (messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll"))
         || messageWithAnyTrait(message, ["manipulate", "move"])
@@ -830,14 +830,14 @@ async function emergencyTarge(message) {
         if (hasReaction(message?.token?.combatant) && anyFailureMessageOutcome(message)) {
             const emergency_targe = actorFeat(message?.actor, "emergency-targe")
             if (emergency_targe && message?.flags?.pf2e?.origin?.type === 'spell') {
-                await postInChatTemplate(_uuid(emergency_targe), message.token.combatant);
+                postInChatTemplate(_uuid(emergency_targe), message.token.combatant);
             }
         }
     } else if (messageType(message, 'attack-roll') && anySuccessMessageOutcome(message)) {
         if (hasReaction(message?.target?.token?.combatant)) {
             const emergency_targe = actorFeat(message?.target?.actor, "emergency-targe");
             if (emergency_targe && message?.item?.isMelee) {
-                await postInChatTemplate(_uuid(emergency_targe), message.target?.token.combatant);
+                postInChatTemplate(_uuid(emergency_targe), message.target?.token.combatant);
             }
         }
     }
@@ -851,7 +851,7 @@ async function impossibleTechnique(message) {
                 && !hasCondition(message?.target?.actor, "fatigued")
                 && message?.target?.actor?.armorClass?.parent?.item?.type !== "armor"
             ) {
-                await postInChatTemplate(_uuid(impossible_technique), message.target?.token.combatant);
+                postInChatTemplate(_uuid(impossible_technique), message.target?.token.combatant);
             }
         }
     }
@@ -865,7 +865,7 @@ async function ripplingSpin(message) {
                 && canReachEnemy(message.token, message?.target?.token, message?.target?.actor)
                 && hasEffect(message?.target?.actor, "stance-reflective-ripple-stance")
             ) {
-                await postInChatTemplate(_uuid(rippling_spin), message.target?.token.combatant);
+                postInChatTemplate(_uuid(rippling_spin), message.target?.token.combatant);
             }
         }
     }
@@ -961,7 +961,7 @@ async function shieldWardenChampion(message) {
         })
 }
 
-async function standStill(message) {
+function standStill(message) {
     if (!isActorCharacter(message.actor) && messageWithTrait(message, "move")) {
         characterWithReaction()
             .forEach(cc => {
@@ -973,7 +973,7 @@ async function standStill(message) {
     }
 }
 
-async function noEscape(message) {
+function noEscape(message) {
     if (!isActorCharacter(message.actor) && messageWithTrait(message, "move")) {
         characterWithReaction()
             .forEach(cc => {
@@ -985,7 +985,7 @@ async function noEscape(message) {
     }
 }
 
-async function verdistantDefense(message) {
+function verdistantDefense(message) {
     if (!isActorCharacter(message.actor) && messageWithTrait(message, "move")) {
         characterWithReaction()
             .filter(a => a.actor.auras.size > 0)
@@ -1001,7 +1001,7 @@ async function verdistantDefense(message) {
     }
 }
 
-async function eerieFlicker(message) {
+function eerieFlicker(message) {
     if (messageType(message, "attack-roll") && anySuccessMessageOutcome(message)) {
         if (hasReaction(message?.target?.token?.combatant)) {
             let eerieFlicker = actorFeat(message?.target?.actor, "eerie-flicker");
@@ -1010,7 +1010,7 @@ async function eerieFlicker(message) {
                 && !hasCondition(message?.target?.actor, "hidden")
                 && !hasCondition(message?.target?.actor, "undetected")
             ) {
-                await postInChatTemplate(_uuid(eerieFlicker), message.target.token.combatant);
+                postInChatTemplate(_uuid(eerieFlicker), message.target.token.combatant);
             }
         }
     }
@@ -1030,7 +1030,7 @@ async function scarsOfSteel(message) {
     ], message?.flags?.pf2e?.context?.options || [])) {
         let scarsOfSteel = actorFeat(message?.target?.actor, "scars-of-steel");
         if (scarsOfSteel) {
-            await postInChatTemplate(_uuid(scarsOfSteel), message.target.token.combatant);
+            postInChatTemplate(_uuid(scarsOfSteel), message.target.token.combatant);
         }
     }
 }
