@@ -1,3 +1,6 @@
+## Version 1.2.4
+- Fix movement reaction
+
 ## Version 1.2.3
 - code improvement
 

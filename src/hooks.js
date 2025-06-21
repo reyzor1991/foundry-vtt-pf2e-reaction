@@ -616,6 +616,9 @@ Hooks.on('preUpdateToken', (tokenDoc, data, id) => {
     if (tokenDoc?.actor?.isDead || !game?.combats?.active) {
         return
     }
+    if (!data.x && !data.y) {
+        return;
+    }
     if (data.x === tokenDoc.x && data.y === tokenDoc.y) {
         return
     }
