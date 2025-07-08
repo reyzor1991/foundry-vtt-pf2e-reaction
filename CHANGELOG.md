@@ -1,3 +1,6 @@
+## Version 1.2.5
+- Add Sense The Unseen
+
 ## Version 1.2.4
 - Fix movement reaction
 

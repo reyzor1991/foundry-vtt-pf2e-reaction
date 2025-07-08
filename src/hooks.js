@@ -271,20 +271,20 @@ async function postInChatTemplate(uuid, combatant, actionName = undefined, skipD
         text = game.i18n.format("pf2e-reaction.askMultiple", {uuid: uuid, name: combatant.token.name, count: 2});
         content = await foundry.applications.handlebars.renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text: text, target: needTarget});
 
-        await game.messages.contents[game.messages.size - 1].update({
+        updateMessage(game.messages.contents[game.messages.size - 1], {
             'content': content,
             'flags.pf2e-reaction': check
-        }, {noHook: true})
+        })
     } else if (game.messages.size > 0 && content === game.messages.contents[game.messages.size - 1]?.getFlag(moduleName, 'content')) {
         const count = game.messages.contents[game.messages.size - 1]?.getFlag(moduleName, "count") + 1;
         text = game.i18n.format("pf2e-reaction.askMultiple", {uuid: uuid, name: combatant.token.name, count: count});
         content = await foundry.applications.handlebars.renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text: text, target: needTarget});
 
-        await game.messages.contents[game.messages.size - 1].update({
+        updateMessage(game.messages.contents[game.messages.size - 1],{
             'content': content,
             'flags.pf2e-reaction.count': count,
             'flags.pf2e-reaction.reactions': countReaction(combatant, actionName)
-        }, {noHook: true})
+        })
     } else {
         let data = {
             flavor: '',
@@ -301,14 +301,7 @@ async function postInChatTemplate(uuid, combatant, actionName = undefined, skipD
             flags: {'pf2e-reaction': check}
         };
 
-        ChatMessage.create(data).then(m => {
-            const tt = game.settings.get("pf2e-reaction", "timeoutDelete")
-            if (tt > 0) {
-                setTimeout(function () {
-                    m.delete()
-                }, tt * 1000)
-            }
-        });
+        createMessage(data, combatant?.isOwner)
     }
 }
 
@@ -552,22 +545,6 @@ Hooks.on('createCombatant', async (combatant, test) => {
         availableReactions.push(...Object.keys(allReactionsMap).filter(k => actorAction(combatant.actor, k) || actorFeat(combatant.actor, k) || actorSpell(combatant.actor, k)));
 
         await game.combat.setFlag(moduleName, "availableReactions", availableReactions)
-    }
-});
-
-Hooks.on('renderChatMessageHTML', (app, html, msg) => {
-    if (msg.user.isGM) {
-        return
-    }
-    const comb = game.combat?.turns?.find(a => a.id === app.getFlag(moduleName, "cId"));
-    if (Settings.showToPlayers && comb && comb.players.includes(game.user)) {
-        return
-    }
-
-    if (app?.flags?.[moduleName]) {
-        html.classList.add('hide-reaction-check');
-        html.hide();
-        html.style.display = 'none';
     }
 });
 

@@ -46,14 +46,7 @@ async function youreNext(message) {
                         data.type = CONST.CHAT_MESSAGE_TYPES.OOC;
                     }
 
-                    ChatMessage.create(data).then(m => {
-                        const tt = game.settings.get("pf2e-reaction", "timeoutDelete")
-                        if (tt > 0) {
-                            setTimeout(function () {
-                                m.delete()
-                            }, tt * 1000)
-                        }
-                    });
+                    createMessage(data, game.combat?.combatant?.isOwner)
                 } else {
                     await postInChatTemplate(_uuid(youreNext), game.combat.combatant);
                 }

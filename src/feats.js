@@ -1034,3 +1034,23 @@ async function scarsOfSteel(message) {
         }
     }
 }
+
+async function senseTheUnseen(message) {
+    if (!message.isRoll) {
+        return
+    }
+    if (!hasReaction(message?.token?.combatant)) {
+        return
+    }
+    if (message?.flags?.pf2e?.context?.outcome === 'failure' || message?.flags?.pf2e?.context?.outcome === 'criticalFailure') {
+        if (game.pf2e.Predicate.test([
+            "action:seek",
+            "feat:sense-the-unseen"
+        ], message?.flags?.pf2e?.context?.options || [])) {
+            let feat = actorFeat(message?.actor, "sense-the-unseen");
+            if (feat) {
+                postInChatTemplate(_uuid(feat), message.token.combatant);
+            }
+        }
+    }
+}

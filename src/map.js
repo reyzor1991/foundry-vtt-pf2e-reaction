@@ -91,4 +91,5 @@ const allReactionsMap = {
     'shield-warden-champion': shieldWardenChampion,
     'eerie-flicker': eerieFlicker,
     'scars-of-steel': scarsOfSteel,
+    'sense-the-unseen': senseTheUnseen,
 };

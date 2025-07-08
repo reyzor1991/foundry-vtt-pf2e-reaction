@@ -22,7 +22,6 @@
 - Desperate Finisher
 - Instant Backup
 - Instant Return
-- Sense the Unseen
 - Capture Magic
 - Preternatural Parry
 - Dodging Roll
