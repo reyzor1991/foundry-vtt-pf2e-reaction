@@ -1,3 +1,6 @@
+## Version 1.2.6
+- Fix distance handling for Ally take damage
+
 ## Version 1.2.5
 - Add Sense The Unseen
 

@@ -469,13 +469,17 @@ function handleHomebrewTrigger(tr, message) {
 }
 
 function filterByDistance(t, tr, message) {
+    return filterByDistanceWithToken(t, tr, message.token);
+}
+
+function filterByDistanceWithToken(t, tr, token) {
     let r = t;
     if (tr.reach) {
-        r = r.filter(cc => canReachEnemy(message.token, cc.token, cc.actor));
+        r = r.filter(cc => canReachEnemy(token, cc.token, cc.actor));
     } else if (tr.adjacent) {
-        r = r.filter(a => adjacentEnemy(message.token, a.token));
+        r = r.filter(a => adjacentEnemy(token, a.token));
     } else if (tr.reachValue > 0) {
-        r = r.filter(a => getEnemyDistance(message.token, a.token) <= tr.reachValue);
+        r = r.filter(a => getEnemyDistance(token, a.token) <= tr.reachValue);
     }
     return r;
 }
@@ -542,9 +546,12 @@ function combatantsForTriggers(tt, message) {
             const t = filterByDistance(hasReaction(message?.token?.combatant) ? [message?.token?.combatant] : [], tr, message);
             res = res.concat(t);
         }
-        if (tr.name === 'AllyTakeDamage' && messageType(message, 'damage-roll')) {
-            const t = filterByDistance((isTargetCharacter(message) ? characterWithReaction() : npcWithReaction())
-                .filter(a => a.actor?.uuid !== message?.actor?.uuid), tr, message);
+        if (tr.name === 'AllyTakeDamage' && messageType(message, 'damage-roll') && message?.target) {
+            const t = filterByDistanceWithToken(
+                (isTargetCharacter(message) ? characterWithReaction() : npcWithReaction())
+                    .filter(a => a.actor?.uuid !== message?.target?.actor?.uuid),
+                tr,
+                message.target.token);
             res = res.concat(t);
         }
         if (tr.name === 'ActorTakeDamage' && messageType(message, 'damage-roll')) {
