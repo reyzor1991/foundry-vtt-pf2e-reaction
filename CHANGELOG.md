@@ -1,3 +1,6 @@
+## Version 1.2.7
+- Fix handling skip reaction
+
 ## Version 1.2.6
 - Fix distance handling for Ally take damage
 

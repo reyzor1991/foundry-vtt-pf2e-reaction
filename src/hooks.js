@@ -606,7 +606,7 @@ Hooks.on('preUpdateToken', (tokenDoc, data, id) => {
     };
 
     if (game.combat) {
-        if (game?.skipMoveTrigger?.[id]) {
+        if (game?.skipMoveTrigger?.[game.userId]) {
             return
         }
 
