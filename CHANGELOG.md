@@ -1,3 +1,7 @@
+## Version 1.2.8
+- Add stunned to states for skipping of reaction
+- Add checking shield for reactive shield feat
+
 ## Version 1.2.7
 - Fix handling skip reaction
 

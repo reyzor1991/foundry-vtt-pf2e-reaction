@@ -196,7 +196,8 @@ function hasReaction(combatant, actionName = undefined) {
     return countReaction(combatant, actionName) > 0
         && !hasCondition(combatant.actor, "confused")
         && !hasCondition(combatant.actor, "petrified")
-        && !hasCondition(combatant.actor, "unconscious");
+        && !hasCondition(combatant.actor, "unconscious")
+        && !hasCondition(combatant.actor, "stunned");
 }
 
 function characterWithReaction(actionName = undefined) {

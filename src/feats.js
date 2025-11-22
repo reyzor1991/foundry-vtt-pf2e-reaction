@@ -601,7 +601,7 @@ async function reactiveShield(message) {
     if (messageType(message, 'attack-roll') && anySuccessMessageOutcome(message)) {
         if (hasReaction(message?.target?.token?.combatant)) {
             const reactive_shield = actorFeat(message?.target?.actor, "reactive-shield");
-            if (reactive_shield && !hasEffect(message?.target?.actor, "effect-raise-a-shield") && message?.item?.isMelee) {
+            if (reactive_shield && message?.target?.actor?.heldShield && !hasEffect(message?.target?.actor, "effect-raise-a-shield") && message?.item?.isMelee) {
                 postInChatTemplate(_uuid(reactive_shield), message.target?.token.combatant);
             }
         }
