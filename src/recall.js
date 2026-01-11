@@ -6,6 +6,7 @@ const identifySkills = new Map([
     ["celestial", ["religion"]],
     ["construct", ["arcana", "crafting"]],
     ["dragon", ["arcana"]],
+    ["dream", ["occultism"]],
     ["elemental", ["arcana", "nature"]],
     ["ethereal", ["occultism"]],
     ["fey", ["nature"]],
@@ -15,7 +16,9 @@ const identifySkills = new Map([
     ["monitor", ["religion"]],
     ["ooze", ["occultism"]],
     ["plant", ["nature"]],
+    ["shade", ["religion"]],
     ["spirit", ["occultism"]],
+    ["time", ["occultism"]],
     ["undead", ["religion"]],
 ]);
 

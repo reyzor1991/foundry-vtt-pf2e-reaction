@@ -1,3 +1,6 @@
+## Version 1.2.9
+- Update traits for identify skills
+
 ## Version 1.2.8
 - Add stunned to states for skipping of reaction
 - Add checking shield for reactive shield feat
