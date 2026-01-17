@@ -625,6 +625,9 @@ Hooks.on('preUpdateToken', (tokenDoc, data, id) => {
         if (availableReactions.includes('reactive-strike')) {
             reactiveStrike(message);
         }
+        if (availableReactions.includes('shoving-sweep')) {
+            shovingSweep(message);
+        }
         if (availableReactions.includes('stand-still')) {
             standStill(message);
         }

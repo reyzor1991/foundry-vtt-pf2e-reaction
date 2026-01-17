@@ -1,3 +1,7 @@
+## Version 1.2.10
+- Add Intercept Attack
+- Add Shoving Sweep
+
 ## Version 1.2.9
 - Update traits for identify skills
 

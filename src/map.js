@@ -92,4 +92,6 @@ const allReactionsMap = {
     'eerie-flicker': eerieFlicker,
     'scars-of-steel': scarsOfSteel,
     'sense-the-unseen': senseTheUnseen,
+    'shoving-sweep': shovingSweep,
+    'intercept-attack': interceptAttack,
 };

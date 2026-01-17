@@ -152,7 +152,6 @@
 - Reminder of the Greater Fear
 - Rule of Three
 - Scholar's Hunch
-- Shoving Sweep
 - Stalwart Mind
 - Unkillable
 - Absorb Toxin

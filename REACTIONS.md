@@ -96,3 +96,5 @@
 95. You're Next
 96. Disarming Block
 97. Sense The Unseen
+98. Shoving Sweep
+99. Intercept Attack

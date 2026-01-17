@@ -1054,3 +1054,44 @@ async function senseTheUnseen(message) {
         }
     }
 }
+
+function shovingSweep(message) {
+    if (messageWithAnyTrait(message, ["move"])) {
+        (isActorCharacter(message.actor) ? npcWithReaction() : characterWithReaction())
+            .forEach(cc => {
+                const aoo = actorFeat(cc.actor, "shoving-sweep");
+                if (aoo) {
+                    let specificWeapon = undefined;
+                    if (isNPC(cc.actor)) {
+                        const match = aoo.name.match('\(([A-Za-z]{1,}) Only\)');
+                        if (match && match.length === 3) {
+                            specificWeapon = match[2]
+                        }
+                    }
+                    if (canReachEnemy(message.token, cc.token, cc.actor, specificWeapon)) {
+                        postInChatTemplate(_uuid(aoo), cc, "shoving-sweep");
+                    }
+                }
+            })
+    }
+}
+
+function interceptAttack(message) {
+    if (!messageType(message, 'damage-roll')) {
+        return
+    }
+    if (!isTargetCharacter(message)) {
+        return
+    }
+
+    characterWithReaction()
+        .filter(a => a.actorId !== message?.target?.actor._id)
+        .filter(a => getEnemyDistance(message.target.token, a.token) <= 10)
+        .forEach(cc => {
+            const ia = actorAction(cc.actor, "intercept-attack");
+            if (ia) {
+                postInChatTemplate(_uuid(ia), cc);
+            }
+        })
+
+}
