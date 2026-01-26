@@ -682,6 +682,7 @@ function sendNotification(_user, token, feat) {
 function checkSendNotification(_user, token, featNames) {
     actorFeats(token.actor, featNames).forEach(feat => {
         sendNotification(_user, token, feat);
+        postInChatTemplate(_uuid(feat), token?.combatant);
     })
 }
 
@@ -692,6 +693,7 @@ Hooks.on("targetToken", (_user, token, isTargeted) => {
                 const nd = actorFeat(token.actor, "nimble-dodge");
                 if (nd && !hasCondition(token.actor, "encumbered")) {
                     sendNotification(_user, token, nd);
+                    postInChatTemplate(_uuid(nd), token?.combatant);
                 }
                 checkSendNotification(_user, token,
                     ["airy-step", "farabellus-flip", "hit-the-dirt",
@@ -700,14 +702,17 @@ Hooks.on("targetToken", (_user, token, isTargeted) => {
                 const pir = actorFeat(token.actor, "pirouette");
                 if (pir && hasEffect(token.actor, "stance-masquerade-of-seasons-stance")) {
                     sendNotification(_user, token, pir);
+                    postInChatTemplate(_uuid(pir), token?.combatant);
                 }
                 const rs = actorFeat(token.actor, "reactive-shield");
                 if (rs && !hasEffect(token.actor, "effect-raise-a-shield")) {
                     sendNotification(_user, token, rs);
+                    postInChatTemplate(_uuid(rs), token?.combatant);
                 }
                 const cf = actorFeat(token.actor, "crane-flutter");
                 if (cf && hasEffect(token.actor, "stance-crane-stance")) {
                     sendNotification(_user, token, cf);
+                    postInChatTemplate(_uuid(cf), token?.combatant);
                 }
 
                 characterWithReaction()
@@ -719,6 +724,7 @@ Hooks.on("targetToken", (_user, token, isTargeted) => {
                             const ed = actorFeat(cc.actor, "everdistant-defense");
                             if (ed) {
                                 sendNotification(_user, token, ed)
+                                postInChatTemplate(_uuid(ed), token?.combatant);
                             }
                         }
                     })
@@ -726,14 +732,17 @@ Hooks.on("targetToken", (_user, token, isTargeted) => {
                 const nd = actorAction(token.actor, "nimble-dodge");
                 if (nd && !hasCondition(token.actor, "encumbered")) {
                     sendNotification(_user, token, nd);
+                    postInChatTemplate(_uuid(nd), token?.combatant);
                 }
                 const as = actorAction(token.actor, "airy-step");
                 if (as) {
                     sendNotification(_user, token, as);
+                    postInChatTemplate(_uuid(as), token?.combatant);
                 }
                 const es = actorAction(token.actor, "ectoplasmic-shield");
                 if (es) {
                     sendNotification(_user, token, es);
+                    postInChatTemplate(_uuid(es), token?.combatant);
                 }
             }
         }

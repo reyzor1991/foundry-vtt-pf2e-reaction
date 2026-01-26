@@ -1,4 +1,7 @@
 ## Version 1.2.10
+- Post to chat when target token with reaction
+
+## Version 1.2.10
 - Add Intercept Attack
 - Add Shoving Sweep
 
