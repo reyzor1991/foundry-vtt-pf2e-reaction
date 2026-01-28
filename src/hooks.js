@@ -251,7 +251,10 @@ async function postInChatTemplate(uuid, combatant, actionName = undefined, skipD
     }
 
     let text = game.i18n.format("pf2e-reaction.ask", {uuid: uuid, name: combatant.token.name});
-    let content = await foundry.applications.handlebars.renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text: text, target: needTarget});
+    let content = await foundry.applications.handlebars.renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {
+        text: text,
+        target: needTarget
+    });
     const check = {
         cId: combatant._id,
         uuid: uuid,
@@ -270,7 +273,10 @@ async function postInChatTemplate(uuid, combatant, actionName = undefined, skipD
         check['needTarget'] = needTarget
 
         text = game.i18n.format("pf2e-reaction.askMultiple", {uuid: uuid, name: combatant.token.name, count: 2});
-        content = await foundry.applications.handlebars.renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text: text, target: needTarget});
+        content = await foundry.applications.handlebars.renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {
+            text: text,
+            target: needTarget
+        });
 
         updateMessage(game.messages.contents[game.messages.size - 1], {
             'content': content,
@@ -279,9 +285,12 @@ async function postInChatTemplate(uuid, combatant, actionName = undefined, skipD
     } else if (game.messages.size > 0 && content === game.messages.contents[game.messages.size - 1]?.getFlag(moduleName, 'content')) {
         const count = game.messages.contents[game.messages.size - 1]?.getFlag(moduleName, "count") + 1;
         text = game.i18n.format("pf2e-reaction.askMultiple", {uuid: uuid, name: combatant.token.name, count: count});
-        content = await foundry.applications.handlebars.renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {text: text, target: needTarget});
+        content = await foundry.applications.handlebars.renderTemplate("./modules/pf2e-reaction/templates/ask.hbs", {
+            text: text,
+            target: needTarget
+        });
 
-        updateMessage(game.messages.contents[game.messages.size - 1],{
+        updateMessage(game.messages.contents[game.messages.size - 1], {
             'content': content,
             'flags.pf2e-reaction.count': count,
             'flags.pf2e-reaction.reactions': countReaction(combatant, actionName)
@@ -695,9 +704,30 @@ Hooks.on("targetToken", (_user, token, isTargeted) => {
                     sendNotification(_user, token, nd);
                     postInChatTemplate(_uuid(nd), token?.combatant);
                 }
+                const fd = actorFeat(token.actor, "flashy-dodge");
+                if (fd && !hasCondition(token.actor, "encumbered")) {
+                    sendNotification(_user, token, fd);
+                    postInChatTemplate(_uuid(fd), token?.combatant);
+                }
+
                 checkSendNotification(_user, token,
                     ["airy-step", "farabellus-flip", "hit-the-dirt",
-                        "you-failed-to-account-for-this", "foresee-danger", "deflect-arrow"]);
+                        "you-failed-to-account-for-this", "foresee-danger", "deflect-arrow",
+                        "nights-warning", "blood-rising", "inked-panoply", "foresee-danger",
+                        "hunters-defense", "you-failed-to-account-for-this", "lucky-escape",
+                        "wood-ward", "deflecting-cloud", "reactive-charm", "instinctive-obfuscation"]);
+
+                const rd = actorFeat(token.actor, "reflective-defense");
+                if (rd) {
+                    sendNotification(_user, token, rd);
+                    postTargetInChatTemplate(_uuid(rd), token?.combatant);
+                }
+
+                const ds = actorFeat(token.actor, "disarming-smile");
+                if (ds) {
+                    sendNotification(_user, token, ds);
+                    postTargetInChatTemplate(_uuid(ds), token?.combatant);
+                }
 
                 const pir = actorFeat(token.actor, "pirouette");
                 if (pir && hasEffect(token.actor, "stance-masquerade-of-seasons-stance")) {

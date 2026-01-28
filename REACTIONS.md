@@ -98,3 +98,17 @@
 97. Sense The Unseen
 98. Shoving Sweep
 99. Intercept Attack
+100. Flashy Dodge
+101. Inked Panoply
+102. Blood Rising
+103. Night's Warning
+104. Foresee Danger
+105. Hunter's Defense
+106. You Failed to Account For... This!
+107. Lucky Escape
+108. Wood Ward
+109. Reflective Defense
+110. Disarming Smile
+111. Deflecting Cloud
+112. Reactive Charm
+113. Instinctive Obfuscation

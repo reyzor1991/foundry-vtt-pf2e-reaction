@@ -1,4 +1,21 @@
-## Version 1.2.10
+## Version 1.2.12
+- Add Flashy Dodge
+- Add Inked Panoply
+- Add Blood Rising
+- Add Nights Warning
+- Add Foresee Danger
+- Add Foresee Danger
+- Add Hunter's Defense
+- Add You Failed to Account For... This!
+- Add Lucky Escape
+- Add Wood Ward
+- Add Reflective Defense
+- Add Disarming Smile
+- Add Deflecting Cloud
+- Add Reactive Charm
+- Add Instinctive Obfuscation
+
+## Version 1.2.11
 - Post to chat when target token with reaction
 
 ## Version 1.2.10
