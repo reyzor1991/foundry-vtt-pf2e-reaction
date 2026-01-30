@@ -1,3 +1,6 @@
+## Version 1.2.13
+- Fix posting reaction
+
 ## Version 1.2.12
 - Add Flashy Dodge
 - Add Inked Panoply

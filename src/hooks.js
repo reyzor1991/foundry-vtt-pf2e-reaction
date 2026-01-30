@@ -697,7 +697,9 @@ function checkSendNotification(_user, token, featNames) {
 
 Hooks.on("targetToken", (_user, token, isTargeted) => {
     if (Settings.notification && game?.combats?.active && isTargeted && hasReaction(token?.combatant)) {
-        if (isGM() || token.combatant.players.find(a => a.id === game.user.id)) {
+        if (token.combatant.players.includes(game.user)
+            || (isGM() && token.combatant.players.every((a) => !a.active))) {
+
             if (isActorCharacter(token?.actor)) {
                 const nd = actorFeat(token.actor, "nimble-dodge");
                 if (nd && !hasCondition(token.actor, "encumbered")) {
