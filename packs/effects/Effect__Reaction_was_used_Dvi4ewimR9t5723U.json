@@ -1,0 +1,42 @@
+{
+  "_id": "Dvi4ewimR9t5723U",
+  "img": "systems/pf2e/icons/actions/Reaction.webp",
+  "name": "Effect: Reaction was used",
+  "system": {
+    "description": {
+      "value": "<p>An actor used all possible reactions.</p>"
+    },
+    "duration": {
+      "expiry": "turn-start",
+      "sustained": false,
+      "unit": "rounds",
+      "value": 0
+    },
+    "level": {
+      "value": 1
+    },
+    "rules": [],
+    "source": {
+      "value": ""
+    },
+    "start": {
+      "initiative": null,
+      "value": 0
+    },
+    "target": null,
+    "tokenIcon": {
+      "show": true
+    },
+    "traits": {
+      "rarity": "common",
+      "value": []
+    },
+    "badge": {
+      "type": "counter",
+      "value": 1
+    },
+    "slug": "effect-reaction-was-used"
+  },
+  "type": "effect",
+  "_key": "!items!Dvi4ewimR9t5723U"
+}

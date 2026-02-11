@@ -1,0 +1,43 @@
+{
+  "_id": "Bq05rfSWsBjNzjwq",
+  "img": "systems/pf2e/icons/actions/Reaction.webp",
+  "name": "Effect: Available reactions",
+  "system": {
+    "description": {
+      "value": ""
+    },
+    "duration": {
+      "expiry": "turn-start",
+      "sustained": false,
+      "unit": "rounds",
+      "value": 1
+    },
+    "level": {
+      "value": 1
+    },
+    "rules": [],
+    "source": {
+      "value": ""
+    },
+    "start": {
+      "initiative": null,
+      "value": 0
+    },
+    "target": null,
+    "tokenIcon": {
+      "show": true
+    },
+    "traits": {
+      "rarity": "common",
+      "value": []
+    },
+    "badge": {
+      "type": "counter",
+      "value": 0,
+      "min": 0
+    },
+    "slug": "effect-available-reactions"
+  },
+  "type": "effect",
+  "_key": "!items!Bq05rfSWsBjNzjwq"
+}

@@ -1,3 +1,6 @@
+## Version 1.3.0
+- Migrate to ldb
+
 ## Version 1.2.13
 - Fix posting reaction
 

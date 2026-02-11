@@ -2,7 +2,7 @@
   "id": "pf2e-reaction",
   "title": "PF2e Reaction Checker",
   "description": "Check reaction of combatant",
-  "version": "1.2.13",
+  "version": "1.3.0",
   "authors": [
     {
       "name": "Reyzor",
@@ -46,9 +46,12 @@
     {
       "label": "Reaction Effects",
       "name": "reaction-effects",
-      "path": "packs/reaction-effects.db",
+      "path": "packs/effects",
       "system": "pf2e",
-      "private": false,
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
       "type": "Item",
       "flags": {}
     }
@@ -64,7 +67,7 @@
   ],
   "socket": true,
   "manifest": "https://github.com/reyzor1991/foundry-vtt-pf2e-reaction/releases/latest/download/module.json",
-  "download": "https://github.com/reyzor1991/foundry-vtt-pf2e-reaction/releases/latest/download/pf2e-reaction.zip",
+  "download": "https://github.com/reyzor1991/foundry-vtt-pf2e-reaction/releases/download/1.3.0/pf2e-reaction.zip",
   "url": "https://github.com/reyzor1991/foundry-vtt-pf2e-reaction",
   "license": "https://github.com/reyzor1991/foundry-vtt-pf2e-reaction/blob/main/LICENSE",
   "readme": "https://github.com/reyzor1991/foundry-vtt-pf2e-reaction/blob/main/README.md",

@@ -1,0 +1,38 @@
+{
+  "_id": "bcL2xQ4XGZ5fpHM1",
+  "img": "systems/pf2e/icons/default-icons/effect.svg",
+  "name": "Effect: Identified by Recall Knowledge ",
+  "system": {
+    "description": {
+      "value": "<p>A creature was identified by Recall Knowledge.</p>"
+    },
+    "duration": {
+      "expiry": "turn-start",
+      "sustained": false,
+      "unit": "unlimited",
+      "value": -1
+    },
+    "level": {
+      "value": 1
+    },
+    "rules": [],
+    "source": {
+      "value": ""
+    },
+    "start": {
+      "initiative": null,
+      "value": 0
+    },
+    "target": null,
+    "tokenIcon": {
+      "show": true
+    },
+    "traits": {
+      "rarity": "common",
+      "value": []
+    },
+    "slug": "effect-recall-knowledge-identified"
+  },
+  "type": "effect",
+  "_key": "!items!bcL2xQ4XGZ5fpHM1"
+}
