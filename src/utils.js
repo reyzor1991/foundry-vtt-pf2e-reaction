@@ -92,8 +92,10 @@ function adjacentEnemy(attackerToken, defendToken) {
     return getEnemyDistance(attackerToken, defendToken) <= 5
 }
 
-function getEnemyDistance(token, target, reach=null) {
-    return token.object.distanceTo(target.object, {reach});
+function getEnemyDistance(firstT, secondT, reach=null) {
+    return (firstT instanceof foundry.canvas.placeables.Token ? firstT : firstT.object)?.distanceTo(
+        secondT instanceof foundry.canvas.placeables.Token ? secondT : secondT.object, {reach}
+    )
 }
 
 function nonReach(arr) {
