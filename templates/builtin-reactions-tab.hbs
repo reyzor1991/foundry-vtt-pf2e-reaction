@@ -1,0 +1,21 @@
+<section class="tab {{tab.cssClass}} scrollable" data-group="primary" data-tab="{{tab.id}}">
+    <div class="reaction-list">
+        {{#if reactions.length}}
+            {{#each reactions as |reaction|}}
+                <div class="form-group">
+                    <label for="builtinReaction.{{reaction.id}}">{{reaction.name}}</label>
+                    <div class="form-fields">
+                        <input
+                            id="builtinReaction.{{reaction.id}}"
+                            type="checkbox"
+                            name="builtinReaction.{{reaction.id}}"
+                            {{checked reaction.enabled}}
+                        />
+                    </div>
+                </div>
+            {{/each}}
+        {{else}}
+            <p>{{localize "pf2e-reaction.SETTINGS.builtinReactions.emptyCategory"}}</p>
+        {{/if}}
+    </div>
+</section>

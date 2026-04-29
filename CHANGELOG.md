@@ -1,3 +1,6 @@
+## Version 1.4.0
+- V14
+
 ## Version 1.3.1
 - Fix checking distance
 

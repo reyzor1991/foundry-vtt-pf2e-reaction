@@ -531,8 +531,7 @@ Hooks.on('deleteCombat', async (combat, a, b, c) => {
 
 Hooks.on('combatStart', async combat => {
     const availableReactions = [];
-
-    const keys = Object.keys(allReactionsMap)
+    const keys = Object.keys(getEnabledBuiltinReactionMap());
 
     combat.turns.forEach(cc => {
         updateCombatantReactionState(cc, true)
@@ -552,7 +551,7 @@ Hooks.on('createCombatant', async (combatant, test) => {
     }
     if (game.combat?.started) {
         const availableReactions = game.combat.getFlag(moduleName, "availableReactions") ?? [];
-        availableReactions.push(...Object.keys(allReactionsMap).filter(k => actorAction(combatant.actor, k) || actorFeat(combatant.actor, k) || actorSpell(combatant.actor, k)));
+        availableReactions.push(...Object.keys(getEnabledBuiltinReactionMap()).filter(k => actorAction(combatant.actor, k) || actorFeat(combatant.actor, k) || actorSpell(combatant.actor, k)));
 
         await game.combat.setFlag(moduleName, "availableReactions", availableReactions)
     }
@@ -621,30 +620,31 @@ Hooks.on('preUpdateToken', (tokenDoc, data, id) => {
         }
 
         const availableReactions = game.combat.getFlag(moduleName, 'availableReactions') ?? []
+        const enabledBuiltinReactionMap = getEnabledBuiltinReactionMap();
 
-        if (availableReactions.includes('courageous-opportunity')) {
-            courageousOpportunity(message);
+        if (availableReactions.includes('courageous-opportunity') && enabledBuiltinReactionMap["courageous-opportunity"]) {
+            enabledBuiltinReactionMap["courageous-opportunity"](message);
         }
-        if (availableReactions.includes('implements-interruption')) {
-            implementsInterruption(message);
+        if (availableReactions.includes('implements-interruption') && enabledBuiltinReactionMap["implements-interruption"]) {
+            enabledBuiltinReactionMap["implements-interruption"](message);
         }
-        if (availableReactions.includes('attack-of-opportunity')) {
-            attackOfOpportunity(message);
+        if (availableReactions.includes('attack-of-opportunity') && enabledBuiltinReactionMap["attack-of-opportunity"]) {
+            enabledBuiltinReactionMap["attack-of-opportunity"](message);
         }
-        if (availableReactions.includes('reactive-strike')) {
-            reactiveStrike(message);
+        if (availableReactions.includes('reactive-strike') && enabledBuiltinReactionMap["reactive-strike"]) {
+            enabledBuiltinReactionMap["reactive-strike"](message);
         }
-        if (availableReactions.includes('shoving-sweep')) {
-            shovingSweep(message);
+        if (availableReactions.includes('shoving-sweep') && enabledBuiltinReactionMap["shoving-sweep"]) {
+            enabledBuiltinReactionMap["shoving-sweep"](message);
         }
-        if (availableReactions.includes('stand-still')) {
-            standStill(message);
+        if (availableReactions.includes('stand-still') && enabledBuiltinReactionMap["stand-still"]) {
+            enabledBuiltinReactionMap["stand-still"](message);
         }
-        if (availableReactions.includes('no-escape')) {
-            noEscape(message);
+        if (availableReactions.includes('no-escape') && enabledBuiltinReactionMap["no-escape"]) {
+            enabledBuiltinReactionMap["no-escape"](message);
         }
-        if (availableReactions.includes('verdistant-defense')) {
-            verdistantDefense(message);
+        if (availableReactions.includes('verdistant-defense') && enabledBuiltinReactionMap["verdistant-defense"]) {
+            enabledBuiltinReactionMap["verdistant-defense"](message);
         }
     }
 
@@ -675,21 +675,24 @@ Hooks.on('preCreateChatMessage', async (message, user, _options) => {
     }
 
     if (game.combat) {
+        const enabledBuiltinReactionMap = getEnabledBuiltinReactionMap();
         new Set(Object.values(game.combat.getFlag(moduleName, 'availableReactions') ?? [])).forEach(func => {
-            if (allReactionsMap[func]) {
-                allReactionsMap[func].call(this, message);
+            if (enabledBuiltinReactionMap[func]) {
+                enabledBuiltinReactionMap[func].call(this, message);
             }
         })
     }
 });
 
 function sendNotification(_user, token, feat) {
-    const text = game.i18n.format("pf2e-reaction.notify", {uuid: feat.name, name: token.name});
-    ui.notifications.info(`${_user.name} targets ${token.name}. ${text}`);
+    if (!Settings.hideUiNotifications) {
+        const text = game.i18n.format("pf2e-reaction.notify", {uuid: feat.name, name: token.name});
+        ui.notifications.info(`${_user.name} targets ${token.name}. ${text}`);
+    }
 }
 
 function checkSendNotification(_user, token, featNames) {
-    actorFeats(token.actor, featNames).forEach(feat => {
+    actorFeats(token.actor, featNames.filter((id) => isBuiltinReactionEnabled(id))).forEach(feat => {
         sendNotification(_user, token, feat);
         postInChatTemplate(_uuid(feat), token?.combatant);
     })
@@ -701,12 +704,12 @@ Hooks.on("targetToken", (_user, token, isTargeted) => {
             || (isGM() && token.combatant.players.every((a) => !a.active))) {
 
             if (isActorCharacter(token?.actor)) {
-                const nd = actorFeat(token.actor, "nimble-dodge");
+                const nd = isBuiltinReactionEnabled("nimble-dodge") ? actorFeat(token.actor, "nimble-dodge") : null;
                 if (nd && !hasCondition(token.actor, "encumbered")) {
                     sendNotification(_user, token, nd);
                     postInChatTemplate(_uuid(nd), token?.combatant);
                 }
-                const fd = actorFeat(token.actor, "flashy-dodge");
+                const fd = isBuiltinReactionEnabled("flashy-dodge") ? actorFeat(token.actor, "flashy-dodge") : null;
                 if (fd && !hasCondition(token.actor, "encumbered")) {
                     sendNotification(_user, token, fd);
                     postInChatTemplate(_uuid(fd), token?.combatant);
@@ -719,29 +722,29 @@ Hooks.on("targetToken", (_user, token, isTargeted) => {
                         "hunters-defense", "you-failed-to-account-for-this", "lucky-escape",
                         "wood-ward", "deflecting-cloud", "reactive-charm", "instinctive-obfuscation"]);
 
-                const rd = actorFeat(token.actor, "reflective-defense");
+                const rd = isBuiltinReactionEnabled("reflective-defense") ? actorFeat(token.actor, "reflective-defense") : null;
                 if (rd) {
                     sendNotification(_user, token, rd);
                     postTargetInChatTemplate(_uuid(rd), token?.combatant);
                 }
 
-                const ds = actorFeat(token.actor, "disarming-smile");
+                const ds = isBuiltinReactionEnabled("disarming-smile") ? actorFeat(token.actor, "disarming-smile") : null;
                 if (ds) {
                     sendNotification(_user, token, ds);
                     postTargetInChatTemplate(_uuid(ds), token?.combatant);
                 }
 
-                const pir = actorFeat(token.actor, "pirouette");
+                const pir = isBuiltinReactionEnabled("pirouette") ? actorFeat(token.actor, "pirouette") : null;
                 if (pir && hasEffect(token.actor, "stance-masquerade-of-seasons-stance")) {
                     sendNotification(_user, token, pir);
                     postInChatTemplate(_uuid(pir), token?.combatant);
                 }
-                const rs = actorFeat(token.actor, "reactive-shield");
+                const rs = isBuiltinReactionEnabled("reactive-shield") ? actorFeat(token.actor, "reactive-shield") : null;
                 if (rs && !hasEffect(token.actor, "effect-raise-a-shield")) {
                     sendNotification(_user, token, rs);
                     postInChatTemplate(_uuid(rs), token?.combatant);
                 }
-                const cf = actorFeat(token.actor, "crane-flutter");
+                const cf = isBuiltinReactionEnabled("crane-flutter") ? actorFeat(token.actor, "crane-flutter") : null;
                 if (cf && hasEffect(token.actor, "stance-crane-stance")) {
                     sendNotification(_user, token, cf);
                     postInChatTemplate(_uuid(cf), token?.combatant);
@@ -753,7 +756,7 @@ Hooks.on("targetToken", (_user, token, isTargeted) => {
                     .forEach(cc => {
                         const radius = Math.max(...Array.from(cc.actor.auras.values()).map(a => a.radius));
                         if (getEnemyDistance(token.document, cc.token) <= radius) {
-                            const ed = actorFeat(cc.actor, "everdistant-defense");
+                            const ed = isBuiltinReactionEnabled("everdistant-defense") ? actorFeat(cc.actor, "everdistant-defense") : null;
                             if (ed) {
                                 sendNotification(_user, token, ed)
                                 postInChatTemplate(_uuid(ed), token?.combatant);
@@ -761,17 +764,17 @@ Hooks.on("targetToken", (_user, token, isTargeted) => {
                         }
                     })
             } else {
-                const nd = actorAction(token.actor, "nimble-dodge");
+                const nd = isBuiltinReactionEnabled("nimble-dodge") ? actorAction(token.actor, "nimble-dodge") : null;
                 if (nd && !hasCondition(token.actor, "encumbered")) {
                     sendNotification(_user, token, nd);
                     postInChatTemplate(_uuid(nd), token?.combatant);
                 }
-                const as = actorAction(token.actor, "airy-step");
+                const as = isBuiltinReactionEnabled("airy-step") ? actorAction(token.actor, "airy-step") : null;
                 if (as) {
                     sendNotification(_user, token, as);
                     postInChatTemplate(_uuid(as), token?.combatant);
                 }
-                const es = actorAction(token.actor, "ectoplasmic-shield");
+                const es = isBuiltinReactionEnabled("ectoplasmic-shield") ? actorAction(token.actor, "ectoplasmic-shield") : null;
                 if (es) {
                     sendNotification(_user, token, es);
                     postInChatTemplate(_uuid(es), token?.combatant);
