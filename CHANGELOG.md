@@ -1,3 +1,7 @@
+## Version 1.4.1
+- Update cn file (thank you Kuroni) 
+- Update lang files 
+
 ## Version 1.4.0
 - V14
 
