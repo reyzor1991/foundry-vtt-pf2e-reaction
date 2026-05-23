@@ -192,7 +192,13 @@ function countReaction(combatant, actionName = undefined) {
     return count;
 }
 
+const avoidDeath = ["orc-ferocity"]
+
 function hasReaction(combatant, actionName = undefined) {
+    if (avoidDeath.includes(actionName)) {
+        return countReaction(combatant, actionName) > 0;
+    }
+
     return countReaction(combatant, actionName) > 0
         && !hasCondition(combatant.actor, "confused")
         && !hasCondition(combatant.actor, "petrified")
@@ -229,7 +235,12 @@ function actorSpell(actor, spell) {
 }
 
 function actorFeat(actor, feat) {
-    return actor?.itemTypes?.feat?.find((c => feat === c.slug))
+    let item = actor?.itemTypes?.feat?.find((c => feat === c.slug));
+    if (item?.system?.frequency) {
+        return item.system.frequency?.value > 0 ? item : null;
+    } else {
+        return item;
+    }
 }
 
 function actorFeats(actor, feats) {
@@ -459,7 +470,15 @@ $(document).on('click', '.reaction-check', async function () {
                     }
                 }
                 if (Settings.postMessage && uuid) {
-                    await (await fromUuid(uuid))?.toMessage({}, {rollMode: 'blindroll'})
+                    let item = await fromUuid(uuid);
+                    if (item) {
+                        if (item?.system?.frequency && item?.system?.frequency?.value > 0) {
+                            const newValue = item.system.frequency.value - 1;
+                            await item.update({ "system.frequency.value": newValue });
+                        }
+                        await item?.toMessage({}, {messageMode: 'blindroll'})
+                    }
+
                 }
             }
         }

@@ -2,7 +2,7 @@
   "id": "pf2e-reaction",
   "title": "PF2e Reaction Checker",
   "description": "Check reaction of combatant",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "authors": [
     {
       "name": "Reyzor",
@@ -67,7 +67,7 @@
   ],
   "socket": true,
   "manifest": "https://github.com/reyzor1991/foundry-vtt-pf2e-reaction/releases/latest/download/module.json",
-  "download": "https://github.com/reyzor1991/foundry-vtt-pf2e-reaction/releases/download/1.4.1/pf2e-reaction.zip",
+  "download": "https://github.com/reyzor1991/foundry-vtt-pf2e-reaction/releases/download/1.4.2/pf2e-reaction.zip",
   "url": "https://github.com/reyzor1991/foundry-vtt-pf2e-reaction",
   "license": "https://github.com/reyzor1991/foundry-vtt-pf2e-reaction/blob/main/LICENSE",
   "readme": "https://github.com/reyzor1991/foundry-vtt-pf2e-reaction/blob/main/README.md",

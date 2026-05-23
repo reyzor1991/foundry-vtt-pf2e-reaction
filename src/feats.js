@@ -105,7 +105,7 @@ async function orcFerocity(message) {
         if (message.actor.system?.attributes?.hp?.value === 0 && hasReaction(message?.token?.combatant)) {
             const orc_ferocity = actorFeat(message?.actor, "orc-ferocity");
             if (orc_ferocity) {
-                postInChatTemplate(_uuid(orc_ferocity), message?.token?.combatant, undefined, true);
+                postInChatTemplate(_uuid(orc_ferocity), message?.token?.combatant, "orc-ferocity", true);
             }
         }
     }

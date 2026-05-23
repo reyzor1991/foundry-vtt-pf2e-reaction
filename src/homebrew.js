@@ -633,4 +633,12 @@ function combatantsForTriggers(tt, message) {
 
 Hooks.on('preCreateChatMessage', async (message, user, _options, userId) => {
     handleHomebrewMessages(message)
+
+    if (message?.item?.slug === 'orc-ferocity'
+        && message.actor.system.attributes.hp.value === 0
+    ) {
+        message?.actor?.update({
+            "system.attributes.hp.value": 1
+        })
+    }
 });
