@@ -1095,3 +1095,22 @@ function interceptAttack(message) {
         })
 
 }
+
+function reflexiveCourage(message) {
+    let traits = ["manipulate", "move", "auditory"];
+
+    if (traits.some(a => messageWithTrait(message, a))
+        || (messageType(message, 'attack-roll') && message?.flags?.pf2e?.context?.domains.includes("ranged-attack-roll"))
+    ) {
+        characterWithReaction()
+            .filter(c=>c?.actor)
+            .filter(c=>hasEffect(c.actor, "spell-effect-courageous-anthem"))
+            .filter(c=>canReachEnemy(message.token, c.token, c.actor))
+            .forEach(cc => {
+                const rc = actorFeat(cc.actor, "reflexive-courage");
+                if (rc) {
+                    postInChatTemplate(_uuid(rc), cc);
+                }
+            });
+    }
+}

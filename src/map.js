@@ -124,6 +124,7 @@ const featBuiltinReactionIds = [
     "disarming-smile",
     "crane-flutter",
     "everdistant-defense",
+    "reflexive-courage",
 ];
 
 const movementTriggerBuiltinReactionIds = [
@@ -281,6 +282,7 @@ const builtinReactionEntries = [
     ["sense-the-unseen", senseTheUnseen],
     ["shoving-sweep", shovingSweep],
     ["intercept-attack", interceptAttack],
+    ["reflexive-courage", reflexiveCourage],
 ];
 
 function getBuiltinReactionCategory(id) {

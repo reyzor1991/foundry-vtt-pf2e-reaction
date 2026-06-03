@@ -352,6 +352,7 @@ function messageWithTrait(message, trait) {
     return message?.item?.system?.traits?.value?.includes(trait)
         || message?.item?.castingTraits?.includes(trait)
         || message?.flags?.pf2e?.context?.traits?.find(a => a.name === trait)
+        || message?.flags?.pf2e?.context?.options?.includes(trait)
 }
 
 function messageWithAnyTrait(message, traits) {
@@ -664,6 +665,9 @@ Hooks.on('preUpdateToken', (tokenDoc, data, id) => {
         }
         if (availableReactions.includes('verdistant-defense') && enabledBuiltinReactionMap["verdistant-defense"]) {
             enabledBuiltinReactionMap["verdistant-defense"](message);
+        }
+        if (availableReactions.includes('reflexive-courage') && enabledBuiltinReactionMap["reflexive-courage"]) {
+            enabledBuiltinReactionMap["reflexive-courage"](message);
         }
     }
 
