@@ -499,6 +499,11 @@ $(document).on('click', '.reaction-cancel', async function () {
 });
 
 Hooks.on('pf2e.startTurn', async (_combatant) => {
+    // Shared turns can use temporary Combatants that cannot store reaction state.
+    if (!_combatant.id) {
+        return;
+    }
+
     await updateCombatantReactionState(_combatant, true);
     await updateInexhaustibleCountermoves(_combatant);
     if (isActorCharacter(_combatant?.actor)) {
