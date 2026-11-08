@@ -102,6 +102,15 @@ async function updateCombatantReactionState(combatant, newState, actionName = un
                 await combatant.setFlag(moduleName, 'quick-shield-block', combatant.getFlag(moduleName, 'quick-shield-block') - 1);
                 return;
             }
+            if (combatant.getFlag(moduleName, 'reaction-time')) {
+                await combatant.setFlag(moduleName, 'reaction-time', combatant.getFlag(moduleName, 'reaction-time') - 1);
+                return;
+            }
+        } else if (actionName === "intercept-attack") {
+            if (combatant.getFlag(moduleName, 'reaction-time')) {
+                await combatant.setFlag(moduleName, 'reaction-time', combatant.getFlag(moduleName, 'reaction-time') - 1);
+                return;
+            }
         }
 
         if (combatant.getFlag(moduleName, 'hydra-heads')) {
@@ -135,6 +144,9 @@ async function updateCombatantReactionState(combatant, newState, actionName = un
             if (actorFeat(combatant.actor, "quick-shield-block")) {
                 await combatant.setFlag(moduleName, 'quick-shield-block', 1);
             }
+            if (actorFeat(combatant.actor, "reaction-time")) {
+                await combatant.setFlag(moduleName, 'reaction-time', 1);
+            }
         }
 
         if (!combatant.getFlag(moduleName, 'state')) {
@@ -158,6 +170,7 @@ function countAllReaction(combatant) {
         count += combatant.getFlag(moduleName, 'reflexive-riposte') ?? 0;
 
         count += combatant.getFlag(moduleName, 'quick-shield-block') ?? 0;
+        count += combatant.getFlag(moduleName, 'reaction-time') ?? 0;
         count += combatant.getFlag(moduleName, 'hydra-heads') ?? 0;
     }
     return count;
@@ -187,6 +200,9 @@ function countReaction(combatant, actionName = undefined) {
             count += combatant.getFlag(moduleName, 'inexhaustible-countermoves') ?? 0;
         } else if (actionName === "shield-block") {
             count += combatant.getFlag(moduleName, 'quick-shield-block') ?? 0;
+            count += combatant.getFlag(moduleName, 'reaction-time') ?? 0;
+        } else if (actionName === "intercept-attack") {
+            count += combatant.getFlag(moduleName, 'reaction-time') ?? 0;
         }
     }
     return count;

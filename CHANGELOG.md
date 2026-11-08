@@ -1,3 +1,6 @@
+## Version 1.4.4
+- Add Reaction Time
+
 ## Version 1.4.3
 - Add Reflexive Courage
 
